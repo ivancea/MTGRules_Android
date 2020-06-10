@@ -1,4 +1,4 @@
-# MtgRules_Android
+# MTGRules Android
 MTGRules Android App 
 
 *This project replaced https://github.com/ivancea/MTGRules_UWP, a UWP solution, and https://github.com/ivancea/MTGRules, a Xamarin solution*
