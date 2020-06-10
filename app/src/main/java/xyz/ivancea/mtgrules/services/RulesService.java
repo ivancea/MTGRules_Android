@@ -1,22 +1,37 @@
 package xyz.ivancea.mtgrules.services;
 
+import android.app.Application;
+import android.content.Context;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
+import xyz.ivancea.mtgrules.model.Rule;
 import xyz.ivancea.mtgrules.model.RulesSource;
 
 public class RulesService {
+    private final Context context;
 
-    private static final List<RulesSource> RulesSources;
+    @Getter
+    private final List<RulesSource> RulesSources;
 
-    static {
+    @Inject
+    public RulesService(Context context) {
+        this.context = context;
+
         List<RulesSource> rulesSources = Collections.emptyList();
 
         try {
@@ -140,10 +155,124 @@ public class RulesService {
             e.printStackTrace();
         }
 
-        RulesSources = rulesSources;
+        this.RulesSources = rulesSources;
     }
 
-    @Inject
-    public RulesService() {
+    public List<Rule> loadRules(RulesSource rulesSource) {
+        List<Rule> rules = new ArrayList<>();
+
+        try(BufferedReader reader =
+            new BufferedReader(
+                new InputStreamReader(
+                    context.getResources().openRawResource(
+                        context.getResources().getIdentifier(rulesSource.getFileName(), "raw", context.getPackageName())
+                    ),
+                    rulesSource.getEncoding()
+                )
+            )) {
+
+            List<String> lines = reader.lines()
+                .map(this::sanitize)
+                .collect(Collectors.toList());
+
+            int lineIndex = 0;
+
+            String t;
+            do {
+                t = lines.get(lineIndex++);
+                if (lineIndex >= lines.size()) {
+                    return null;
+                }
+            } while (!t.equals("Credits"));
+
+            int blankLines = 0;
+            while (lineIndex < lines.size()) { // Rules
+                t = lines.get(lineIndex++);
+                if (t.length() > 0) {
+                    if (blankLines > 0 && (t.charAt(0) < '1' || t.charAt(0) > '9')) { // Ended rules
+                        break;
+                    }
+                    if ((t.indexOf(' ') - 1) >= 0 && t.charAt(t.indexOf(' ') - 1) == '.' && t.indexOf(' ') - 1 == t.indexOf('.')) {
+                        int pos = t.indexOf(' ');
+
+                        Rule r = new Rule(
+                            t.substring(0, pos),
+                            t.substring(pos + 1)
+                        );
+
+                        if (t.indexOf('.') == 1) {
+                            rules.add(r);
+                        } else {
+                            last(rules).getSubRules().add(r);
+                        }
+                    } else {
+                        if (blankLines == 0) {
+                            Rule rule = last(last(last(rules).getSubRules()).getSubRules());
+                            rule.setText(rule.getText() + "\n" + t);
+                        } else {
+                            int pos = t.indexOf(' ');
+                            Rule r = new Rule(
+                                t.substring(0, pos),
+                                t.substring(pos + 1)
+                            );
+                            last(last(rules).getSubRules()).getSubRules().add(r);
+                        }
+                    }
+
+                    blankLines = 0;
+                } else {
+                    blankLines++;
+                }
+            }
+
+            Rule glosary = new Rule("Glosary", null);
+            blankLines = 0;
+            String key = "";
+            String value = "";
+            while (lineIndex < lines.size()) { // Glosary
+                t = lines.get(lineIndex++);
+
+                if (t.length() > 0) {
+                    if (blankLines == 1) {
+                        key = t;
+                    } else {
+                        if (value.length() > 0)
+                            value += "\n";
+                        value += t;
+                    }
+                    blankLines = 0;
+                } else {
+                    if (key.length() > 0) {
+                        glosary.getSubRules().add(new Rule(key, value));
+                    }
+                    key = "";
+                    value = "";
+
+                    blankLines++;
+                    if (blankLines >= 2) {
+                        break;
+                    }
+                }
+            }
+
+            rules.add(glosary);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return rules;
+    }
+
+    private String sanitize(String text) {
+        return text
+            .replace('“', '"')
+            .replace('”', '"')
+            .replace('’', '\'')
+            .replace('—', '-')
+            .replace('–', '-');
+    }
+
+    private <T> T last(List<T> list) {
+        return list.get(list.size() - 1);
     }
 }

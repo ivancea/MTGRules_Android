@@ -74,7 +74,7 @@ public class MainFragment extends Fragment {
         List<Rule> rules = new ArrayList<>();
 
         for (int i=0; i<100; i++) {
-            rules.add(new Rule("200.", "Test 2a aaaaaaaaaa aaaaa 710.1b aaaa a aaaaaaa a aaa aaaaaaaa a\nExample: asd das 100.5 aaaaaaaaaaaa a a aa a a ", null));
+            rules.add(new Rule("200.", "Test 2a aaaaaaaaaa aaaaa 710.1b aaaa a aaaaaaa a aaa aaaaaaaa a\nExample: asd das 100.5 aaaaaaaaaaaa a a aa a a "));
         }
 
         viewModel.setCurrentRules(rules);
