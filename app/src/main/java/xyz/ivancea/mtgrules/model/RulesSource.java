@@ -10,7 +10,6 @@ import lombok.Data;
 
 @Data
 public class RulesSource {
-	private final String fileName;
 	private final URI uri;
 	private final LocalDate date;
 	private final Charset encoding;

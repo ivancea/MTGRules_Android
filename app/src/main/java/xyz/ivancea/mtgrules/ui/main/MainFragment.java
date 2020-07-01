@@ -1,5 +1,6 @@
 package xyz.ivancea.mtgrules.ui.main;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
@@ -26,11 +27,10 @@ import xyz.ivancea.mtgrules.MainActivity;
 import xyz.ivancea.mtgrules.MtgRulesApplication;
 import xyz.ivancea.mtgrules.R;
 import xyz.ivancea.mtgrules.model.Rule;
+import xyz.ivancea.mtgrules.model.RulesSource;
 import xyz.ivancea.mtgrules.services.RulesService;
 
 public class MainFragment extends Fragment {
-
-    private List<Rule> rules = Collections.emptyList();
 
     private MainViewModel viewModel;
 
@@ -41,9 +41,6 @@ public class MainFragment extends Fragment {
     public static MainFragment newInstance() {
         return new MainFragment();
     }
-
-    @Inject
-    RulesService rulesService;
 
     @Override
     public void onAttach(Context context) {
@@ -58,7 +55,7 @@ public class MainFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
 
         recyclerView = rootView.findViewById(R.id.rulesList);
-        recyclerViewAdapter = new RuleListAdapter(rules);
+        recyclerViewAdapter = new RuleListAdapter();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -69,17 +66,11 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
-        List<Rule> rules = new ArrayList<>();
-
-        for (int i=0; i<100; i++) {
-            rules.add(new Rule("200.", "Test 2a aaaaaaaaaa aaaaa 710.1b aaaa a aaaaaaa a aaa aaaaaaaa a\nExample: asd das 100.5 aaaaaaaaaaaa a a aa a a "));
-        }
-
-        viewModel.setCurrentRules(rules);
-        viewModel.setVisibleRules(rules);
-        recyclerViewAdapter.setRules(rules);
+        viewModel.getVisibleRules().observe(getViewLifecycleOwner(), rules -> {
+            recyclerViewAdapter.setRules(rules);
+        });
     }
 
 }

@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import xyz.ivancea.mtgrules.R;
 import xyz.ivancea.mtgrules.model.Rule;
 import xyz.ivancea.mtgrules.model.RulesSource;
 
@@ -26,7 +29,7 @@ public class RulesService {
     private final Context context;
 
     @Getter
-    private final List<RulesSource> RulesSources;
+    private final List<RulesSource> rulesSources;
 
     @Inject
     public RulesService(Context context) {
@@ -36,136 +39,171 @@ public class RulesService {
 
         try {
             rulesSources = Arrays.asList(
-                new RulesSource("MagicCompRules_20150123.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2015/docs/MagicCompRules_20150123.txt"),
                     LocalDate.of(2015, 1, 23),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_20160722.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2016/docs/MagicCompRules_20160722.txt"),
                     LocalDate.of(2016, 7, 22),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_CN2_Update_20160826.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2016/docs/MagicCompRules_CN2_Update_20160826.txt"),
                     LocalDate.of(2016, 8, 26),
-                    Charset.forName("UTF-16")),
+                    StandardCharsets.UTF_16
+                ),
 
-                new RulesSource("MagicCompRules_20160930.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2016/docs/MagicCompRules_20160930.txt"),
                     LocalDate.of(2016, 9, 30),
-                    Charset.forName("UTF-16")),
+                    StandardCharsets.UTF_16
+                ),
 
-                new RulesSource("MagicCompRules_20161111.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2016/docs/MagicCompRules_20161111.txt"),
                     LocalDate.of(2016, 11, 11),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_20170119.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules_20170119.txt"),
                     LocalDate.of(2017, 1, 19),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_20170428.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules_20170428.txt"),
                     LocalDate.of(2017, 4, 28),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_20170605.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules_20170605.txt"),
                     LocalDate.of(2017, 6, 5),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules_20170707.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules_20170707.txt"),
                     LocalDate.of(2017, 7, 7),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules 20170825.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules%2020170825.txt"),
                     LocalDate.of(2017, 8, 25),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules 20170925.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2017/downloads/MagicCompRules%2020170925.txt"),
                     LocalDate.of(2017, 9, 25),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules%2020180119.txt",
+                /* NOT FOUND
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020180119.txt"),
                     LocalDate.of(2018, 1, 19),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
+                 */
 
-                new RulesSource("MagicCompRules%2020180413.txt",
+                /* NOT FOUND
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020180413.txt"),
                     LocalDate.of(2018, 4, 13),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
+                 */
 
-                new RulesSource("MagicCompRules%2020180608.txt",
+                /* NOT FOUND
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020180608.txt"),
                     LocalDate.of(2018, 6, 8),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
+                 */
 
-                new RulesSource("MagicCompRules%2020180713.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020180713.txt"),
                     LocalDate.of(2018, 7, 13),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules%2020180810.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020180810.txt"),
                     LocalDate.of(2018, 8, 10),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules%2020181005.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2018/downloads/MagicCompRules%2020181005.txt"),
                     LocalDate.of(2018, 10, 5),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules%2020190125.txt",
+                new RulesSource(
                     new URI("http://media.wizards.com/2019/downloads/MagicCompRules%2020190125.txt"),
                     LocalDate.of(2019, 1, 25),
-                    Charset.forName("windows-1252")),
+                    Charset.forName("windows-1252")
+                ),
 
-                new RulesSource("MagicCompRules%2020190712.txt",
+                new RulesSource(
                     new URI("https://media.wizards.com/2019/downloads/MagicCompRules%2020190712.txt"),
                     LocalDate.of(2019, 7, 12),
-                    Charset.forName("UTF-8")),
+                    StandardCharsets.UTF_8
+                ),
 
-                new RulesSource("MagicCompRules%2020190823.txt",
+                new RulesSource(
                     new URI("https://media.wizards.com/2019/downloads/MagicCompRules%2020190823.txt"),
                     LocalDate.of(2019, 8, 23),
-                    Charset.forName("UTF-8")),
+                    StandardCharsets.UTF_8
+                ),
 
-                new RulesSource("MagicCompRules%2020191004.txt",
+                new RulesSource(
                     new URI("https://media.wizards.com/2019/downloads/MagicCompRules%2020191004.txt"),
                     LocalDate.of(2019, 10, 04),
-                    Charset.forName("UTF-8")),
+                    StandardCharsets.UTF_8
+                ),
 
-                new RulesSource("MagicCompRules%2020200122.txt",
+                new RulesSource(
                     new URI("https://media.wizards.com/2020/downloads/MagicCompRules%2020200122.txt"),
                     LocalDate.of(2020, 01, 22),
-                    Charset.forName("UTF-8")),
+                    StandardCharsets.UTF_8
+                ),
 
-                new RulesSource("MagicCompRules%2020200417.txt",
+                new RulesSource(
                     new URI("https://media.wizards.com/2020/downloads/MagicCompRules%2020200417.txt"),
                     LocalDate.of(2020, 04, 17),
-                    Charset.forName("UTF-8"))
+                    StandardCharsets.UTF_8
+                )
             );
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
-        this.RulesSources = rulesSources;
+        this.rulesSources = rulesSources;
+    }
+
+    public RulesSource getLatestRulesSource() {
+        return rulesSources.get(rulesSources.size() - 1);
     }
 
     public List<Rule> loadRules(RulesSource rulesSource) {
         List<Rule> rules = new ArrayList<>();
 
+        String fileName = "rules_" + rulesSource.getDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
         try(BufferedReader reader =
             new BufferedReader(
                 new InputStreamReader(
                     context.getResources().openRawResource(
-                        context.getResources().getIdentifier(rulesSource.getFileName(), "raw", context.getPackageName())
+                        context.getResources().getIdentifier(fileName, "raw", context.getPackageName())
                     ),
                     rulesSource.getEncoding()
                 )
@@ -225,7 +263,7 @@ public class RulesService {
                 }
             }
 
-            Rule glosary = new Rule("Glosary", null);
+            Rule glosary = new Rule("Glosary", "");
             blankLines = 0;
             String key = "";
             String value = "";
@@ -258,6 +296,8 @@ public class RulesService {
             rules.add(glosary);
         } catch (Exception e) {
             e.printStackTrace();
+
+            return null;
         }
 
         return rules;

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,11 +31,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     private static final Pattern RULE_LINK_PATTERN = Pattern.compile("(\\d{3}(?:\\.\\d+[a-z]?)?)");
     private static final Pattern EXAMPLE_PATTERN = Pattern.compile("^Example:.*", Pattern.MULTILINE | Pattern.DOTALL);
 
-    private List<Rule> rules;
-
-    public RuleListAdapter(List<Rule> rules) {
-        this.rules = rules;
-    }
+    private List<Rule> rules = Collections.emptyList();
 
     @Getter
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -69,6 +66,10 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.getRuleTitle().setText(rules.get(position).getTitle());
         holder.getRuleText().setText(makeRulesTextSpannable(rules.get(position).getText()));
+
+        holder.itemView.setOnClickListener(v -> {
+
+        });
     }
 
     private Spannable makeRulesTextSpannable(String rulesText) {
