@@ -6,4 +6,7 @@
         android:title="Buscar bro"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView" />
+    <item android:id="@+id/changeRules"
+        android:title="Cambiar reglas"
+        app:showAsAction="never" />
 </menu>

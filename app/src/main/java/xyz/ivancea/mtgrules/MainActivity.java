@@ -3,16 +3,25 @@ package xyz.ivancea.mtgrules;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.SearchView;
+import android.widget.Spinner;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -98,6 +107,28 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        menu.findItem(R.id.changeRules).setOnMenuItemClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            List<String> formattedRulesSources = rulesService.getRulesSources().stream()
+                .map(rulesSource -> rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+            Collections.reverse(formattedRulesSources);
+
+            builder.setTitle("Seleccionar reglas");
+            builder.setItems(formattedRulesSources.toArray(new String[0]), (dialog, which) -> {
+                List<Rule> rules = rulesService.loadRules(rulesService.getRulesSources().get(rulesService.getRulesSources().size() - which - 1));
+
+                viewModel.getCurrentRules().setValue(rules);
+                viewModel.getVisibleRules().setValue(rules);
+            });
+
+            builder.show();
+
+            return true;
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
