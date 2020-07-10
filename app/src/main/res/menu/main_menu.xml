@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/menu_home"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/randomRule"
+        android:icon="@drawable/ic_baseline_shuffle_24"
+        android:title="@string/menu_random_rule"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/search"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Buscar bro"
+        android:title="@string/menu_search"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView" />
+
     <item android:id="@+id/changeRules"
-        android:title="Cambiar reglas"
+        android:title="@string/menu_change_rules"
         app:showAsAction="never" />
+
+    <item android:id="@+id/changeTheme"
+        android:title="@string/menu_change_theme"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/compareRules"
+        android:title="@string/menu_compare_rules"
+        app:showAsAction="never"
+        android:enabled="false" />
+
+    <item android:id="@+id/about"
+        android:title="@string/menu_about"
+        app:showAsAction="never"
+        android:enabled="false" />
 </menu>

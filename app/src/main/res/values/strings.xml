@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">MTG Rules</string>
+    <string name="dialog_select_rules">Select rules</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="change_theme_restart">The application will restart</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_random_rule">Random rule</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_change_rules">Change rules</string>
+    <string name="menu_change_theme">Change theme</string>
+    <string name="menu_about">About</string>
+    <string name="menu_compare_rules">Compare rules (experimental)</string>
 </resources>
