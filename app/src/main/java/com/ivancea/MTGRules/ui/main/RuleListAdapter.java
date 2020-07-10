@@ -73,14 +73,18 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         holder.getRuleTitle().setText(rule.getTitle());
         holder.getRuleText().setText(makeRulesTextSpannable(rule.getText()));
 
-        holder.itemView.setOnClickListener(v -> {
+        View.OnClickListener onClickListener = v -> {
             Intent intent = new Intent(context, MainActivity.class);
 
             intent.setAction(Actions.ACTION_NAVIGATE_RULE);
             intent.putExtra(Actions.DATA, rule.getTitle());
 
             context.startActivity(intent);
-        });
+        };
+
+        holder.itemView.setOnClickListener(onClickListener);
+        holder.getRuleTitle().setOnClickListener(onClickListener);
+        holder.getRuleText().setOnClickListener(onClickListener);
     }
 
     private Spannable makeRulesTextSpannable(String rulesText) {
