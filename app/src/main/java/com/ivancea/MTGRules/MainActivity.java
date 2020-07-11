@@ -8,14 +8,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.Menu;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     RulesService rulesService;
 
     private MainViewModel viewModel;
+
+    private Boolean ttsOk = null;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +66,32 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getCurrentRules().setValue(rules);
         viewModel.getVisibleRules().setValue(rules);
 
+        tts = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                ttsOk = true;
+                tts.setLanguage(Locale.ENGLISH);
+            } else {
+                ttsOk = false;
+            }
+        });
+
         handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onStop() {
+        if (tts != null) {
+            tts.stop();
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) {
+            tts.shutdown();
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -73,6 +104,17 @@ public class MainActivity extends AppCompatActivity {
         switch (intent.getAction()) {
             case Intent.ACTION_SEARCH: {
                 searchRules(intent.getStringExtra(SearchManager.QUERY));
+                break;
+            }
+
+            case Actions.ACTION_READ: {
+                if (ttsOk == null) {
+                    Toast.makeText(this, R.string.toast_tts_not_ready, Toast.LENGTH_SHORT);
+                } else if (!ttsOk) {
+                    Toast.makeText(this, R.string.toast_tts_not_working, Toast.LENGTH_SHORT);
+                } else {
+                    tts.speak(intent.getStringExtra(Actions.DATA), TextToSpeech.QUEUE_FLUSH, null, "rules");
+                }
                 break;
             }
 

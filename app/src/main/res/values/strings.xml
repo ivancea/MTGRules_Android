@@ -11,4 +11,8 @@
     <string name="menu_change_theme">Change theme</string>
     <string name="menu_about">About</string>
     <string name="menu_compare_rules">Compare rules (experimental)</string>
+    <string name="context_copy">Copy text</string>
+    <string name="context_read">Read text</string>
+    <string name="toast_tts_not_ready">Text-to-speech not ready yet</string>
+    <string name="toast_tts_not_working">Test-to-speech not working</string>
 </resources>

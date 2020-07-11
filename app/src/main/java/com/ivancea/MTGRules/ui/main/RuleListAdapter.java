@@ -1,8 +1,11 @@
 package com.ivancea.MTGRules.ui.main;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.speech.tts.TextToSpeech;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -19,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +57,6 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
             this.ruleTitle = view.findViewById(R.id.ruleTitle);
             this.ruleText = view.findViewById(R.id.ruleText);
             this.ruleText.setMovementMethod(LinkMovementMethod.getInstance());
-
-            view.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-
-            });
         }
     }
 
@@ -85,6 +86,23 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         holder.itemView.setOnClickListener(onClickListener);
         holder.getRuleTitle().setOnClickListener(onClickListener);
         holder.getRuleText().setOnClickListener(onClickListener);
+
+        holder.itemView.setOnCreateContextMenuListener((menu, view, menuInfo) -> {
+            menu.add(0, view.getId(), 0, R.string.context_copy).setOnMenuItemClickListener(item -> {
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(rule.getTitle(), rule.getTitle() + ": " + rule.getText());
+                clipboard.setPrimaryClip(clip);
+                return true;
+            });
+            menu.add(0, view.getId(), 0, R.string.context_read).setOnMenuItemClickListener(item -> {
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.setAction(Actions.ACTION_READ);
+                intent.putExtra(Actions.DATA, rule.getText());
+
+                context.startActivity(intent);
+                return true;
+            });
+        });
     }
 
     private Spannable makeRulesTextSpannable(String rulesText) {

@@ -12,4 +12,8 @@
     <string name="menu_change_theme">Cambiar tema</string>
     <string name="menu_about">Acerca de</string>
     <string name="menu_compare_rules">Comparar reglas (experimental)</string>
+    <string name="context_copy">Copiar texto</string>
+    <string name="context_read">Leer texto</string>
+    <string name="toast_tts_not_ready">El texto-a-voz no está listo aún</string>
+    <string name="toast_tts_not_working">El texto-a-voz no funciona</string>
 </resources>
