@@ -266,11 +266,11 @@ public class RulesService {
                 }
             }
 
-            Rule glosary = new Rule("Glosary", "");
+            Rule glossary = new Rule("Glossary", "");
             blankLines = 0;
             String key = "";
             String value = "";
-            while (lineIndex < lines.size()) { // Glosary
+            while (lineIndex < lines.size()) { // Glossary
                 t = lines.get(lineIndex++);
 
                 if (t.length() > 0) {
@@ -284,7 +284,7 @@ public class RulesService {
                     blankLines = 0;
                 } else {
                     if (key.length() > 0) {
-                        glosary.getSubRules().add(new Rule(key, value));
+                        glossary.getSubRules().add(new Rule(key, value));
                     }
                     key = "";
                     value = "";
@@ -296,7 +296,7 @@ public class RulesService {
                 }
             }
 
-            rules.add(glosary);
+            rules.add(glossary);
         } catch (Exception e) {
             e.printStackTrace();
 

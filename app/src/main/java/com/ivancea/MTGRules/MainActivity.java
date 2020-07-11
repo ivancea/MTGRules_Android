@@ -33,6 +33,8 @@ import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.ui.main.MainFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class MainActivity extends AppCompatActivity {
 
     @Inject
@@ -192,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
     private void searchRules(String searchText) {
         List<Rule> filteredRules = viewModel.getCurrentRules().getValue().stream()
             .flatMap(this::flattenRule)
-            .filter(rule -> rule.getTitle().contains(searchText) || rule.getText().contains(searchText))
+            .filter(rule -> StringUtils.containsIgnoreCase(rule.getTitle(), searchText)
+                || StringUtils.containsIgnoreCase(rule.getText(), searchText))
             .collect(Collectors.toList());
 
         viewModel.getVisibleRules().setValue(filteredRules);
@@ -207,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Rule> findRule(String title) {
         if (!Character.isDigit(title.charAt(0))) {
             return viewModel.getCurrentRules().getValue().stream()
-                .filter(r -> r.getTitle().equals("Glosary"))
+                .filter(r -> r.getTitle().equals("Glossary"))
                 .findAny()
                 .map(g -> {
                     List<Rule> rules = new ArrayList<>();
