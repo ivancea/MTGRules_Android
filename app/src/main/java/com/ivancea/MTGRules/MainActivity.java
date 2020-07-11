@@ -25,7 +25,9 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ivancea.MTGRules.constants.Actions;
+import com.ivancea.MTGRules.constants.Events;
 import com.ivancea.MTGRules.constants.Preferences;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     RulesService rulesService;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private MainViewModel viewModel;
 
     private Boolean ttsOk = null;
@@ -47,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean useLightTheme = !getPreferences(Context.MODE_PRIVATE).getBoolean(Preferences.USE_LIGHT_THEME, false);
+        boolean useLightTheme = getPreferences(Context.MODE_PRIVATE).getBoolean(Preferences.USE_LIGHT_THEME, false);
         setTheme(useLightTheme);
 
         ((MtgRulesApplication) getApplicationContext()).appComponent.inject(this);
         super.onCreate(savedInstanceState);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.main_activity);
         if (savedInstanceState == null) {
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         switch (intent.getAction()) {
             case Intent.ACTION_SEARCH: {
                 searchRules(intent.getStringExtra(SearchManager.QUERY));
+                logEvent(Events.SEARCH_RULES);
                 break;
             }
 
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, R.string.toast_tts_not_working, Toast.LENGTH_SHORT);
                 } else {
                     tts.speak(intent.getStringExtra(Actions.DATA), TextToSpeech.QUEUE_FLUSH, null, "rules");
+                    logEvent(Events.READ_RULE);
                 }
                 break;
             }
@@ -151,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             case Actions.ACTION_RANDOM_RULE: {
-
                 List<Rule> rules = viewModel.getCurrentRules().getValue();
 
                 int ruleCount = (int) rules.stream()
@@ -167,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
                     .ifPresent(rule -> {
                         viewModel.getVisibleRules().setValue(findRule(rule.getTitle()));
                     });
+
+                logEvent(Events.RANDOM_RULE);
 
                 break;
             }
@@ -185,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    private void logEvent(String event) {
+        mFirebaseAnalytics.logEvent(event, null);
     }
 
     private void setTheme(boolean useLightTheme) {
@@ -320,6 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
                     viewModel.getCurrentRules().setValue(rules);
                     viewModel.getVisibleRules().setValue(rules);
+
+                    logEvent(Events.CHANGE_RULES);
                 })
                 .show();
 

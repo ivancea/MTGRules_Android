@@ -16,3 +16,4 @@ release
 *.keyInfo
 *.keystore
 *.pepk
+google-services.json
