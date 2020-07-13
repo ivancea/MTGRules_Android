@@ -17,4 +17,7 @@
     <string name="toast_tts_not_ready">El texto-a-voz no está listo aún</string>
     <string name="toast_tts_not_working">El texto-a-voz no funciona</string>
     <string name="action_bar_rules">Reglas</string>
+    <string name="about_description">Esta App está pensada para ser una fuenta rápida y funcional de las reglas de Magic</string>
+    <string name="about_unofficial">Esta NO es una aplicación oficial y NO está afiliada con <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
+    <string name="about_any_request">¿Alguna petición o funcionalidad?</string>
 </resources>

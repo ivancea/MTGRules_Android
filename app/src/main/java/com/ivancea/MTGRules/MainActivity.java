@@ -29,9 +29,11 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ivancea.MTGRules.constants.Actions;
 import com.ivancea.MTGRules.constants.Events;
 import com.ivancea.MTGRules.constants.Preferences;
+import com.ivancea.MTGRules.model.HistoryItem;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
 import com.ivancea.MTGRules.services.RulesService;
+import com.ivancea.MTGRules.ui.main.AboutFragment;
 import com.ivancea.MTGRules.ui.main.MainFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
 
@@ -112,9 +114,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
+        boolean addToHistory = !intent.getBooleanExtra(Actions.BACK, false);
+
         switch (intent.getAction()) {
             case Intent.ACTION_SEARCH: {
-                searchRules(intent.getStringExtra(SearchManager.QUERY));
+                String searchString = intent.getStringExtra(SearchManager.QUERY);
+                searchRules(searchString);
+
+                pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, searchString));
+
                 logEvent(Events.SEARCH_RULES);
                 break;
             }
@@ -137,24 +145,31 @@ public class MainActivity extends AppCompatActivity {
                 if (title.isEmpty()) {
                     viewModel.getVisibleRules().setValue(viewModel.getCurrentRules().getValue());
                     viewModel.getSelectedRuleTitle().setValue(null);
+
+                    if (addToHistory) {
+                        pushHistoryItem(new HistoryItem(HistoryItem.Type.Rule, title));
+                    }
                 } else {
-                    Rule ruleToFocus = viewModel.getVisibleRules().getValue().stream()
+                    Rule existingRule = viewModel.getVisibleRules().getValue().stream()
                         .filter(r -> r.getTitle().equals(title))
                         .findAny().orElse(null);
 
-                    if (ruleToFocus == null || !ruleToFocus.getSubRules().isEmpty()) {
+                    if (existingRule == null || !existingRule.getSubRules().isEmpty() || !isLastHistoryItemNavigation()) {
                         List<Rule> rules = findRule(title);
 
                         if (!rules.isEmpty()) {
                             Rule rule = rules.get(rules.size() - 1);
                             if (rule.getSubRules().isEmpty()) {
-                                ruleToFocus = rule;
                                 rules.remove(rules.size() - 1);
                             }
 
                             rules.addAll(rules.get(rules.size() - 1).getSubRules());
 
                             viewModel.getVisibleRules().setValue(rules);
+
+                            if (addToHistory) {
+                                pushHistoryItem(new HistoryItem(HistoryItem.Type.Rule, title));
+                            }
                         }
                     }
 
@@ -171,7 +186,12 @@ public class MainActivity extends AppCompatActivity {
                     .flatMap(this::flattenRule)
                     .count();
 
-                int rulesToSkip = new Random().nextInt(ruleCount);
+                Random random = new Random();
+
+                int seed = intent.getIntExtra(Actions.DATA, random.nextInt(Integer.MAX_VALUE));
+                random.setSeed(seed);
+
+                int rulesToSkip = random.nextInt(ruleCount);
 
                 rules.stream()
                     .flatMap(this::flattenRule)
@@ -180,6 +200,10 @@ public class MainActivity extends AppCompatActivity {
                     .ifPresent(rule -> {
                         viewModel.getVisibleRules().setValue(findRule(rule.getTitle()));
                         viewModel.getSelectedRuleTitle().setValue(null);
+
+                        if (addToHistory) {
+                            pushHistoryItem(new HistoryItem(HistoryItem.Type.Random, seed));
+                        }
                     });
 
                 logEvent(Events.RANDOM_RULE);
@@ -201,6 +225,54 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+    private void pushHistoryItem(HistoryItem historyItem) {
+        ArrayList<HistoryItem> newHistory = new ArrayList<>(viewModel.getHistory().getValue());
+        newHistory.add(historyItem);
+        viewModel.getHistory().setValue(newHistory);
+    }
+
+    private boolean popHistoryItem() {
+        if (viewModel.getHistory().getValue().size() < 2) {
+            return false;
+        }
+
+        ArrayList<HistoryItem> newHistory = new ArrayList<>(viewModel.getHistory().getValue());
+        newHistory.remove(newHistory.size() - 1);
+        HistoryItem historyItem = newHistory.get(newHistory.size() - 1);
+        viewModel.getHistory().setValue(newHistory);
+
+        Intent intent = new Intent(this, MainActivity.class);
+
+        intent.putExtra(Actions.BACK, true);
+
+        switch (historyItem.getType()) {
+            case Rule: {
+                intent.setAction(Actions.ACTION_NAVIGATE_RULE);
+                intent.putExtra(Actions.DATA, historyItem.getValue());
+                break;
+            }
+            case Search: {
+                intent.setAction(Intent.ACTION_SEARCH);
+                intent.putExtra(SearchManager.QUERY, historyItem.getValue());
+                break;
+            }
+            case Random: {
+                intent.setAction(Actions.ACTION_RANDOM_RULE);
+                intent.putExtra(Actions.DATA, historyItem.getValue());
+                break;
+            }
+        }
+        startActivity(intent);
+
+        return true;
+    }
+
+    private boolean isLastHistoryItemNavigation() {
+        List<HistoryItem> history = viewModel.getHistory().getValue();
+        return !history.isEmpty() &&
+            history.get(history.size() - 1).getType().equals(HistoryItem.Type.Rule);
     }
 
     private void logEvent(String event) {
@@ -293,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getCurrentRules().setValue(rules);
         viewModel.getVisibleRules().setValue(rules);
         viewModel.getSelectedRuleTitle().setValue(null);
+        viewModel.getHistory().setValue(Collections.singletonList(new HistoryItem(HistoryItem.Type.Rule, "")));
 
         getSupportActionBar().setSubtitle(getString(R.string.action_bar_rules) + ": " + rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
     }
@@ -358,6 +431,19 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        menu.findItem(R.id.about).setOnMenuItemClickListener(view -> {
+            new AboutFragment().show(getSupportFragmentManager(), null);
+
+            return true;
+        });
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!popHistoryItem()) {
+            super.onBackPressed();
+        }
     }
 }

@@ -9,4 +9,5 @@ public final class Actions {
 	public static final String ACTION_READ = "com.ivancea.READ";
 
 	public static final String DATA = "data";
+	public static final String BACK = "back";
 }

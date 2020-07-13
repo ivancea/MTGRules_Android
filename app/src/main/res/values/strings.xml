@@ -16,4 +16,9 @@
     <string name="toast_tts_not_ready">Text-to-speech not ready yet</string>
     <string name="toast_tts_not_working">Test-to-speech not working</string>
     <string name="action_bar_rules">Rules</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="about_description">This app is supposed to be a fast and functional source of Magic rules</string>
+    <string name="about_unofficial">This is NOT an official app and it is NOT affiliated with <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
+    <string name="about_any_request">Any request or feature?</string>
+    <string name="about_email" translatable="false">ivancea96@outlook.com</string>
 </resources>
