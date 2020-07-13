@@ -1,8 +1,12 @@
 <resources>
 
     <style name="DarkTheme" parent="Theme.AppCompat">
+        <item name="rule_view_text_color">@drawable/rule_view_text_selector_dark</item>
+        <item name="rule_view_background_color">@drawable/rule_view_background_selector_dark</item>
     </style>
     <style name="LightTheme" parent="Theme.AppCompat.Light">
+        <item name="rule_view_text_color">@drawable/rule_view_text_selector_light</item>
+        <item name="rule_view_background_color">@drawable/rule_view_background_selector_light</item>
     </style>
 
 </resources>
