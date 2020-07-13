@@ -16,4 +16,5 @@
     <string name="context_read">Leer texto</string>
     <string name="toast_tts_not_ready">El texto-a-voz no está listo aún</string>
     <string name="toast_tts_not_working">El texto-a-voz no funciona</string>
+    <string name="action_bar_rules">Reglas</string>
 </resources>

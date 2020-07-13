@@ -15,4 +15,5 @@
     <string name="context_read">Read text</string>
     <string name="toast_tts_not_ready">Text-to-speech not ready yet</string>
     <string name="toast_tts_not_working">Test-to-speech not working</string>
+    <string name="action_bar_rules">Rules</string>
 </resources>

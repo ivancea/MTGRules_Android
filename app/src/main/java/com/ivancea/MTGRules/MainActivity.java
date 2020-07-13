@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         ((MtgRulesApplication) getApplicationContext()).appComponent.inject(this);
         super.onCreate(savedInstanceState);
 
+        getSupportActionBar().setLogo(R.drawable.ic_launcher_foreground);
+        getSupportActionBar().setTitle(R.string.app_name);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.main_activity);
@@ -70,10 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (viewModel.getCurrentRules().getValue().isEmpty()) {
             RulesSource rulesSource = rulesService.getLatestRulesSource();
-            List<Rule> rules = rulesService.loadRules(rulesSource);
 
-            viewModel.getCurrentRules().setValue(rules);
-            viewModel.getVisibleRules().setValue(rules);
+            useRules(rulesSource);
         }
 
         tts = new TextToSpeech(this, status -> {
@@ -286,6 +287,16 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void useRules(RulesSource rulesSource) {
+        List<Rule> rules = rulesService.loadRules(rulesSource);
+
+        viewModel.getCurrentRules().setValue(rules);
+        viewModel.getVisibleRules().setValue(rules);
+        viewModel.getSelectedRuleTitle().setValue(null);
+
+        getSupportActionBar().setSubtitle(getString(R.string.action_bar_rules) + ": " + rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -336,11 +347,9 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(R.string.dialog_select_rules)
                 .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {})
                 .setItems(formattedRulesSources.toArray(new String[0]), (dialog, which) -> {
-                    List<Rule> rules = rulesService.loadRules(rulesService.getRulesSources().get(rulesService.getRulesSources().size() - which - 1));
+                    RulesSource rulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - which - 1);
 
-                    viewModel.getCurrentRules().setValue(rules);
-                    viewModel.getVisibleRules().setValue(rules);
-                    viewModel.getSelectedRuleTitle().setValue(null);
+                    useRules(rulesSource);
 
                     logEvent(Events.CHANGE_RULES);
                 })

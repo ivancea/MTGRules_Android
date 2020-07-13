@@ -31,6 +31,8 @@ public class MainFragment extends Fragment {
 
     private RuleListAdapter recyclerViewAdapter;
 
+    private LinearLayoutManager layoutManager;
+
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -50,7 +52,7 @@ public class MainFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.rulesList);
         recyclerViewAdapter = new RuleListAdapter(getContext());
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getActivity());
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
             recyclerView.getContext(),
@@ -82,7 +84,7 @@ public class MainFragment extends Fragment {
                 IntStream.range(0, rules.size())
                     .filter(i -> rules.get(i).getTitle().equals(ruleTitle))
                     .findFirst()
-                    .ifPresent(recyclerView::scrollToPosition);
+                    .ifPresent(i -> layoutManager.scrollToPositionWithOffset(i, 50));
             }
         });
     }

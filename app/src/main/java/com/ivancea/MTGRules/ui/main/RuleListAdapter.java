@@ -57,7 +57,6 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
             this.ruleTitle = view.findViewById(R.id.ruleTitle);
             this.ruleText = view.findViewById(R.id.ruleText);
-            this.ruleText.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
