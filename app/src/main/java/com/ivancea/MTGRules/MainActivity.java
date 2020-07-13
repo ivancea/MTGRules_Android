@@ -68,11 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        RulesSource rulesSource = rulesService.getLatestRulesSource();
-        List<Rule> rules = rulesService.loadRules(rulesSource);
+        if (viewModel.getCurrentRules().getValue().isEmpty()) {
+            RulesSource rulesSource = rulesService.getLatestRulesSource();
+            List<Rule> rules = rulesService.loadRules(rulesSource);
 
-        viewModel.getCurrentRules().setValue(rules);
-        viewModel.getVisibleRules().setValue(rules);
+            viewModel.getCurrentRules().setValue(rules);
+            viewModel.getVisibleRules().setValue(rules);
+        }
 
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (title.isEmpty()) {
                     viewModel.getVisibleRules().setValue(viewModel.getCurrentRules().getValue());
+                    viewModel.getSelectedRuleTitle().setValue(null);
                 } else {
                     Rule ruleToFocus = viewModel.getVisibleRules().getValue().stream()
                         .filter(r -> r.getTitle().equals(title))
@@ -153,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
                             viewModel.getVisibleRules().setValue(rules);
                         }
                     }
+
+                    viewModel.getSelectedRuleTitle().setValue(title);
                 }
 
                 break;
@@ -173,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     .findFirst()
                     .ifPresent(rule -> {
                         viewModel.getVisibleRules().setValue(findRule(rule.getTitle()));
+                        viewModel.getSelectedRuleTitle().setValue(null);
                     });
 
                 logEvent(Events.RANDOM_RULE);
@@ -212,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
             .collect(Collectors.toList());
 
         viewModel.getVisibleRules().setValue(filteredRules);
+        viewModel.getSelectedRuleTitle().setValue(null);
 
         /*if (addToHistory)
         {
@@ -333,6 +340,7 @@ public class MainActivity extends AppCompatActivity {
 
                     viewModel.getCurrentRules().setValue(rules);
                     viewModel.getVisibleRules().setValue(rules);
+                    viewModel.getSelectedRuleTitle().setValue(null);
 
                     logEvent(Events.CHANGE_RULES);
                 })

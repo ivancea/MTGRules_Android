@@ -13,4 +13,5 @@ import com.ivancea.MTGRules.model.Rule;
 public class MainViewModel extends ViewModel {
     private final MutableLiveData<List<Rule>> currentRules = new MutableLiveData<>(Collections.emptyList());
     private final MutableLiveData<List<Rule>> visibleRules = new MutableLiveData<>(Collections.emptyList());
+    private final MutableLiveData<String> selectedRuleTitle = new MutableLiveData<>(null);
 }

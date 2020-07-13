@@ -18,6 +18,10 @@ import android.view.ViewGroup;
 
 import com.ivancea.MTGRules.MtgRulesApplication;
 import com.ivancea.MTGRules.R;
+import com.ivancea.MTGRules.model.Rule;
+
+import java.util.List;
+import java.util.stream.IntStream;
 
 public class MainFragment extends Fragment {
 
@@ -67,6 +71,19 @@ public class MainFragment extends Fragment {
 
         viewModel.getVisibleRules().observe(getViewLifecycleOwner(), rules -> {
             recyclerViewAdapter.setRules(rules);
+        });
+
+        viewModel.getSelectedRuleTitle().observe(getViewLifecycleOwner(), ruleTitle -> {
+            recyclerViewAdapter.setSelectedRuleTitle(ruleTitle);
+
+            if (ruleTitle != null) {
+                List<Rule> rules = viewModel.getVisibleRules().getValue();
+
+                IntStream.range(0, rules.size())
+                    .filter(i -> rules.get(i).getTitle().equals(ruleTitle))
+                    .findFirst()
+                    .ifPresent(recyclerView::scrollToPosition);
+            }
         });
     }
 

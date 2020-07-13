@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.speech.tts.TextToSpeech;
 import android.text.Spannable;
@@ -18,12 +19,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,10 +35,11 @@ import com.ivancea.MTGRules.model.Rule;
 
 public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHolder> {
 
-    private static final Pattern RULE_LINK_PATTERN = Pattern.compile("\\b(\\d{3}(?:\\.\\d+[a-z]?)?)\\b");
+    private static final Pattern RULE_LINK_PATTERN = Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b");
     private static final Pattern EXAMPLE_PATTERN = Pattern.compile("^Example:", Pattern.MULTILINE);
 
     private List<Rule> rules = Collections.emptyList();
+    private String selectedRuleTitle = null;
 
     private final Context context;
 
@@ -103,6 +104,8 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 return true;
             });
         });
+
+        holder.itemView.setSelected(rule.getTitle().equals(selectedRuleTitle));
     }
 
     private Spannable makeRulesTextSpannable(String rulesText) {
@@ -111,7 +114,11 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         Matcher linkMatcher = RULE_LINK_PATTERN.matcher(rulesText);
 
         while (linkMatcher.find()) {
-            String title = linkMatcher.group();
+            String title = normalizeTitle(
+                linkMatcher.group("rule"),
+                linkMatcher.group("subRule"),
+                linkMatcher.group("letter")
+            );
             spannable.setSpan(
                 new ClickableSpan() {
                     @Override
@@ -143,6 +150,18 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         return spannable;
     }
 
+    private String normalizeTitle(String ruleNumber, String subRuleNumber, String subRuleLetter) {
+        if (subRuleNumber == null) {
+            return ruleNumber + ".";
+        }
+
+        if (subRuleLetter == null) {
+            return ruleNumber + "." + subRuleNumber + ".";
+        }
+
+        return ruleNumber + "." + subRuleNumber + subRuleLetter;
+    }
+
     @Override
     public int getItemCount() {
         return rules.size();
@@ -152,5 +171,10 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         this.rules = rules;
 
         notifyDataSetChanged();
+    }
+
+    public void setSelectedRuleTitle(@Nullable String selectedRuleTitle) {
+        this.selectedRuleTitle = selectedRuleTitle;
+        this.notifyDataSetChanged();
     }
 }
