@@ -78,7 +78,9 @@ public class MainFragment extends Fragment {
         viewModel.getSelectedRuleTitle().observe(getViewLifecycleOwner(), ruleTitle -> {
             recyclerViewAdapter.setSelectedRuleTitle(ruleTitle);
 
-            if (ruleTitle != null) {
+            if (ruleTitle == null) {
+                layoutManager.scrollToPosition(0);
+            } else {
                 List<Rule> rules = viewModel.getVisibleRules().getValue();
 
                 IntStream.range(0, rules.size())
