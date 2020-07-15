@@ -7,9 +7,9 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.ivancea.MTGRules"
-        minSdkVersion 26
+        minSdkVersion 16
         targetSdkVersion 29
-        versionCode 13
+        versionCode 14
         versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
