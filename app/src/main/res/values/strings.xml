@@ -21,4 +21,7 @@
     <string name="about_unofficial">This is NOT an official app and it is NOT affiliated with <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
     <string name="about_any_request">Any request or feature?</string>
     <string name="about_email" translatable="false">ivancea96@outlook.com</string>
+    <string name="dialog_select_source_rules">Select source rules</string>
+    <string name="dialog_select_target_rules">Select target rules</string>
+    <string name="compare_changed_to">CHANGED TO</string>
 </resources>

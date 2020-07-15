@@ -26,8 +26,7 @@
 
     <item android:id="@+id/compareRules"
         android:title="@string/menu_compare_rules"
-        app:showAsAction="never"
-        android:enabled="false" />
+        app:showAsAction="never" />
 
     <item android:id="@+id/about"
         android:title="@string/menu_about"

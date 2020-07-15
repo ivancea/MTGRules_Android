@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +34,7 @@ import com.ivancea.MTGRules.constants.Preferences;
 import com.ivancea.MTGRules.model.HistoryItem;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
+import com.ivancea.MTGRules.services.RulesComparisonService;
 import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.ui.main.AboutFragment;
 import com.ivancea.MTGRules.ui.main.MainFragment;
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     RulesService rulesService;
+
+    @Inject
+    RulesComparisonService rulesComparisonService;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 searchRules(searchString);
 
                 if (addToHistory) {
-                pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, searchString));
+                    pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, searchString));
                 }
 
                 logEvent(Events.SEARCH_RULES);
@@ -236,12 +242,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean popHistoryItem() {
-        if (viewModel.getHistory().getValue().size() < 2) {
+        ArrayList<HistoryItem> newHistory = new ArrayList<>(viewModel.getHistory().getValue());
+
+        if (newHistory.isEmpty()) {
             return false;
         }
 
-        ArrayList<HistoryItem> newHistory = new ArrayList<>(viewModel.getHistory().getValue());
         newHistory.remove(newHistory.size() - 1);
+
+        while (!newHistory.isEmpty() && newHistory.get(newHistory.size() - 1) == null) {
+            newHistory.remove(newHistory.size() - 1);
+        }
+
+        if (newHistory.isEmpty()) {
+            return false;
+        }
+
         HistoryItem historyItem = newHistory.get(newHistory.size() - 1);
         viewModel.getHistory().setValue(newHistory);
 
@@ -411,6 +427,37 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        menu.findItem(R.id.compareRules).setOnMenuItemClickListener(view -> {
+            List<String> formattedRulesSources = rulesService.getRulesSources().stream()
+                .map(rulesSource -> rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+            Collections.reverse(formattedRulesSources);
+
+            showPicker(R.string.dialog_select_source_rules, formattedRulesSources)
+                .thenAccept(selectedSourceIndex -> {
+                    showPicker(R.string.dialog_select_target_rules, formattedRulesSources)
+                        .thenAccept(selectedTargetIndex -> {
+                            RulesSource sourceRulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - selectedSourceIndex - 1);
+                            RulesSource targetRulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - selectedTargetIndex - 1);
+
+                            List<Rule> sourceRules = rulesService.loadRules(sourceRulesSource);
+                            List<Rule> targetRules = rulesService.loadRules(targetRulesSource);
+
+                            List<Rule> comparedRules = rulesComparisonService.compareRules(sourceRules, targetRules);
+
+                            viewModel.getVisibleRules().setValue(comparedRules);
+                            viewModel.getSelectedRuleTitle().setValue(null);
+
+                            pushHistoryItem(null);
+
+                            logEvent(Events.COMPARE_RULES);
+                        });
+                });
+
+            return true;
+        });
+
         menu.findItem(R.id.changeRules).setOnMenuItemClickListener(view -> {
             List<String> formattedRulesSources = rulesService.getRulesSources().stream()
                 .map(rulesSource -> rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
@@ -418,17 +465,14 @@ public class MainActivity extends AppCompatActivity {
 
             Collections.reverse(formattedRulesSources);
 
-            new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_select_rules)
-                .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {})
-                .setItems(formattedRulesSources.toArray(new String[0]), (dialog, which) -> {
-                    RulesSource rulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - which - 1);
+            showPicker(R.string.dialog_select_rules, formattedRulesSources)
+                .thenAccept(selectedIndex -> {
+                    RulesSource rulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - selectedIndex - 1);
 
                     useRules(rulesSource);
 
                     logEvent(Events.CHANGE_RULES);
-                })
-                .show();
+                });
 
             return true;
         });
@@ -440,6 +484,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private CompletableFuture<Integer> showPicker(int titleId, List<String> pickElement) {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
+
+        new AlertDialog.Builder(this)
+            .setTitle(titleId)
+            .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {})
+            .setItems(pickElement.toArray(new String[0]), (dialog, which) -> {
+                future.complete(which);
+            })
+            .show();
+
+        return future;
     }
 
     @Override
