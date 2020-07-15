@@ -1,5 +1,6 @@
 package com.ivancea.MTGRules;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -65,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
         ((MtgRulesApplication) getApplicationContext()).appComponent.inject(this);
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setLogo(R.drawable.ic_launcher_foreground);
-        getSupportActionBar().setTitle(R.string.app_name);
-
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.main_activity);
@@ -78,6 +76,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setLogo(R.drawable.ic_launcher_foreground);
+            actionBar.setTitle(R.string.app_name);
+            viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
+        }
 
         if (viewModel.getCurrentRules().getValue().isEmpty()) {
             RulesSource rulesSource = rulesService.getLatestRulesSource();
@@ -190,19 +195,19 @@ public class MainActivity extends AppCompatActivity {
             case Actions.ACTION_RANDOM_RULE: {
                 List<Rule> rules = viewModel.getCurrentRules().getValue();
 
-                int ruleCount = (int) rules.stream()
+                List<Rule> allRules = rules.stream()
                     .flatMap(this::flattenRule)
-                    .count();
+                    .filter(r -> r.getSubRules().isEmpty())
+                    .collect(Collectors.toList());
 
                 Random random = new Random();
 
                 int seed = intent.getIntExtra(Actions.DATA, random.nextInt(Integer.MAX_VALUE));
                 random.setSeed(seed);
 
-                int rulesToSkip = random.nextInt(ruleCount);
+                int rulesToSkip = random.nextInt(allRules.size());
 
-                rules.stream()
-                    .flatMap(this::flattenRule)
+                allRules.stream()
                     .skip(rulesToSkip)
                     .findFirst()
                     .ifPresent(rule -> {
@@ -385,7 +390,8 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getSelectedRuleTitle().setValue(null);
         viewModel.getHistory().setValue(Collections.singletonList(new HistoryItem(HistoryItem.Type.Rule, "")));
 
-        getSupportActionBar().setSubtitle(getString(R.string.action_bar_rules) + ": " + rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+        viewModel.getActionbarSubtitle()
+            .setValue(getString(R.string.action_bar_rules) + ": " + rulesSource.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
     }
 
     @Override

@@ -22,4 +22,7 @@ public class MainViewModel extends ViewModel {
 
     @NonNull
     private final MutableLiveData<List<HistoryItem>> history = new MutableLiveData<>(Collections.emptyList());
+
+    @NonNull
+    private final MutableLiveData<String> actionbarSubtitle = new MutableLiveData<>(null);
 }
