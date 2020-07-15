@@ -30,7 +30,7 @@ public class RulesServiceTest {
         for (RulesSource rulesSource : rulesService.getRulesSources()) {
             List<Rule> rules = rulesService.loadRules(rulesSource);
 
-            assertNotNull("Load rules " + rulesSource.getFileName(), rules);
+            assertNotNull("Load rules " + rulesSource.getDate(), rules);
         }
     }
 }
