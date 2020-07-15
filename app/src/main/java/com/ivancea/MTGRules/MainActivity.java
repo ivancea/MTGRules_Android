@@ -121,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
                 String searchString = intent.getStringExtra(SearchManager.QUERY);
                 searchRules(searchString);
 
+                if (addToHistory) {
                 pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, searchString));
+                }
 
                 logEvent(Events.SEARCH_RULES);
                 break;
