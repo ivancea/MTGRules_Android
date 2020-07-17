@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
         newHistory.remove(newHistory.size() - 1);
 
-        while (!newHistory.isEmpty() && newHistory.get(newHistory.size() - 1) == null) {
+        while (!newHistory.isEmpty() && newHistory.get(newHistory.size() - 1).getType().equals(HistoryItem.Type.Ignored)) {
             newHistory.remove(newHistory.size() - 1);
         }
 
@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
                             viewModel.getVisibleRules().setValue(comparedRules);
                             viewModel.getSelectedRuleTitle().setValue(null);
 
-                            pushHistoryItem(null);
+                            pushHistoryItem(new HistoryItem(HistoryItem.Type.Ignored, null));
 
                             logEvent(Events.COMPARE_RULES);
                         });

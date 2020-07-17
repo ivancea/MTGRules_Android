@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class HistoryItem {
 	public enum Type {
+		Ignored,
 		Rule,
 		Search,
 		Random
