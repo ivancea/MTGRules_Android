@@ -1,32 +1,22 @@
 package com.ivancea.MTGRules;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.Menu;
+import android.widget.CursorAdapter;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.inject.Inject;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ivancea.MTGRules.constants.Actions;
@@ -42,6 +32,19 @@ import com.ivancea.MTGRules.ui.main.MainFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -402,6 +405,60 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        String [] columnNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
+        int [] viewIds = { android.R.id.text1 };
+        CursorAdapter adapter = new SimpleCursorAdapter(this,android.R.layout.simple_list_item_1, null, columnNames, viewIds);
+        searchView.setSuggestionsAdapter(adapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String[] columns = new String[]{"_id", SearchManager.SUGGEST_COLUMN_TEXT_1};
+
+                MatrixCursor cursor = new MatrixCursor(columns);
+
+                String newTextUpperCase = newText.toUpperCase();
+
+                viewModel.getCurrentRules().getValue().stream()
+                    .filter(r -> r.getTitle().equals("Glossary"))
+                    .flatMap(r -> r.getSubRules().stream())
+                    .map(Rule::getTitle)
+                    .filter(r -> r.toUpperCase().contains(newTextUpperCase))
+                    .forEach(r -> cursor.newRow().add(r.hashCode()).add(r));
+
+                adapter.changeCursor(cursor);
+                adapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                adapter.getCursor().moveToPosition(position);
+                String title = adapter.getCursor().getString(1);
+
+                searchView.clearFocus();
+
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                intent.setAction(Actions.ACTION_NAVIGATE_RULE);
+                intent.putExtra(Actions.DATA, title);
+                startActivity(intent);
+
+                return true;
+            }
+        });
 
         menu.findItem(R.id.home).setOnMenuItemClickListener(view -> {
             Intent intent = new Intent(this, MainActivity.class);
