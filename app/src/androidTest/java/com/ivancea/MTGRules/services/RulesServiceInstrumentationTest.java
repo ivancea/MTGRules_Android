@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class RulesServiceTest {
+public class RulesServiceInstrumentationTest {
     @Test
     public void loadRules() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();

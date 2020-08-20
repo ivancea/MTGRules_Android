@@ -188,7 +188,7 @@ public class RulesService {
 
                 new RulesSource(
                     new URI("https://media.wizards.com/2020/downloads/MagicCompRules%2020200807.txt"),
-                    LocalDate.of(2020, 7, 3),
+                    LocalDate.of(2020, 8, 7),
                     StandardCharsets.UTF_8
                 )
             );

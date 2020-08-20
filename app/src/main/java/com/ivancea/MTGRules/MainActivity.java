@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
