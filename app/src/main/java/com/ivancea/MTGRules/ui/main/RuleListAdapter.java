@@ -50,12 +50,14 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     @Getter
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView ruleTitle;
+        private TextView ruleSubtitle;
         private TextView ruleText;
 
         public ViewHolder(View view) {
             super(view);
 
             this.ruleTitle = view.findViewById(R.id.ruleTitle);
+            this.ruleSubtitle = view.findViewById(R.id.ruleSubtitle);
             this.ruleText = view.findViewById(R.id.ruleText);
             this.ruleText.setMovementMethod(LinkMovementMethod.getInstance());
         }
@@ -72,8 +74,18 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Rule rule = rules.get(position);
+
         holder.getRuleTitle().setText(rule.getTitle());
-        holder.getRuleText().setText(makeRulesTextSpannable(rule.getText()));
+
+        if (rule.getSubRules().isEmpty()) {
+            holder.getRuleSubtitle().setText("");
+            holder.getRuleText().setText(makeRulesTextSpannable(rule.getText()));
+            holder.getRuleText().setVisibility(View.VISIBLE);
+        } else {
+            holder.getRuleSubtitle().setText(rule.getText());
+            holder.getRuleText().setText("");
+            holder.getRuleText().setVisibility(View.GONE);
+        }
 
         View.OnClickListener onClickListener = v -> {
             Intent intent = new Intent(context, MainActivity.class);
