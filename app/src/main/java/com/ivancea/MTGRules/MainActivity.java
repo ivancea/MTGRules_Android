@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 if (title.isEmpty()) {
                     viewModel.getVisibleRules().setValue(viewModel.getCurrentRules().getValue());
                     viewModel.getSelectedRuleTitle().setValue(null);
+                    viewModel.getSearchText().setValue(null);
 
                     if (addToHistory) {
                         pushHistoryItem(new HistoryItem(HistoryItem.Type.Rule, title));
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     viewModel.getSelectedRuleTitle().setValue(title);
+                    viewModel.getSearchText().setValue(null);
                 }
 
                 break;
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                     .ifPresent(rule -> {
                         viewModel.getVisibleRules().setValue(findRule(rule.getTitle()));
                         viewModel.getSelectedRuleTitle().setValue(null);
+                        viewModel.getSearchText().setValue(null);
 
                         if (addToHistory) {
                             pushHistoryItem(new HistoryItem(HistoryItem.Type.Random, seed));
@@ -317,12 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel.getVisibleRules().setValue(filteredRules);
         viewModel.getSelectedRuleTitle().setValue(null);
-
-        /*if (addToHistory)
-        {
-            PushHistoryItem(new HistoryItem(HistoryType.Search, text));
-        }
-        LogEvent(EventType.SearchText);*/
+        viewModel.getSearchText().setValue(searchText);
     }
 
     private List<Rule> findRule(String title) {
@@ -390,6 +388,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getCurrentRules().setValue(rules);
         viewModel.getVisibleRules().setValue(rules);
         viewModel.getSelectedRuleTitle().setValue(null);
+        viewModel.getSearchText().setValue(null);
         viewModel.getHistory().setValue(Collections.singletonList(new HistoryItem(HistoryItem.Type.Rule, "")));
 
         viewModel.getActionbarSubtitle()
@@ -510,6 +509,7 @@ public class MainActivity extends AppCompatActivity {
 
                             viewModel.getVisibleRules().setValue(comparedRules);
                             viewModel.getSelectedRuleTitle().setValue(null);
+                            viewModel.getSearchText().setValue(null);
 
                             pushHistoryItem(new HistoryItem(HistoryItem.Type.Ignored, null));
 

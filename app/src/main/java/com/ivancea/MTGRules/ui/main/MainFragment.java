@@ -75,6 +75,10 @@ public class MainFragment extends Fragment {
             recyclerViewAdapter.setRules(rules);
         });
 
+        viewModel.getSearchText().observe(getViewLifecycleOwner(), searchText -> {
+            recyclerViewAdapter.setSearchText(searchText);
+        });
+
         viewModel.getSelectedRuleTitle().observe(getViewLifecycleOwner(), ruleTitle -> {
             recyclerViewAdapter.setSelectedRuleTitle(ruleTitle);
 

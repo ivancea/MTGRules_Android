@@ -11,6 +11,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
@@ -40,6 +42,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
     private List<Rule> rules = Collections.emptyList();
     private String selectedRuleTitle = null;
+    private Pattern searchTextPattern = null;
 
     private final Context context;
 
@@ -75,11 +78,11 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Rule rule = rules.get(position);
 
-        holder.getRuleTitle().setText(rule.getTitle());
+        holder.getRuleTitle().setText(makeRuleTitleSpannable(rule.getTitle()));
 
         if (rule.getSubRules().isEmpty()) {
             holder.getRuleSubtitle().setText("");
-            holder.getRuleText().setText(makeRulesTextSpannable(rule.getText()));
+            holder.getRuleText().setText(makeRuleTextSpannable(rule.getText()));
             holder.getRuleText().setVisibility(View.VISIBLE);
         } else {
             holder.getRuleSubtitle().setText(rule.getText());
@@ -120,10 +123,26 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         holder.itemView.setSelected(rule.getTitle().equals(selectedRuleTitle));
     }
 
-    private Spannable makeRulesTextSpannable(String rulesText) {
-        Spannable spannable = new SpannableString(rulesText);
+    private Spannable makeRuleTitleSpannable(String ruleTTile) {
+        Spannable spannable = new SpannableString(ruleTTile);
 
-        Matcher linkMatcher = RULE_LINK_PATTERN.matcher(rulesText);
+        highlightSearchText(spannable, ruleTTile);
+
+        return spannable;
+    }
+
+    private Spannable makeRuleTextSpannable(String ruleText) {
+        Spannable spannable = new SpannableString(ruleText);
+
+        makeLinks(spannable, ruleText);
+        makeExample(spannable, ruleText);
+        highlightSearchText(spannable, ruleText);
+
+        return spannable;
+    }
+
+    private void makeLinks(Spannable spannable, String ruleText) {
+        Matcher linkMatcher = RULE_LINK_PATTERN.matcher(ruleText);
 
         while (linkMatcher.find()) {
             String title = normalizeTitle(
@@ -147,19 +166,36 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             );
         }
+    }
 
-        Matcher exampleMatcher = EXAMPLE_PATTERN.matcher(rulesText);
+    private void makeExample(Spannable spannable, String ruleText) {
+        Matcher exampleMatcher = EXAMPLE_PATTERN.matcher(ruleText);
 
         if (exampleMatcher.find()) {
             spannable.setSpan(
                 new StyleSpan(Typeface.ITALIC),
                 exampleMatcher.start(),
-                rulesText.length(),
+                ruleText.length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             );
         }
+    }
 
-        return spannable;
+    private void highlightSearchText(Spannable spannable, String ruleText) {
+        if (searchTextPattern == null) {
+            return;
+        }
+
+        Matcher searchTextMatcher = searchTextPattern.matcher(ruleText);
+
+        while (searchTextMatcher.find()) {
+            spannable.setSpan(
+                new BackgroundColorSpan(ColorUtils.setAlphaComponent(Color.YELLOW, 100)),
+                searchTextMatcher.start(),
+                searchTextMatcher.end(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            );
+        }
     }
 
     private String normalizeTitle(String ruleNumber, String subRuleNumber, String subRuleLetter) {
@@ -181,6 +217,14 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
     public void setRules(@NonNull List<Rule> rules) {
         this.rules = rules;
+
+        notifyDataSetChanged();
+    }
+
+    public void setSearchText(@Nullable String searchText) {
+        this.searchTextPattern = searchText == null
+            ? null
+            : Pattern.compile(Pattern.quote(searchText), Pattern.CASE_INSENSITIVE);
 
         notifyDataSetChanged();
     }
