@@ -37,6 +37,7 @@ import com.ivancea.MTGRules.model.Rule;
 
 public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHolder> {
 
+    private static final Pattern IS_PARENT_RULE_PATTERN = Pattern.compile("^(\\d{1,3}\\.|Glossary)$");
     private static final Pattern RULE_LINK_PATTERN = Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b");
     private static final Pattern EXAMPLE_PATTERN = Pattern.compile("^Example:", Pattern.MULTILINE);
 
@@ -80,14 +81,14 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
         holder.getRuleTitle().setText(makeRuleTitleSpannable(rule.getTitle()));
 
-        if (rule.getSubRules().isEmpty()) {
-            holder.getRuleSubtitle().setText("");
-            holder.getRuleText().setText(makeRuleTextSpannable(rule.getText()));
-            holder.getRuleText().setVisibility(View.VISIBLE);
-        } else {
+        if (IS_PARENT_RULE_PATTERN.matcher(rule.getTitle()).matches()) {
             holder.getRuleSubtitle().setText(rule.getText());
             holder.getRuleText().setText("");
             holder.getRuleText().setVisibility(View.GONE);
+        } else {
+            holder.getRuleSubtitle().setText("");
+            holder.getRuleText().setText(makeRuleTextSpannable(rule.getText()));
+            holder.getRuleText().setVisibility(View.VISIBLE);
         }
 
         View.OnClickListener onClickListener = v -> {
