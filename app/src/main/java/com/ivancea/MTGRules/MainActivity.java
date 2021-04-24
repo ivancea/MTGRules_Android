@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
             case Actions.ACTION_READ: {
                 if (ttsOk == null) {
-                    Toast.makeText(this, R.string.toast_tts_not_ready, Toast.LENGTH_SHORT);
+                    Toast.makeText(this, R.string.toast_tts_not_ready, Toast.LENGTH_SHORT).show();
                 } else if (!ttsOk) {
-                    Toast.makeText(this, R.string.toast_tts_not_working, Toast.LENGTH_SHORT);
+                    Toast.makeText(this, R.string.toast_tts_not_working, Toast.LENGTH_SHORT).show();
                 } else {
                     tts.speak(intent.getStringExtra(Actions.DATA), TextToSpeech.QUEUE_FLUSH, null, "rules");
                     logEvent(Events.READ_RULE);
@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
             Collections.reverse(formattedRulesSources);
 
             showPicker(R.string.dialog_select_source_rules, formattedRulesSources)
-                .thenAccept(selectedSourceIndex -> {
+                .thenAccept(selectedSourceIndex ->
                     showPicker(R.string.dialog_select_target_rules, formattedRulesSources)
                         .thenAccept(selectedTargetIndex -> {
                             RulesSource sourceRulesSource = rulesService.getRulesSources().get(rulesService.getRulesSources().size() - selectedSourceIndex - 1);
@@ -514,8 +514,8 @@ public class MainActivity extends AppCompatActivity {
                             pushHistoryItem(new HistoryItem(HistoryItem.Type.Ignored, null));
 
                             logEvent(Events.COMPARE_RULES);
-                        });
-                });
+                        })
+                );
 
             return true;
         });
@@ -554,9 +554,9 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
             .setTitle(titleId)
             .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {})
-            .setItems(pickElement.toArray(new String[0]), (dialog, which) -> {
-                future.complete(which);
-            })
+            .setItems(pickElement.toArray(new String[0]), (dialog, which) ->
+                future.complete(which)
+            )
             .show();
 
         return future;
