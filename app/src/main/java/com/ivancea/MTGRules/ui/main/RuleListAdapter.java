@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.speech.tts.TextToSpeech;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,16 +23,17 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ivancea.MTGRules.MainActivity;
+import com.ivancea.MTGRules.R;
+import com.ivancea.MTGRules.constants.Actions;
+import com.ivancea.MTGRules.model.Rule;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
-import com.ivancea.MTGRules.constants.Actions;
-import com.ivancea.MTGRules.MainActivity;
-import com.ivancea.MTGRules.R;
-import com.ivancea.MTGRules.model.Rule;
 
 public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHolder> {
 
@@ -53,9 +53,9 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
     @Getter
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView ruleTitle;
-        private TextView ruleSubtitle;
-        private TextView ruleText;
+        private final TextView ruleTitle;
+        private final TextView ruleSubtitle;
+        private final TextView ruleText;
 
         public ViewHolder(View view) {
             super(view);
