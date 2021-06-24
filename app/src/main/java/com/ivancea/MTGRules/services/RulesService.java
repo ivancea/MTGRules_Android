@@ -2,6 +2,9 @@ package com.ivancea.MTGRules.services;
 
 import android.content.Context;
 
+import com.ivancea.MTGRules.model.Rule;
+import com.ivancea.MTGRules.model.RulesSource;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -19,8 +22,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import com.ivancea.MTGRules.model.Rule;
-import com.ivancea.MTGRules.model.RulesSource;
 
 public class RulesService {
     private final Context context;
@@ -219,6 +220,12 @@ public class RulesService {
                 new RulesSource(
                     new URI("https://media.wizards.com/2021/downloads/MagicCompRules%2020210419.txt"),
                     LocalDate.of(2021, 4, 19),
+                    StandardCharsets.UTF_8
+                ),
+
+                new RulesSource(
+                    new URI("https://media.wizards.com/2021/downloads/MagicCompRules%2020210609.txt"),
+                    LocalDate.of(2021, 6, 9),
                     StandardCharsets.UTF_8
                 )
             );

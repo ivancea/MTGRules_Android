@@ -127,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleIntent(Intent intent) {
+        if (intent == null || intent.getAction() == null) {
+            return;
+        }
+
         boolean addToHistory = !intent.getBooleanExtra(Actions.BACK, false);
 
         switch (intent.getAction()) {

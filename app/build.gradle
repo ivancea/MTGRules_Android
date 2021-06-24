@@ -11,7 +11,7 @@ android {
         applicationId "com.ivancea.MTGRules"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 28
+        versionCode 29
         versionName "2.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,14 +37,14 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.1.0'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-perf:20.0.0'
+    implementation 'com.google.firebase:firebase-perf:20.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.dagger:dagger:2.33'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.33'
     compileOnly 'org.projectlombok:lombok:1.18.18'
