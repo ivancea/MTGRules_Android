@@ -227,6 +227,12 @@ public class RulesService {
                     new URI("https://media.wizards.com/2021/downloads/MagicCompRules%2020210609.txt"),
                     LocalDate.of(2021, 6, 9),
                     StandardCharsets.UTF_8
+                ),
+
+                new RulesSource(
+                    new URI("https://media.wizards.com/2021/downloads/MagicCompRules%2020210712.txt"),
+                    LocalDate.of(2021, 7, 12),
+                    StandardCharsets.UTF_8
                 )
             );
         } catch (URISyntaxException e) {
