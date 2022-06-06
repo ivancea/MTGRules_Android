@@ -251,6 +251,18 @@ public class RulesService {
                     new URI("https://media.wizards.com/2022/downloads/MagicCompRules%2020220218.txt"),
                     LocalDate.of(2022, 2, 18),
                     StandardCharsets.UTF_8
+                ),
+
+                new RulesSource(
+                    new URI("https://media.wizards.com/2022/downloads/MagicCompRules%2020220429.txt"),
+                    LocalDate.of(2022, 4, 29),
+                    StandardCharsets.UTF_8
+                ),
+
+                new RulesSource(
+                    new URI("https://media.wizards.com/2022/downloads/MagicCompRules%2020220610.txt"),
+                    LocalDate.of(2022, 6, 10),
+                    StandardCharsets.UTF_8
                 )
             );
         } catch (URISyntaxException e) {
@@ -379,7 +391,8 @@ public class RulesService {
             .replace('”', '"')
             .replace('’', '\'')
             .replace('—', '-')
-            .replace('–', '-');
+            .replace('–', '-')
+            .replaceAll("^ $", "");
     }
 
     private <T> T last(List<T> list) {
