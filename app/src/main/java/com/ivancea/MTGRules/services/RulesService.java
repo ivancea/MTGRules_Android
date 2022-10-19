@@ -272,9 +272,15 @@ public class RulesService {
                 ),
 
                 new RulesSource(
-                    new URI("https://media.wizards.com/2022/downloads/MagicCompRules%2020220908.txt,"),
+                    new URI("https://media.wizards.com/2022/downloads/MagicCompRules%2020220908.txt"),
                     LocalDate.of(2022, 9, 8),
                     StandardCharsets.UTF_8
+                ),
+
+                new RulesSource(
+                    new URI("https://media.wizards.com/2022/downloads/Comprehensive%20Rules%2020221007.txt"),
+                    LocalDate.of(2022, 10, 7),
+                    Charset.forName("windows-1252")
                 )
             );
         } catch (URISyntaxException e) {
