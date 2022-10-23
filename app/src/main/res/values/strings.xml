@@ -24,4 +24,7 @@
     <string name="dialog_select_source_rules">Select source rules</string>
     <string name="dialog_select_target_rules">Select target rules</string>
     <string name="compare_changed_to">CHANGED TO</string>
+    <string name="notification_channel_new_rules_name">New rules available</string>
+    <string name="notification_channel_new_rules_description">Sent when a new rules set is available. Usually happening when the app is updated</string>
+    <string name="notification_channel_new_rules_body">Rules: %1$s</string>
 </resources>

@@ -23,4 +23,7 @@
     <string name="dialog_select_source_rules">Seleccionar reglas origen</string>
     <string name="dialog_select_target_rules">Seleccionar reglas destino</string>
     <string name="compare_changed_to">CAMBIA A</string>
+    <string name="notification_channel_new_rules_name">Nuevas reglas disponibles</string>
+    <string name="notification_channel_new_rules_description">Enviado cuando hay nuevas reglas disponibles. Ocurre usualmente cuando la app se actualiza</string>
+    <string name="notification_channel_new_rules_body">Reglas: %1$s</string>
 </resources>

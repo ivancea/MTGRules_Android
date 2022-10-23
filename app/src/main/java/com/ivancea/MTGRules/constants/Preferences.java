@@ -3,5 +3,8 @@ package com.ivancea.MTGRules.constants;
 public final class Preferences {
 	private Preferences(){}
 
+	public static final String PREFERENCES_NAME = "com.ivancea.MTGRules";
+
 	public static final String USE_LIGHT_THEME = "com.ivancea.USE_LIGHT_THEME";
+	public static final String LAST_RULE_SOURCE = "com.ivancea.LAST_RULE_SOURCE";
 }
