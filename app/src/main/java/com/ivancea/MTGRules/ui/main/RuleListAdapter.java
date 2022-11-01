@@ -3,7 +3,6 @@ package com.ivancea.MTGRules.ui.main;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -23,9 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ivancea.MTGRules.MainActivity;
 import com.ivancea.MTGRules.R;
-import com.ivancea.MTGRules.constants.Actions;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.utils.IntentSender;
 
@@ -93,12 +90,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         }
 
         View.OnClickListener onClickListener = v -> {
-            Intent intent = new Intent(context, MainActivity.class);
-
-            intent.setAction(Actions.ACTION_NAVIGATE_RULE);
-            intent.putExtra(Actions.DATA, rule.getTitle());
-
-            context.startActivity(intent);
+            IntentSender.openRule(context, rule.getTitle());
         };
 
         holder.itemView.setOnClickListener(onClickListener);
@@ -152,11 +144,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 new ClickableSpan() {
                     @Override
                     public void onClick(@NonNull View widget) {
-                        Intent intent = new Intent(context, MainActivity.class);
-                        intent.setAction(Actions.ACTION_NAVIGATE_RULE);
-                        intent.putExtra(Actions.DATA, title);
-
-                        context.startActivity(intent);
+                        IntentSender.openRule(context, title);
                     }
                 },
                 linkMatcher.start(),

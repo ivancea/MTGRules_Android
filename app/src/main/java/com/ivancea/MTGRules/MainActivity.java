@@ -29,6 +29,7 @@ import com.ivancea.MTGRules.services.StorageService;
 import com.ivancea.MTGRules.ui.main.AboutFragment;
 import com.ivancea.MTGRules.ui.main.MainFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
+import com.ivancea.MTGRules.utils.IntentSender;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -455,27 +456,19 @@ public class MainActivity extends AppCompatActivity {
 
 				searchView.clearFocus();
 
-				Intent intent = new Intent(MainActivity.this, MainActivity.class);
-				intent.setAction(Actions.ACTION_NAVIGATE_RULE);
-				intent.putExtra(Actions.DATA, title);
-				startActivity(intent);
+				IntentSender.openRule(MainActivity.this, title);
 
 				return true;
 			}
 		});
 
 		menu.findItem(R.id.home).setOnMenuItemClickListener(view -> {
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.setAction(Actions.ACTION_NAVIGATE_RULE);
-			intent.putExtra(Actions.DATA, "");
-			startActivity(intent);
+			IntentSender.openRule(this, "");
 			return true;
 		});
 
 		menu.findItem(R.id.randomRule).setOnMenuItemClickListener(view -> {
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.setAction(Actions.ACTION_RANDOM_RULE);
-			startActivity(intent);
+			IntentSender.openRandomRule(this);
 
 			return true;
 		});
@@ -486,9 +479,7 @@ public class MainActivity extends AppCompatActivity {
 				.setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {
 				})
 				.setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
-					Intent intent = new Intent(this, MainActivity.class);
-					intent.setAction(Actions.ACTION_CHANGE_THEME);
-					startActivity(intent);
+					IntentSender.changeTheme(this);
 				})
 				.show();
 

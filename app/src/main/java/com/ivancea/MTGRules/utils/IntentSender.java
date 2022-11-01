@@ -17,4 +17,29 @@ public class IntentSender {
 
 		context.startActivity(intent);
 	}
+
+	/**
+	 * @param ruleTitle The title of the rule, or "" to go home
+	 */
+	public static void openRule(Context context, String ruleTitle) {
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setAction(Actions.ACTION_NAVIGATE_RULE);
+		intent.putExtra(Actions.DATA, ruleTitle);
+
+		context.startActivity(intent);
+	}
+
+	public static void openRandomRule(Context context) {
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setAction(Actions.ACTION_RANDOM_RULE);
+
+		context.startActivity(intent);
+	}
+
+	public static void changeTheme(Context context) {
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setAction(Actions.ACTION_CHANGE_THEME);
+
+		context.startActivity(intent);
+	}
 }
