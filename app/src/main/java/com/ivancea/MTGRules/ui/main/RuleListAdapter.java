@@ -10,7 +10,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ivancea.MTGRules.R;
 import com.ivancea.MTGRules.model.Rule;
+import com.ivancea.MTGRules.ui.spans.RuleClickableSpan;
 import com.ivancea.MTGRules.utils.IntentSender;
 
 import java.util.Collections;
@@ -152,12 +152,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 linkMatcher.group("letter")
             );
             spannable.setSpan(
-                new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View widget) {
-                        IntentSender.openRule(context, title);
-                    }
-                },
+                new RuleClickableSpan(title),
                 linkMatcher.start(),
                 linkMatcher.end(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -183,12 +178,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
             while (matcher.find()) {
                 spannable.setSpan(
-                    new ClickableSpan() {
-                        @Override
-                        public void onClick(@NonNull View widget) {
-                            IntentSender.openRule(context, glosssaryTerm);
-                        }
-                    },
+                    new RuleClickableSpan(glosssaryTerm),
                     matcher.start(),
                     matcher.end(),
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
