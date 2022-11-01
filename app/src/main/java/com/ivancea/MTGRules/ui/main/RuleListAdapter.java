@@ -20,6 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ivancea.MTGRules.R;
@@ -27,9 +29,11 @@ import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.utils.IntentSender;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -44,9 +48,11 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     private Pattern searchTextPattern = null;
 
     private final Context context;
+    private final MainViewModel viewModel;
 
-    public RuleListAdapter(Context context) {
-        this.context = context;
+    public RuleListAdapter(FragmentActivity activity) {
+        this.context = activity;
+        this.viewModel = new ViewModelProvider(activity).get(MainViewModel.class);
     }
 
     @Getter
@@ -132,6 +138,11 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     }
 
     private void makeLinks(Spannable spannable, String ruleText) {
+        makeRuleTitleLinks(spannable, ruleText);
+        makeGlossaryLinks(spannable, ruleText);
+    }
+
+    private void makeRuleTitleLinks(Spannable spannable, String ruleText) {
         Matcher linkMatcher = RULE_LINK_PATTERN.matcher(ruleText);
 
         while (linkMatcher.find()) {
@@ -152,6 +163,50 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             );
         }
+    }
+
+    private void makeGlossaryLinks(Spannable spannable, String ruleText) {
+        List<Rule> rules = viewModel.getCurrentRules().getValue();
+
+        Rule glosssaryRule = rules.get(rules.size() - 1);
+
+        List<String> glosssaryTerms = glosssaryRule.getSubRules().stream()
+            .map(Rule::getTitle)
+            .sorted(Comparator.comparingInt(String::length).reversed())
+            .collect(Collectors.toList());
+
+        for (String glosssaryTerm : glosssaryTerms) {
+            Matcher matcher = Pattern.compile(
+                "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(glosssaryTerm)) + "\\b", Pattern.CASE_INSENSITIVE
+            )
+                .matcher(ruleText);
+
+            while (matcher.find()) {
+                spannable.setSpan(
+                    new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View widget) {
+                            IntentSender.openRule(context, glosssaryTerm);
+                        }
+                    },
+                    matcher.start(),
+                    matcher.end(),
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                );
+            }
+        }
+    }
+
+    /**
+     * Takes a regex, and returns another regex that also accepts plurals.
+     * <br/>
+     * Note: This method should be replaced with a proper pluralization library, or should use translations.
+     *
+     * @param glossaryRegex The glossary regex to pluralize
+     * @return A regex accepting plurals
+     */
+    private String makePluralAcceptingGlossaryRegex(String glossaryRegex) {
+        return glossaryRegex + "(?:s|es)?";
     }
 
     private void makeExample(Spannable spannable, String ruleText) {
