@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ivancea.MTGRules.MtgRulesApplication;
 import com.ivancea.MTGRules.services.NotificationsService;
 import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.services.StorageService;
@@ -13,6 +12,9 @@ import java.time.LocalDate;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MyPackageReplacedReceiver extends BroadcastReceiver {
 	@Inject
 	StorageService storageService;
@@ -25,8 +27,6 @@ public class MyPackageReplacedReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		((MtgRulesApplication) context.getApplicationContext()).appComponent.inject(this);
-
 		if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
 			LocalDate currentRulesSource = rulesService.getLatestRulesSource().getDate();
 			LocalDate lastSavedRulesSource = storageService.getLastRulesSource();

@@ -12,12 +12,14 @@ import java.time.format.DateTimeParseException;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.qualifiers.ApplicationContext;
+
 public class StorageService {
 
 	private final SharedPreferences preferences;
 
 	@Inject
-	public StorageService(Context context) {
+	public StorageService(@ApplicationContext Context context) {
 		this.preferences = context.getSharedPreferences(
 			Preferences.PREFERENCES_NAME,
 			Context.MODE_PRIVATE

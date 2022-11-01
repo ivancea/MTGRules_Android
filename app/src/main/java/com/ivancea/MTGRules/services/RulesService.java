@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import lombok.Getter;
 
 public class RulesService {
@@ -30,7 +31,7 @@ public class RulesService {
     private final List<RulesSource> rulesSources;
 
     @Inject
-    public RulesService(Context context) {
+    public RulesService(@ApplicationContext Context context) {
         this.context = context;
 
         List<RulesSource> rulesSources = Collections.emptyList();

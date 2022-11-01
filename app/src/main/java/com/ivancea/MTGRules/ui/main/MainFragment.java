@@ -1,6 +1,5 @@
 package com.ivancea.MTGRules.ui.main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +13,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ivancea.MTGRules.MtgRulesApplication;
 import com.ivancea.MTGRules.R;
 import com.ivancea.MTGRules.model.Rule;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainFragment extends Fragment {
 
     private MainViewModel viewModel;
@@ -30,12 +31,6 @@ public class MainFragment extends Fragment {
     private RuleListAdapter recyclerViewAdapter;
 
     private LinearLayoutManager layoutManager;
-
-    @Override
-    public void onAttach(Context context) {
-        ((MtgRulesApplication) getActivity().getApplication()).appComponent.inject(this);
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override

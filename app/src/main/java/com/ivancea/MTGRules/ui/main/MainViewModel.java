@@ -3,14 +3,15 @@ package com.ivancea.MTGRules.ui.main;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ivancea.MTGRules.model.HistoryItem;
+import com.ivancea.MTGRules.model.Rule;
+
 import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.NonNull;
 
-import com.ivancea.MTGRules.model.HistoryItem;
-import com.ivancea.MTGRules.model.Rule;
 
 @Getter
 public class MainViewModel extends ViewModel {

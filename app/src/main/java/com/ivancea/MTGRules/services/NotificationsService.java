@@ -17,6 +17,8 @@ import java.time.format.FormatStyle;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.qualifiers.ApplicationContext;
+
 public class NotificationsService {
 
 	private final Context context;
@@ -24,7 +26,7 @@ public class NotificationsService {
 	private final NotificationManager notificationManager;
 
 	@Inject
-	public NotificationsService(Context context) {
+	public NotificationsService(@ApplicationContext Context context) {
 		this.context = context;
 		this.notificationManager = context.getSystemService(NotificationManager.class);
 

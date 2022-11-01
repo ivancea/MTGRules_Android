@@ -46,6 +46,9 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
 	@Inject
@@ -66,15 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		((MtgRulesApplication) getApplicationContext()).appComponent.inject(this);
-
-		boolean useLightTheme = storageService.getUseLightTheme();
-		setTheme(useLightTheme);
-
 		super.onCreate(savedInstanceState);
 
-		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+		// Inflate layout and fragment
 		setContentView(R.layout.main_activity);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -82,21 +79,9 @@ public class MainActivity extends AppCompatActivity {
 				.commitNow();
 		}
 
+		// Set variables
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 		viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-		ActionBar actionBar = getSupportActionBar();
-		if (actionBar != null) {
-			actionBar.setLogo(R.drawable.ic_launcher_foreground);
-			actionBar.setTitle(R.string.app_name);
-			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
-		}
-
-		if (viewModel.getCurrentRules().getValue().isEmpty()) {
-			RulesSource rulesSource = rulesService.getLatestRulesSource();
-
-			useRules(rulesSource);
-		}
-
 		tts = new TextToSpeech(this, status -> {
 			if (status == TextToSpeech.SUCCESS) {
 				ttsOk = true;
@@ -105,6 +90,28 @@ public class MainActivity extends AppCompatActivity {
 				ttsOk = false;
 			}
 		});
+
+		// Inflate action bar
+		ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null) {
+			actionBar.setLogo(R.drawable.ic_launcher_foreground);
+			actionBar.setTitle(R.string.app_name);
+			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
+		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		boolean useLightTheme = storageService.getUseLightTheme();
+		setTheme(useLightTheme);
+
+		if (viewModel.getCurrentRules().getValue().isEmpty()) {
+			RulesSource rulesSource = rulesService.getLatestRulesSource();
+
+			useRules(rulesSource);
+		}
 
 		handleIntent(getIntent());
 	}

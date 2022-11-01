@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.qualifiers.ApplicationContext;
+
 public class RulesComparisonService {
     private static final Pattern rulePattern = Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letters>[a-z](?:-[a-z])?)?)?\\b", Pattern.CASE_INSENSITIVE);
 
@@ -19,7 +21,7 @@ public class RulesComparisonService {
     private final RulesService rulesService;
 
     @Inject
-    public RulesComparisonService(Context context, RulesService rulesService) {
+    public RulesComparisonService(@ApplicationContext Context context, RulesService rulesService) {
         this.context = context;
         this.rulesService = rulesService;
     }
