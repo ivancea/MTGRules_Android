@@ -58,6 +58,7 @@ public class NotificationsService {
 			.setContentTitle(title)
 			.setContentText(body)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			.setAutoCancel(true)
 			.setContentIntent(pendingIntent);
 
 		int notificationId = Notifications.NEW_RULES_NOTIFICATION_BASE_ID +
