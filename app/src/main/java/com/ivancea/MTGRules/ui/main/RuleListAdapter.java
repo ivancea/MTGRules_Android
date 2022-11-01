@@ -27,6 +27,7 @@ import com.ivancea.MTGRules.MainActivity;
 import com.ivancea.MTGRules.R;
 import com.ivancea.MTGRules.constants.Actions;
 import com.ivancea.MTGRules.model.Rule;
+import com.ivancea.MTGRules.utils.IntentSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -112,11 +113,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 return true;
             });
             menu.add(0, view.getId(), 0, R.string.context_read).setOnMenuItemClickListener(item -> {
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.setAction(Actions.ACTION_READ);
-                intent.putExtra(Actions.DATA, rule.getText());
-
-                context.startActivity(intent);
+                IntentSender.readText(context, rule.getText());
                 return true;
             });
         });

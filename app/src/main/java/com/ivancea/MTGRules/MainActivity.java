@@ -23,7 +23,6 @@ import com.ivancea.MTGRules.constants.Events;
 import com.ivancea.MTGRules.model.HistoryItem;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
-import com.ivancea.MTGRules.services.NotificationsService;
 import com.ivancea.MTGRules.services.RulesComparisonService;
 import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.services.StorageService;
@@ -33,7 +32,6 @@ import com.ivancea.MTGRules.ui.main.MainViewModel;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.main_activity);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, MainFragment.newInstance())
+				.replace(R.id.container, new MainFragment())
 				.commitNow();
 		}
 

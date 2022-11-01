@@ -33,10 +33,6 @@ public class MainFragment extends Fragment {
 
     private LinearLayoutManager layoutManager;
 
-    public static MainFragment newInstance() {
-        return new MainFragment();
-    }
-
     @Override
     public void onAttach(Context context) {
         ((MtgRulesApplication) getActivity().getApplication()).appComponent.inject(this);

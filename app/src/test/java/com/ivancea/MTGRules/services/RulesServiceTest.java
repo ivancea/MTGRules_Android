@@ -1,19 +1,25 @@
 package com.ivancea.MTGRules.services;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertEquals;
+import com.ivancea.MTGRules.model.RulesSource;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class RulesServiceTest {
 	@Test
 	public void notRepeatedRules() {
 		RulesService rulesService = new RulesService(null);
 
-		long totalDistinctRules = rulesService.getRulesSources().stream()
-			.map(r -> r.getDate())
+		List<RulesSource> rulesSources = rulesService.getRulesSources();
+
+		long totalDistinctRules = rulesSources.stream()
+			.map(RulesSource::getDate)
 			.distinct()
 			.count();
 
-		assertEquals("Repeated rules", rulesService.getRulesSources().size(), totalDistinctRules);
+		assertEquals(rulesSources.size(), totalDistinctRules, "Repeated rules");
 	}
 }
