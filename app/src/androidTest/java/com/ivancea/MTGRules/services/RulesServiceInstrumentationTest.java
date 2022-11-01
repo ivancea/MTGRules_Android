@@ -1,6 +1,8 @@
 package com.ivancea.MTGRules.services;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -78,7 +80,7 @@ public class RulesServiceInstrumentationTest {
 				if (lastRuleNumber != null) {
 					assertThat(
 						"Rule order",
-						ruleNumber, greaterThanOrEqualTo(lastRuleNumber)
+						ruleNumber, anyOf(equalTo(lastRuleNumber), equalTo(lastRuleNumber + 1))
 					);
 				}
 
