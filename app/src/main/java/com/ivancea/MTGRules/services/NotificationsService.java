@@ -2,12 +2,15 @@ package com.ivancea.MTGRules.services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import androidx.core.app.NotificationCompat;
 
+import com.ivancea.MTGRules.MainActivity;
 import com.ivancea.MTGRules.R;
 import com.ivancea.MTGRules.constants.Notifications;
 
@@ -40,13 +43,22 @@ public class NotificationsService {
 			lastRuleSource.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
 		);
 
+		Intent intent = new Intent(context, MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(
+			context,
+			0,
+			intent,
+			PendingIntent.FLAG_IMMUTABLE
+		);
+
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifications.NEW_RULES_CHANNEL_ID)
 			.setSmallIcon(R.drawable.ic_notification)
 			.setColor(Color.BLACK)
 			.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
 			.setContentTitle(title)
 			.setContentText(body)
-			.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			.setContentIntent(pendingIntent);
 
 		int notificationId = Notifications.NEW_RULES_NOTIFICATION_BASE_ID +
 			lastRuleSource.getYear() * 1_00_00 +
