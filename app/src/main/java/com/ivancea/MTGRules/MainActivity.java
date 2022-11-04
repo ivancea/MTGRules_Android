@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Set theme
+		boolean useLightTheme = storageService.getUseLightTheme();
+		setTheme(useLightTheme);
+
 		// Inflate layout and fragment
 		setContentView(R.layout.main_activity);
 
@@ -85,17 +89,13 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		// Inflate action bar
+		// Configure action bar
 		ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setLogo(R.drawable.ic_launcher_foreground);
 			actionBar.setTitle(R.string.app_name);
 			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
 		}
-
-		// Set theme
-		boolean useLightTheme = storageService.getUseLightTheme();
-		setTheme(useLightTheme);
 
 		// Fill view model with rules
 		if (viewModel.getCurrentRules().getValue().isEmpty()) {
