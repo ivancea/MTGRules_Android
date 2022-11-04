@@ -56,8 +56,8 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onStart() {
+        super.onStart();
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
         viewModel.getVisibleRules().observe(getViewLifecycleOwner(), rules -> {

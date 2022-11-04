@@ -27,7 +27,6 @@ import com.ivancea.MTGRules.services.RulesComparisonService;
 import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.services.StorageService;
 import com.ivancea.MTGRules.ui.main.AboutFragment;
-import com.ivancea.MTGRules.ui.main.MainFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
 import com.ivancea.MTGRules.utils.IntentSender;
 
@@ -73,11 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
 		// Inflate layout and fragment
 		setContentView(R.layout.main_activity);
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, new MainFragment())
-				.commitNow();
-		}
 
 		// Set variables
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -98,21 +92,19 @@ public class MainActivity extends AppCompatActivity {
 			actionBar.setTitle(R.string.app_name);
 			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
 		}
-	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-
+		// Set theme
 		boolean useLightTheme = storageService.getUseLightTheme();
 		setTheme(useLightTheme);
 
+		// Fill view model with rules
 		if (viewModel.getCurrentRules().getValue().isEmpty()) {
 			RulesSource rulesSource = rulesService.getLatestRulesSource();
 
 			useRules(rulesSource);
 		}
 
+		// Handle initial intent
 		handleIntent(getIntent());
 	}
 
@@ -481,14 +473,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		menu.findItem(R.id.changeTheme).setOnMenuItemClickListener(view -> {
-			new AlertDialog.Builder(this)
-				.setMessage(R.string.change_theme_restart)
-				.setNegativeButton(R.string.dialog_cancel, (dialog, which) -> {
-				})
-				.setPositiveButton(R.string.dialog_ok, (dialog, which) -> {
-					IntentSender.changeTheme(this);
-				})
-				.show();
+			IntentSender.changeTheme(this);
 
 			return true;
 		});

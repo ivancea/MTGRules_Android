@@ -4,7 +4,7 @@
     <item android:id="@+id/home"
         android:icon="@drawable/ic_baseline_home_24"
         android:title="@string/menu_home"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:id="@+id/randomRule"
         android:icon="@drawable/ic_baseline_shuffle_24"
         android:title="@string/menu_random_rule"

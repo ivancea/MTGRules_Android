@@ -180,6 +180,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
             .collect(Collectors.toList());
 
         for (String glosssaryTerm : glosssaryTerms) {
+            // TODO: Cache patterns on rule set change
             Matcher matcher = Pattern.compile(
                 "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(glosssaryTerm)) + "\\b", Pattern.CASE_INSENSITIVE
             )

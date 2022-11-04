@@ -13,4 +13,5 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".ui.main.MainFragment"
     tools:listitem="@layout/rule_view"
+    tools:itemCount="2"
     android:background="?rule_view_background_color"/>
