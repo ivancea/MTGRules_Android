@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ShareCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -108,6 +109,14 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(rule.getTitle(), rule.getTitle() + ": " + rule.getText());
                 clipboard.setPrimaryClip(clip);
+                return true;
+            });
+            menu.add(0, view.getId(), 0, R.string.context_share).setOnMenuItemClickListener(item -> {
+                String text = rule.getTitle() + ": " + rule.getText();
+                new ShareCompat.IntentBuilder(context)
+                    .setType("text/plain")
+                    .setText(text)
+                    .startChooser();
                 return true;
             });
             menu.add(0, view.getId(), 0, R.string.context_read).setOnMenuItemClickListener(item -> {
