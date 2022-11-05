@@ -42,4 +42,11 @@ public class IntentSender {
 
 		context.startActivity(intent);
 	}
+
+	public static void toggleSymbols(Context context) {
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setAction(Actions.ACTION_TOGGLE_SYMBOLS);
+
+		context.startActivity(intent);
+	}
 }

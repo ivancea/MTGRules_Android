@@ -36,6 +36,16 @@ public class StorageService {
 			.apply();
 	}
 
+	public boolean getShowSymbols() {
+		return preferences.getBoolean(Preferences.SHOW_SYMBOLS, true);
+	}
+
+	public void setShowSymbols(boolean showSymbols) {
+		preferences.edit()
+			.putBoolean(Preferences.SHOW_SYMBOLS, showSymbols)
+			.apply();
+	}
+
 	@Nullable
 	public LocalDate getLastRulesSource() {
 		String lastRulesSource = preferences.getString(Preferences.LAST_RULE_SOURCE, null);

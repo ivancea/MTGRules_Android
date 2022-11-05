@@ -60,6 +60,10 @@ public class MainFragment extends Fragment {
         super.onStart();
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
 
+        viewModel.getShowSymbols().observe(getViewLifecycleOwner(), showSymbols -> {
+            recyclerViewAdapter.setShowSymbols(showSymbols);
+        });
+
         viewModel.getVisibleRules().observe(getViewLifecycleOwner(), rules -> {
             recyclerViewAdapter.setRules(rules);
         });

@@ -70,13 +70,6 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Set theme
-		boolean useLightTheme = storageService.getUseLightTheme();
-		setTheme(useLightTheme);
-
-		// Inflate layout and fragment
-		setContentView(R.layout.main_activity);
-
 		// Set variables
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 		viewModel = new ViewModelProvider(this).get(MainViewModel.class);
@@ -89,19 +82,29 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		// Set theme
+		boolean useLightTheme = storageService.getUseLightTheme();
+		setTheme(useLightTheme);
+
+		// Load ViewModel
+		boolean showSymbols = storageService.getShowSymbols();
+		viewModel.getShowSymbols().setValue(showSymbols);
+
+		if (viewModel.getCurrentRules().getValue().isEmpty()) {
+			RulesSource rulesSource = rulesService.getLatestRulesSource();
+
+			useRules(rulesSource);
+		}
+
+		// Inflate layout and fragment
+		setContentView(R.layout.main_activity);
+
 		// Configure action bar
 		ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
 			actionBar.setLogo(R.drawable.ic_launcher_foreground);
 			actionBar.setTitle(R.string.app_name);
 			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
-		}
-
-		// Fill view model with rules
-		if (viewModel.getCurrentRules().getValue().isEmpty()) {
-			RulesSource rulesSource = rulesService.getLatestRulesSource();
-
-			useRules(rulesSource);
 		}
 
 		// Handle initial intent
@@ -245,6 +248,16 @@ public class MainActivity extends AppCompatActivity {
 				storageService.setUseLightTheme(newUseLightTheme);
 
 				recreate();
+
+				break;
+			}
+
+			case Actions.ACTION_TOGGLE_SYMBOLS: {
+				boolean newShowSymbols = !storageService.getShowSymbols();
+
+				viewModel.getShowSymbols().setValue(newShowSymbols);
+
+				storageService.setShowSymbols(newShowSymbols);
 
 				break;
 			}
@@ -474,6 +487,12 @@ public class MainActivity extends AppCompatActivity {
 
 		menu.findItem(R.id.changeTheme).setOnMenuItemClickListener(view -> {
 			IntentSender.changeTheme(this);
+
+			return true;
+		});
+
+		menu.findItem(R.id.toggleSymbols).setOnMenuItemClickListener(view -> {
+			IntentSender.toggleSymbols(this);
 
 			return true;
 		});

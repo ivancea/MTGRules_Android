@@ -52,6 +52,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     private List<Rule> rules = Collections.emptyList();
     private String selectedRuleTitle = null;
     private Pattern searchTextPattern = null;
+    private boolean showSymbols = true;
 
     private final Context context;
     private final MainViewModel viewModel;
@@ -147,7 +148,10 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         formatLinks(spannable, ruleText);
         formatExample(spannable, ruleText);
         highlightSearchText(spannable, ruleText);
-        replaceSymbols(holder, spannable, ruleText);
+
+        if (this.showSymbols) {
+            replaceSymbols(holder, spannable, ruleText);
+        }
 
         return spannable;
     }
@@ -287,7 +291,6 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 
     public void setRules(@NonNull List<Rule> rules) {
         this.rules = rules;
-
         notifyDataSetChanged();
     }
 
@@ -295,12 +298,16 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         this.searchTextPattern = searchText == null
             ? null
             : Pattern.compile(Pattern.quote(searchText), Pattern.CASE_INSENSITIVE);
-
         notifyDataSetChanged();
     }
 
     public void setSelectedRuleTitle(@Nullable String selectedRuleTitle) {
         this.selectedRuleTitle = selectedRuleTitle;
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
+    }
+
+    public void setShowSymbols(boolean showSymbols) {
+        this.showSymbols = showSymbols;
+        notifyDataSetChanged();
     }
 }

@@ -28,4 +28,5 @@
     <string name="notification_channel_new_rules_description">Sent when a new rules set is available. Usually happening when the app is updated</string>
     <string name="notification_channel_new_rules_body">Rules: %1$s</string>
     <string name="context_share">Share</string>
+    <string name="menu_toggle_symbols">Show/Hide symbols</string>
 </resources>

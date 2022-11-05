@@ -24,6 +24,10 @@
         android:title="@string/menu_change_theme"
         app:showAsAction="never" />
 
+    <item android:id="@+id/toggleSymbols"
+        android:title="@string/menu_toggle_symbols"
+        app:showAsAction="never" />
+
     <item android:id="@+id/compareRules"
         android:title="@string/menu_compare_rules"
         app:showAsAction="never" />
