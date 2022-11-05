@@ -5,11 +5,13 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +21,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ShareCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ivancea.MTGRules.R;
+import com.ivancea.MTGRules.constants.Symbols;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.ui.spans.RuleClickableSpan;
 import com.ivancea.MTGRules.utils.IntentSender;
@@ -43,6 +47,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     private static final Pattern IS_PARENT_RULE_PATTERN = Pattern.compile("^(\\d{1,3}\\.|Glossary)$");
     private static final Pattern RULE_LINK_PATTERN = Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b");
     private static final Pattern EXAMPLE_PATTERN = Pattern.compile("^Example:", Pattern.MULTILINE);
+    private static final Pattern SYMBOL_PATTERN = Pattern.compile("\\{(?<symbol>[\\w/]+)\\}");
 
     private List<Rule> rules = Collections.emptyList();
     private String selectedRuleTitle = null;
@@ -92,7 +97,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
             holder.getRuleText().setVisibility(View.GONE);
         } else {
             holder.getRuleSubtitle().setText("");
-            holder.getRuleText().setText(makeRuleTextSpannable(rule.getText()));
+            holder.getRuleText().setText(makeRuleTextSpannable(holder, rule.getText()));
             holder.getRuleText().setVisibility(View.VISIBLE);
         }
 
@@ -136,22 +141,23 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         return spannable;
     }
 
-    private Spannable makeRuleTextSpannable(String ruleText) {
+    private Spannable makeRuleTextSpannable(ViewHolder holder, String ruleText) {
         Spannable spannable = new SpannableString(ruleText);
 
-        makeLinks(spannable, ruleText);
-        makeExample(spannable, ruleText);
+        formatLinks(spannable, ruleText);
+        formatExample(spannable, ruleText);
         highlightSearchText(spannable, ruleText);
+        replaceSymbols(holder, spannable, ruleText);
 
         return spannable;
     }
 
-    private void makeLinks(Spannable spannable, String ruleText) {
-        makeRuleTitleLinks(spannable, ruleText);
-        makeGlossaryLinks(spannable, ruleText);
+    private void formatLinks(Spannable spannable, String ruleText) {
+        formatRuleTitleLinks(spannable, ruleText);
+        formatGlossaryLinks(spannable, ruleText);
     }
 
-    private void makeRuleTitleLinks(Spannable spannable, String ruleText) {
+    private void formatRuleTitleLinks(Spannable spannable, String ruleText) {
         Matcher linkMatcher = RULE_LINK_PATTERN.matcher(ruleText);
 
         while (linkMatcher.find()) {
@@ -169,7 +175,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         }
     }
 
-    private void makeGlossaryLinks(Spannable spannable, String ruleText) {
+    private void formatGlossaryLinks(Spannable spannable, String ruleText) {
         List<Rule> rules = viewModel.getCurrentRules().getValue();
 
         Rule glosssaryRule = rules.get(rules.size() - 1);
@@ -209,7 +215,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         return glossaryRegex + "(?:s|es)?";
     }
 
-    private void makeExample(Spannable spannable, String ruleText) {
+    private void formatExample(Spannable spannable, String ruleText) {
         Matcher exampleMatcher = EXAMPLE_PATTERN.matcher(ruleText);
 
         if (exampleMatcher.find()) {
@@ -236,6 +242,29 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 searchTextMatcher.end(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             );
+        }
+    }
+
+    private void replaceSymbols(ViewHolder holder, Spannable spannable, String ruleText) {
+        Matcher symbolMatcher = SYMBOL_PATTERN.matcher(ruleText);
+
+        while (symbolMatcher.find()) {
+            String symbol = symbolMatcher.group("symbol");
+            Integer drawableId = Symbols.getDrawableId(symbol);
+
+            if (drawableId != null) {
+                Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), drawableId, context.getTheme());
+                int height = holder.getRuleText().getLineHeight();
+                int width = height * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+
+                drawable.setBounds(0, 0, width, height);
+                spannable.setSpan(
+                    new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE),
+                    symbolMatcher.start(),
+                    symbolMatcher.end(),
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                );;
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.ivancea.MTGRules.constants.Symbols;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
 
@@ -24,7 +25,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -65,6 +69,45 @@ public class RulesServiceInstrumentationTest {
 		List<Rule> rulesWithoutGlossary = rules.subList(0, rules.size() - 1);
 
 		checkRulesRecursively(rulesWithoutGlossary, null);
+	}
+
+	@ParameterizedTest
+	@MethodSource("getRulesSources")
+	public void allSymbolsMapped(RulesSource rulesSource) {
+		List<Rule> rules = rulesService.loadRules(rulesSource);
+
+		for (Rule rule : rules) {
+			checkSymbols(rule);
+		}
+	}
+
+	private static final Pattern SYMBOL_PATTERN = Pattern.compile("\\{(?<symbol>[\\w/]+)\\}");
+	private static final Set<String> IGNORED_SYMBOLS = new HashSet<String>(){{
+		add("8"); // Not found
+		add("rN"); // Saga without roman numeral: Not found in SVG
+		add("rN1"); // Saga with roman numeral: Not found with the number
+		add("rN2"); // Saga with roman numeral: Not found with the number
+	}};
+
+	private void checkSymbols(Rule rule) {
+		Matcher matcher = SYMBOL_PATTERN.matcher(rule.getText());
+
+		while (matcher.find()) {
+			String symbol = matcher.group("symbol");
+
+			if (IGNORED_SYMBOLS.contains(symbol)) {
+				continue;
+			}
+
+			assertNotNull(
+				Symbols.getDrawableId(symbol),
+				"Symbol " + symbol + " has a drawable"
+			);
+		}
+
+		for (Rule subRule : rule.getSubRules()) {
+			checkSymbols(subRule);
+		}
 	}
 
 	private void checkGlossary(List<Rule> rules) {
