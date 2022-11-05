@@ -14,8 +14,8 @@ android {
         applicationId "com.ivancea.MTGRules"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 45
-        versionName "2.4.2"
+        versionCode 46
+        versionName "2.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
