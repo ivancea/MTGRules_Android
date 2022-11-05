@@ -343,24 +343,23 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private List<Rule> findRule(String title) {
+		List<Rule> currentRules = viewModel.getCurrentRules().getValue();
+
 		if (!Character.isDigit(title.charAt(0))) {
-			return viewModel.getCurrentRules().getValue().stream()
-				.filter(r -> r.getTitle().equals("Glossary"))
+			Rule glossaryRule = currentRules.get(currentRules.size() - 1);
+
+			List<Rule> rules = new ArrayList<>();
+
+			rules.add(glossaryRule);
+			glossaryRule.getSubRules().stream()
+				.filter(r -> r.getTitle().equals(title))
 				.findAny()
-				.map(g -> {
-					List<Rule> rules = new ArrayList<>();
+				.ifPresent(rules::add);
 
-					rules.add(g);
-					g.getSubRules().stream()
-						.filter(r -> r.getTitle().equals(title))
-						.findAny()
-						.ifPresent(rules::add);
-
-					return rules;
-				}).orElseThrow(() -> new RuntimeException("No glosary found"));
+			return rules;
 		}
 
-		return viewModel.getCurrentRules().getValue().stream()
+		return currentRules.stream()
 			.flatMap(rule -> {
 				if (rule.getTitle().charAt(0) != title.charAt(0)) {
 					return Stream.empty();
@@ -424,7 +423,14 @@ public class MainActivity extends AppCompatActivity {
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		String[] columnNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
 		int[] viewIds = { android.R.id.text1 };
-		CursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null, columnNames, viewIds);
+		CursorAdapter adapter = new SimpleCursorAdapter(
+			this,
+			android.R.layout.simple_list_item_1,
+			null,
+			columnNames,
+			viewIds,
+			0
+		);
 		searchView.setSuggestionsAdapter(adapter);
 
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -441,9 +447,9 @@ public class MainActivity extends AppCompatActivity {
 
 				String newTextUpperCase = newText.toUpperCase();
 
-				viewModel.getCurrentRules().getValue().stream()
-					.filter(r -> r.getTitle().equals("Glossary"))
-					.flatMap(r -> r.getSubRules().stream())
+				List<Rule> rules = viewModel.getCurrentRules().getValue();
+
+				rules.get(rules.size() - 1).getSubRules().stream()
 					.map(Rule::getTitle)
 					.filter(r -> r.toUpperCase().contains(newTextUpperCase))
 					.forEach(r -> cursor.newRow().add(r.hashCode()).add(r));
