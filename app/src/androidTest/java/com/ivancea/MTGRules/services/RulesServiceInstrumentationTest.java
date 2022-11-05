@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,47 +60,70 @@ public class RulesServiceInstrumentationTest {
 
 		assertNotNull(rules, "Load rules " + rulesSource.getDate());
 
-		checkRules(rules, null);
+		checkGlossary(rules);
+
+		List<Rule> rulesWithoutGlossary = rules.subList(0, rules.size() - 1);
+
+		checkRulesRecursively(rulesWithoutGlossary, null);
 	}
 
-	private void checkRules(List<Rule> rules, @Nullable Rule parentRule) {
-		Integer parentRuleNumber = null;
-		Integer lastRuleNumber = null;
+	private void checkGlossary(List<Rule> rules) {
+		Rule glossaryRule = rules.get(rules.size() - 1);
 
-		if (parentRule != null && NUMERIC_RULE_PATTERN.matcher(parentRule.getTitle()).matches()) {
-			parentRuleNumber = Integer.parseInt(parentRule.getTitle().split("\\.")[0]);
+		// This check should be removed or modified after adding translations
+		assertEquals(
+			"Glossary",
+			glossaryRule.getTitle(),
+			"Check glossary rule name in English"
+		);
+
+		assertFalse(
+			NUMERIC_RULE_PATTERN.matcher(glossaryRule.getTitle()).matches(),
+			"Glossary is the last rule"
+		);
+
+		for (Rule glossaryEntry : glossaryRule.getSubRules()) {
+			assertFalse(
+				NUMERIC_RULE_PATTERN.matcher(glossaryEntry.getTitle()).matches(),
+				"Glossary entries aren't numbered"
+			);
 		}
+	}
+
+	private void checkRulesRecursively(List<Rule> rules, @Nullable Rule parentRule) {
+		Integer parentRuleNumber = parentRule == null
+			? null
+			: Integer.parseInt(parentRule.getTitle().split("\\.")[0]);
+		Integer lastRuleNumber = null;
 
 		for (Rule rule : rules) {
 			assertNotNull(rule.getTitle(), "Rule title");
 			assertNotNull(rule.getText(), "Rule text");
+			assertTrue(NUMERIC_RULE_PATTERN.matcher(rule.getTitle()).matches(), "Rule title is numeric");
 
-			if (NUMERIC_RULE_PATTERN.matcher(rule.getTitle()).matches()) {
-				int ruleNumber = Integer.parseInt(rule.getTitle().split("\\.")[0]);
+			int ruleNumber = Integer.parseInt(rule.getTitle().split("\\.")[0]);
 
-				if (lastRuleNumber != null) {
-					assertThat(
-						"Rule order",
-						ruleNumber, anyOf(equalTo(lastRuleNumber), equalTo(lastRuleNumber + 1))
-					);
-				}
-
-				if (parentRuleNumber != null) {
-					assertThat(
-						"Child rule with greater number",
-						ruleNumber, greaterThanOrEqualTo(parentRuleNumber)
-					);
-
-					if (parentRuleNumber < 10) {
-						assertEquals(ruleNumber / 100,  parentRuleNumber, "Child rule is a subrule");
-					}
-				}
-
-				lastRuleNumber = ruleNumber;
+			if (lastRuleNumber != null) {
+				assertThat(
+					"Rule order",
+					ruleNumber, anyOf(equalTo(lastRuleNumber), equalTo(lastRuleNumber + 1))
+				);
 			}
 
+			if (parentRuleNumber != null) {
+				assertThat(
+					"Child rule with greater number",
+					ruleNumber, greaterThanOrEqualTo(parentRuleNumber)
+				);
 
-			checkRules(rule.getSubRules(), rule);
+				if (parentRuleNumber < 10) {
+					assertEquals(ruleNumber / 100,  parentRuleNumber, "Child rule is a subrule");
+				}
+			}
+
+			lastRuleNumber = ruleNumber;
+
+			checkRulesRecursively(rule.getSubRules(), rule);
 		}
 	}
 }

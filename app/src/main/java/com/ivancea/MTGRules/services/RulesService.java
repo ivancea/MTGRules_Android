@@ -364,7 +364,9 @@ public class RulesService {
                 }
             }
 
-            Rule glossary = new Rule("Glossary", "");
+            String glossaryTitle = lines.get(lineIndex - 1).trim();
+
+            Rule glossary = new Rule(glossaryTitle, "");
             blankLines = 0;
             String key = "";
             String value = "";
