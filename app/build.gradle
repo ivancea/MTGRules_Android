@@ -9,7 +9,7 @@ plugins {
 
 android {
     compileSdkVersion 32
-    buildToolsVersion '31.0.0 rc4'
+    buildToolsVersion '33.0.0'
     defaultConfig {
         applicationId "com.ivancea.MTGRules"
         minSdkVersion 26
