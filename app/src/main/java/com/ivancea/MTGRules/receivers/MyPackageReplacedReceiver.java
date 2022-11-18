@@ -31,11 +31,11 @@ public class MyPackageReplacedReceiver extends BroadcastReceiver {
 			LocalDate currentRulesSource = rulesService.getLatestRulesSource().getDate();
 			LocalDate lastSavedRulesSource = storageService.getLastRulesSource();
 
-			if (lastSavedRulesSource != null && currentRulesSource.isAfter(lastSavedRulesSource)) {
+			if (lastSavedRulesSource == null || currentRulesSource.isAfter(lastSavedRulesSource)) {
 				notificationsService.notifyNewRules(currentRulesSource);
-
-				storageService.setLastRulesSource(currentRulesSource);
 			}
+
+			storageService.setLastRulesSource(currentRulesSource);
 		}
 	}
 }
