@@ -34,7 +34,7 @@
         </activity>
         <receiver
             android:name=".receivers.MyPackageReplacedReceiver"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
