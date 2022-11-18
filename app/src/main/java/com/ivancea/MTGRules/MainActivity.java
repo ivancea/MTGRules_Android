@@ -32,6 +32,7 @@ import com.ivancea.MTGRules.utils.IntentSender;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -81,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
 				ttsOk = false;
 			}
 		});
+
+		// Save the last rules source
+		LocalDate currentRulesSource = rulesService.getLatestRulesSource().getDate();
+		storageService.setLastRulesSource(currentRulesSource);
 
 		// Set theme
 		boolean useLightTheme = storageService.getUseLightTheme();
