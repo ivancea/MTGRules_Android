@@ -4,10 +4,9 @@ import androidx.annotation.Nullable;
 
 import com.ivancea.MTGRules.R;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class Symbols {
+	private Symbols() {}
+
 	@Nullable
 	public static Integer getDrawableId(String symbol) {
 		switch (symbol) {

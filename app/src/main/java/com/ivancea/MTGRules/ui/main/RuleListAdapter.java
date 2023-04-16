@@ -40,8 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-
 public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHolder> {
 
     private static final Pattern IS_PARENT_RULE_PATTERN = Pattern.compile("^(\\d{1,3}\\.|Glossary)$");
@@ -62,7 +60,6 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         this.viewModel = new ViewModelProvider(activity).get(MainViewModel.class);
     }
 
-    @Getter
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView ruleTitle;
         private final TextView ruleSubtitle;
@@ -75,6 +72,18 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
             this.ruleSubtitle = view.findViewById(R.id.ruleSubtitle);
             this.ruleText = view.findViewById(R.id.ruleText);
             this.ruleText.setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
+        public TextView getRuleTitle() {
+            return ruleTitle;
+        }
+
+        public TextView getRuleSubtitle() {
+            return ruleSubtitle;
+        }
+
+        public TextView getRuleText() {
+            return ruleText;
         }
     }
 

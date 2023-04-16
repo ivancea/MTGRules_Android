@@ -6,10 +6,9 @@ import android.content.Intent;
 import com.ivancea.MTGRules.MainActivity;
 import com.ivancea.MTGRules.constants.Actions;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
 public class IntentSender {
+	private IntentSender() {}
+
 	public static void readText(Context context, String text) {
 		Intent intent = new Intent(context, MainActivity.class);
 		intent.setAction(Actions.ACTION_READ);
