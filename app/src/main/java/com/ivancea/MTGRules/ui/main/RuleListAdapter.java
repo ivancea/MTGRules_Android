@@ -6,6 +6,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -270,9 +273,16 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
                 int height = holder.getRuleText().getLineHeight();
                 int width = height * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
 
-                drawable.setBounds(0, 0, width, height);
+                // Background, for when the symbol is black or white
+                ShapeDrawable background = new ShapeDrawable();
+                background.setShape(new RectShape());
+                background.getPaint().setColor(Color.GRAY);
+
+                LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{background, drawable});
+                layerDrawable.setBounds(0, 0, width, height);
+
                 spannable.setSpan(
-                    new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE),
+                    new ImageSpan(layerDrawable, ImageSpan.ALIGN_BASELINE),
                     symbolMatcher.start(),
                     symbolMatcher.end(),
                     Spanned.SPAN_INCLUSIVE_EXCLUSIVE
