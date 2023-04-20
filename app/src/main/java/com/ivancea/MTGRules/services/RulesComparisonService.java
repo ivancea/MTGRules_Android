@@ -6,6 +6,7 @@ import com.ivancea.MTGRules.R;
 import com.ivancea.MTGRules.model.Rule;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -18,29 +19,26 @@ public class RulesComparisonService {
 
     private final Context context;
 
-    private final RulesService rulesService;
-
     @Inject
-    public RulesComparisonService(@ApplicationContext Context context, RulesService rulesService) {
+    public RulesComparisonService(@ApplicationContext Context context) {
         this.context = context;
-        this.rulesService = rulesService;
     }
 
     public List<Rule> compareRules(List<Rule> sourceRules, List<Rule> targetRules) {
         List<Rule> li = new ArrayList<>();
 
         for (Rule r1 : sourceRules) {
-            Rule rule = compare(r1, findRule(targetRules, r1.getTitle()));
+            Rule rule = compare(r1, findRule(r1.getTitle(), targetRules));
             if (rule != null) {
                 li.add(rule);
             }
             for (Rule r2 : r1.getSubRules()) {
-                rule = compare(r2, findRule(targetRules, r2.getTitle()));
+                rule = compare(r2, findRule(r2.getTitle(), targetRules));
                 if (rule != null) {
                     li.add(rule);
                 }
                 for (Rule r3 : r2.getSubRules()) {
-                    rule = compare(r3, findRule(targetRules, r3.getTitle()));
+                    rule = compare(r3, findRule(r3.getTitle(), targetRules));
                     if (rule != null) {
                         li.add(rule);
                     }
@@ -49,23 +47,25 @@ public class RulesComparisonService {
         }
 
         for (Rule r1 : targetRules) {
-            Rule rule = findRule(sourceRules, r1.getTitle());
+            Rule rule = findRule(r1.getTitle(), sourceRules);
             if (rule == null) {
                 li.add(new Rule("(+) " + r1.getTitle(), r1.getText()));
             }
             for (Rule r2 : r1.getSubRules()) {
-                rule = findRule(sourceRules, r2.getTitle());
+                rule = findRule(r2.getTitle(), sourceRules);
                 if (rule == null) {
                     li.add(new Rule("(+) " + r2.getTitle(), r2.getText()));
                 }
                 for (Rule r3 : r2.getSubRules()) {
-                    rule = findRule(sourceRules, r3.getTitle());
+                    rule = findRule(r3.getTitle(), sourceRules);
                     if (rule == null) {
                         li.add(new Rule("(+) " + r3.getTitle(), r3.getText()));
                     }
                 }
             }
         }
+
+        li.sort(Comparator.comparing(r -> r.getTitle().substring(4)));
 
         return li;
     }
@@ -96,26 +96,21 @@ public class RulesComparisonService {
         return rulePattern.matcher(rule).replaceAll("@");
     }
 
-    private static Rule findRule(List<Rule> rules, String title)
+    private static Rule findRule(String title, List<Rule> rules)
     {
-        for (Rule r1 : rules)
+        for (Rule rule : rules)
         {
-            if (r1.getTitle().equals(title)) {
-                return r1;
+            if (rule.getTitle().equals(title)) {
+                return rule;
             }
-            for (Rule r2 : r1.getSubRules())
-            {
-                if (r2.getTitle().equals(title)) {
-                    return r2;
-                }
-                for (Rule r3 : r2.getSubRules())
-                {
-                    if (r3.getTitle().equals(title)) {
-                        return r3;
-                    }
-                }
+
+            Rule matchingChildRule = findRule(title, rule.getSubRules());
+
+            if (matchingChildRule != null) {
+                return matchingChildRule;
             }
         }
+
         return null;
     }
 }
