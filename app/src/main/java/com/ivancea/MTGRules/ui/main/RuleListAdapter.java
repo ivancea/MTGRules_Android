@@ -35,10 +35,12 @@ import com.ivancea.MTGRules.constants.Symbols;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.ui.spans.RuleClickableSpan;
 import com.ivancea.MTGRules.utils.IntentSender;
+import com.ivancea.MTGRules.utils.RulesSearchUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -303,6 +305,16 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
         return ruleNumber + "." + subRuleNumber + subRuleLetter;
     }
 
+    private Pattern makeSearchTextPattern(String searchText) {
+        Set<String> tokens = RulesSearchUtils.INSTANCE.tokenize(searchText);
+
+        String regex = tokens.stream()
+            .map(Pattern::quote)
+            .collect(Collectors.joining("|"));
+
+        return Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+    }
+
     @Override
     public int getItemCount() {
         return rules.size();
@@ -316,7 +328,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
     public void setSearchText(@Nullable String searchText) {
         this.searchTextPattern = searchText == null
             ? null
-            : Pattern.compile(Pattern.quote(searchText), Pattern.CASE_INSENSITIVE);
+            : makeSearchTextPattern(searchText);
         notifyDataSetChanged();
     }
 

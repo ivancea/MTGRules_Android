@@ -29,8 +29,8 @@ import com.ivancea.MTGRules.services.StorageService;
 import com.ivancea.MTGRules.ui.main.AboutFragment;
 import com.ivancea.MTGRules.ui.main.MainViewModel;
 import com.ivancea.MTGRules.utils.IntentSender;
-
-import org.apache.commons.lang3.StringUtils;
+import com.ivancea.MTGRules.utils.RuleUtils;
+import com.ivancea.MTGRules.utils.RulesSearchUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
 				List<Rule> rules = viewModel.getCurrentRules().getValue();
 
 				List<Rule> allRules = rules.stream()
-					.flatMap(this::flattenRule)
+					.flatMap(RuleUtils.INSTANCE::flatten)
 					.filter(r -> r.getSubRules().isEmpty())
 					.collect(Collectors.toList());
 
@@ -336,11 +336,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void searchRules(String searchText) {
-		List<Rule> filteredRules = viewModel.getCurrentRules().getValue().stream()
-			.flatMap(this::flattenRule)
-			.filter(rule -> StringUtils.containsIgnoreCase(rule.getTitle(), searchText)
-				|| StringUtils.containsIgnoreCase(rule.getText(), searchText))
-			.collect(Collectors.toList());
+		List<Rule> filteredRules = RulesSearchUtils.INSTANCE.search(searchText, viewModel.getCurrentRules().getValue());
 
 		viewModel.getVisibleRules().setValue(filteredRules);
 		viewModel.getSelectedRuleTitle().setValue(null);
@@ -397,14 +393,6 @@ public class MainActivity extends AppCompatActivity {
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	private Stream<Rule> flattenRule(Rule rule) {
-		return Stream.concat(
-			Stream.of(rule),
-			rule.getSubRules().stream()
-				.flatMap(this::flattenRule)
-		);
-	}
-
 	private void useRules(RulesSource rulesSource) {
 		List<Rule> rules = rulesService.loadRules(rulesSource);
 
@@ -425,7 +413,9 @@ public class MainActivity extends AppCompatActivity {
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
+		searchView.setQueryHint(getString(R.string.search_hint));
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
 		String[] columnNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
 		int[] viewIds = { android.R.id.text1 };
 		CursorAdapter adapter = new SimpleCursorAdapter(
