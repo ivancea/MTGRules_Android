@@ -17,7 +17,6 @@ object RulesSearchUtils {
                 tokens.all { token ->
                     title.contains(token, ignoreCase = true) || text.contains(token, ignoreCase = true)
                 }
-                //title.contains(query, ignoreCase = true) || text.contains(query, ignoreCase = true)
             }
             .toList()
 
