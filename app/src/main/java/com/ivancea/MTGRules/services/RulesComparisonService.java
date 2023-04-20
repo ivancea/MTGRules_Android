@@ -29,10 +29,8 @@ public class RulesComparisonService {
     public List<Rule> compareRules(List<Rule> sourceRules, List<Rule> targetRules) {
         List<Rule> li = new ArrayList<>();
 
-        Rule rule;
-
         for (Rule r1 : sourceRules) {
-            rule = compare(r1, findRule(targetRules, r1.getTitle()));
+            Rule rule = compare(r1, findRule(targetRules, r1.getTitle()));
             if (rule != null) {
                 li.add(rule);
             }
@@ -51,7 +49,7 @@ public class RulesComparisonService {
         }
 
         for (Rule r1 : targetRules) {
-            rule = findRule(sourceRules, r1.getTitle());
+            Rule rule = findRule(sourceRules, r1.getTitle());
             if (rule == null) {
                 li.add(new Rule("(+) " + r1.getTitle(), r1.getText()));
             }
@@ -113,7 +111,7 @@ public class RulesComparisonService {
                 for (Rule r3 : r2.getSubRules())
                 {
                     if (r3.getTitle().equals(title)) {
-                        return r1;
+                        return r3;
                     }
                 }
             }
