@@ -454,10 +454,12 @@ public class MainActivity extends AppCompatActivity {
 
 				List<Rule> rules = viewModel.getCurrentRules().getValue();
 
-				rules.get(rules.size() - 1).getSubRules().stream()
-					.map(Rule::getTitle)
-					.filter(r -> r.toUpperCase().contains(newTextUpperCase))
-					.forEach(r -> cursor.newRow().add(r.hashCode()).add(r));
+				if (!newText.isEmpty()) {
+					rules.get(rules.size() - 1).getSubRules().stream()
+						.map(Rule::getTitle)
+						.filter(r -> r.toUpperCase().contains(newTextUpperCase))
+						.forEach(r -> cursor.newRow().add(r.hashCode()).add(r));
+				}
 
 				adapter.changeCursor(cursor);
 				adapter.notifyDataSetChanged();
