@@ -13,6 +13,7 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,7 +44,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -150,22 +150,22 @@ public class MainActivity extends AppCompatActivity {
 			return;
 		}
 
-		boolean addToHistory = !intent.getBooleanExtra(Actions.BACK, false);
+		boolean addToHistory = !intent.getBooleanExtra(Actions.IGNORE_HISTORY, false);
 
 		switch (intent.getAction()) {
-			case Intent.ACTION_SEARCH: {
+			case Intent.ACTION_SEARCH -> {
 				String searchString = intent.getStringExtra(SearchManager.QUERY);
-				searchRules(searchString);
+				String rootRule = intent.getStringExtra(Actions.ROOT_RULE);
+				searchRules(searchString, rootRule);
 
 				if (addToHistory) {
-					pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, searchString));
+					pushHistoryItem(new HistoryItem(HistoryItem.Type.Search, new String[] { searchString, rootRule }));
 				}
 
 				logEvent(Events.SEARCH_RULES);
-				break;
 			}
 
-			case Actions.ACTION_READ: {
+			case Actions.ACTION_READ -> {
 				if (ttsOk == null) {
 					Toast.makeText(this, R.string.toast_tts_not_ready, Toast.LENGTH_SHORT).show();
 				} else if (!ttsOk) {
@@ -174,10 +174,9 @@ public class MainActivity extends AppCompatActivity {
 					tts.speak(intent.getStringExtra(Actions.DATA), TextToSpeech.QUEUE_FLUSH, null, "rules");
 					logEvent(Events.READ_RULE);
 				}
-				break;
 			}
 
-			case Actions.ACTION_NAVIGATE_RULE: {
+			case Actions.ACTION_NAVIGATE_RULE -> {
 				String title = intent.getStringExtra(Actions.DATA);
 
 				if (title.isEmpty()) {
@@ -194,7 +193,10 @@ public class MainActivity extends AppCompatActivity {
 						.findAny().orElse(null);
 
 					if (existingRule == null || !existingRule.getSubRules().isEmpty() || !isLastHistoryItemNavigation()) {
-						List<Rule> rules = findRule(title);
+						List<Rule> rules = RuleUtils.getRuleAndParents(
+							viewModel.getCurrentRules().getValue(),
+							title
+						).collect(Collectors.toCollection(ArrayList::new));
 
 						if (!rules.isEmpty()) {
 							Rule rule = rules.get(rules.size() - 1);
@@ -215,15 +217,13 @@ public class MainActivity extends AppCompatActivity {
 					viewModel.getSelectedRuleTitle().setValue(title);
 					viewModel.getSearchText().setValue(null);
 				}
-
-				break;
 			}
 
-			case Actions.ACTION_RANDOM_RULE: {
+			case Actions.ACTION_RANDOM_RULE -> {
 				List<Rule> rules = viewModel.getCurrentRules().getValue();
 
 				List<Rule> allRules = rules.stream()
-					.flatMap(RuleUtils.INSTANCE::flatten)
+					.flatMap(RuleUtils::flatten)
 					.filter(r -> r.getSubRules().isEmpty())
 					.collect(Collectors.toList());
 
@@ -238,7 +238,12 @@ public class MainActivity extends AppCompatActivity {
 					.skip(rulesToSkip)
 					.findFirst()
 					.ifPresent(rule -> {
-						viewModel.getVisibleRules().setValue(findRule(rule.getTitle()));
+						List<Rule> newVisibleRules = RuleUtils.getRuleAndParents(
+							viewModel.getCurrentRules().getValue(),
+							rule.getTitle()
+						).collect(Collectors.toList());
+
+						viewModel.getVisibleRules().setValue(newVisibleRules);
 						viewModel.getSelectedRuleTitle().setValue(null);
 						viewModel.getSearchText().setValue(null);
 
@@ -248,11 +253,9 @@ public class MainActivity extends AppCompatActivity {
 					});
 
 				logEvent(Events.RANDOM_RULE);
-
-				break;
 			}
 
-			case Actions.ACTION_CHANGE_THEME: {
+			case Actions.ACTION_CHANGE_THEME -> {
 				boolean newUseLightTheme = !storageService.getUseLightTheme();
 
 				setTheme(newUseLightTheme);
@@ -260,18 +263,14 @@ public class MainActivity extends AppCompatActivity {
 				storageService.setUseLightTheme(newUseLightTheme);
 
 				recreate();
-
-				break;
 			}
 
-			case Actions.ACTION_TOGGLE_SYMBOLS: {
+			case Actions.ACTION_TOGGLE_SYMBOLS -> {
 				boolean newShowSymbols = !storageService.getShowSymbols();
 
 				viewModel.getShowSymbols().setValue(newShowSymbols);
 
 				storageService.setShowSymbols(newShowSymbols);
-
-				break;
 			}
 		}
 	}
@@ -302,28 +301,20 @@ public class MainActivity extends AppCompatActivity {
 		HistoryItem historyItem = newHistory.get(newHistory.size() - 1);
 		viewModel.getHistory().setValue(newHistory);
 
-		Intent intent = new Intent(this, MainActivity.class);
-
-		intent.putExtra(Actions.BACK, true);
-
 		switch (historyItem.getType()) {
-			case Rule: {
-				intent.setAction(Actions.ACTION_NAVIGATE_RULE);
-				intent.putExtra(Actions.DATA, historyItem.getValue());
-				break;
+			case Rule -> {
+				IntentSender.openRule(this, (String) historyItem.getValue(), true);
 			}
-			case Search: {
-				intent.setAction(Intent.ACTION_SEARCH);
-				intent.putExtra(SearchManager.QUERY, historyItem.getValue());
-				break;
+			case Search -> {
+				String[] values = (String[]) historyItem.getValue();
+				String searchText = values[0];
+				String rootRule = values.length == 2 ? values[1] : null;
+				IntentSender.openSearch(this, searchText, rootRule, true);
 			}
-			case Random: {
-				intent.setAction(Actions.ACTION_RANDOM_RULE);
-				intent.putExtra(Actions.DATA, historyItem.getValue());
-				break;
+			case Random -> {
+				IntentSender.openRandomRule(this, (int) historyItem.getValue(), true);
 			}
 		}
-		startActivity(intent);
 
 		return true;
 	}
@@ -342,62 +333,15 @@ public class MainActivity extends AppCompatActivity {
 		setTheme(useLightTheme ? R.style.LightTheme : R.style.DarkTheme);
 	}
 
-	private void searchRules(String searchText) {
-		List<Rule> filteredRules = RulesSearchUtils.INSTANCE.search(searchText, viewModel.getCurrentRules().getValue());
+	private void searchRules(String searchText, @Nullable String rootRule) {
+		List<Rule> rules = viewModel.getCurrentRules().getValue();
+		List<Rule> rulesToSearch = rootRule == null ? rules : RuleUtils.getRuleAndSubRules(rules, rootRule);
+
+		List<Rule> filteredRules = RulesSearchUtils.search(searchText, rulesToSearch);
 
 		viewModel.getVisibleRules().setValue(filteredRules);
 		viewModel.getSelectedRuleTitle().setValue(null);
 		viewModel.getSearchText().setValue(searchText);
-	}
-
-	private List<Rule> findRule(String title) {
-		List<Rule> currentRules = viewModel.getCurrentRules().getValue();
-
-		if (!Character.isDigit(title.charAt(0))) {
-			Rule glossaryRule = currentRules.get(currentRules.size() - 1);
-
-			List<Rule> rules = new ArrayList<>();
-
-			rules.add(glossaryRule);
-			glossaryRule.getSubRules().stream()
-				.filter(r -> r.getTitle().equals(title))
-				.findAny()
-				.ifPresent(rules::add);
-
-			return rules;
-		}
-
-		return currentRules.stream()
-			.flatMap(rule -> {
-				if (rule.getTitle().charAt(0) != title.charAt(0)) {
-					return Stream.empty();
-				}
-
-				if (rule.getTitle().equals(title)) {
-					return Stream.of(rule);
-				}
-
-				return Stream.concat(
-					Stream.of(rule),
-					rule.getSubRules().stream()
-						.flatMap(subRule -> {
-							if (!subRule.getTitle().substring(0, 3).equals(title.substring(0, 3))) {
-								return Stream.empty();
-							}
-
-							if (subRule.getTitle().equals(title)) {
-								return Stream.of(subRule);
-							}
-
-							return Stream.concat(
-								Stream.of(subRule),
-								subRule.getSubRules().stream()
-									.filter(r -> r.getTitle().equals(title))
-							);
-						})
-				);
-			})
-			.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	private void useRules(RulesSource rulesSource) {
@@ -478,19 +422,19 @@ public class MainActivity extends AppCompatActivity {
 
 				searchView.clearFocus();
 
-				IntentSender.openRule(MainActivity.this, title);
+				IntentSender.openRule(MainActivity.this, title, false);
 
 				return true;
 			}
 		});
 
 		menu.findItem(R.id.home).setOnMenuItemClickListener(view -> {
-			IntentSender.openRule(this, "");
+			IntentSender.openRule(this, "", false);
 			return true;
 		});
 
 		menu.findItem(R.id.randomRule).setOnMenuItemClickListener(view -> {
-			IntentSender.openRandomRule(this);
+			IntentSender.openRandomRule(this, null, false);
 
 			return true;
 		});

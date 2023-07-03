@@ -4,6 +4,7 @@ import com.ivancea.MTGRules.model.Rule
 import kotlin.streams.toList
 
 object RulesSearchUtils {
+    @JvmStatic
     fun search(query: String, rules: List<Rule>?): List<Rule> {
         if (rules == null) {
             return ArrayList()
@@ -23,6 +24,7 @@ object RulesSearchUtils {
         return filteredRules
     }
 
+    @JvmStatic
     fun tokenize(query: String): Set<String> {
         val tokens = HashSet<String>()
 

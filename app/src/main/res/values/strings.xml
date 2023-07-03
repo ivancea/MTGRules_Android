@@ -32,4 +32,7 @@
     <string name="search_hint">"E.g. \"can be\" planeswalker "</string>
     <string name="notification_permission_title">Notification permissions</string>
     <string name="notification_permission_message">We will send you notifications about new rules, and maybe new relevant things in the future.\n\nGrant the notifications permission if you want those notifications.\n\nYou can also choose which notifications to receive in the android app configuration.</string>
+    <string name="context_search_in_rule">Search in rule</string>
+    <string name="context_search_in_rule_dialog_title">Search in rule %1$s</string>
+    <string name="context_search_in_rule_dialog_message">Search only in the rule and its subrules</string>
 </resources>

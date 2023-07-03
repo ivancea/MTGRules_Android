@@ -21,7 +21,7 @@ public class RuleClickableSpan extends ClickableSpan {
 
 	@Override
 	public void onClick(@NonNull View widget) {
-		IntentSender.openRule(widget.getContext(), ruleTitle);
+		IntentSender.openRule(widget.getContext(), ruleTitle, false);
 	}
 
 	@Override

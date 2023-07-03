@@ -9,6 +9,8 @@ public final class Actions {
 	public static final String ACTION_TOGGLE_SYMBOLS = "com.ivancea.TOGGLE_SYMBOLS";
 	public static final String ACTION_READ = "com.ivancea.READ";
 
+	// Intent extras
 	public static final String DATA = "data";
-	public static final String BACK = "back";
+	public static final String ROOT_RULE = "root_rule";
+	public static final String IGNORE_HISTORY = "ignore_history";
 }
