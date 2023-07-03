@@ -8,9 +8,9 @@ object RuleUtils {
         return Stream.concat(
             Stream.of(rule),
             rule.subRules.stream()
-                .flatMap { rule: Rule ->
+                .flatMap { subRule: Rule ->
                     flatten(
-                        rule
+                        subRule
                     )
                 }
         )

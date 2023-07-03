@@ -66,4 +66,14 @@ public class StorageService {
 			.putString(Preferences.LAST_RULE_SOURCE, lastRuleSource.toString())
 			.apply();
 	}
+
+	public boolean getNotificationsPermissionRequested() {
+		return preferences.getBoolean(Preferences.NOTIFICATIONS_PERMISSION_REQUESTED, false);
+	}
+
+	public void setNotificationsPermissionRequested(boolean notificationsPermissionRequested) {
+		preferences.edit()
+			.putBoolean(Preferences.NOTIFICATIONS_PERMISSION_REQUESTED, notificationsPermissionRequested)
+			.apply();
+	}
 }

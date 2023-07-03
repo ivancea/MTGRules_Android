@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -302,6 +303,12 @@ public class RulesService {
 					new URI("https://media.wizards.com/2023/downloads/MagicCompRules%2020230414.txt"),
 					LocalDate.of(2023, 4, 14),
 					StandardCharsets.UTF_8
+				),
+
+				new RulesSource(
+					new URI("https://media.wizards.com/2023/downloads/MagicCompRules20230616.txt"),
+					LocalDate.of(2023, 6, 16),
+					StandardCharsets.UTF_8
 				)
 			);
 		} catch (URISyntaxException e) {
@@ -422,6 +429,15 @@ public class RulesService {
 
 			return null;
 		}
+
+		String gptText = rules.stream().flatMap(rule1 ->
+			Stream.concat(
+				Stream.of(rule1.getTitle() + rule1.getText()),
+				rule1.getTitle().equals("Glossary")
+					? rule1.getSubRules().stream().map(rule2 -> " - " + rule2.getTitle())
+					: rule1.getSubRules().stream().map(rule2 -> " - " + rule2.getTitle() + rule2.getText())
+			)
+		).collect(Collectors.joining("\n"));
 
 		return rules;
 	}

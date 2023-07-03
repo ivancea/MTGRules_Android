@@ -23,6 +23,7 @@ import com.ivancea.MTGRules.constants.Events;
 import com.ivancea.MTGRules.model.HistoryItem;
 import com.ivancea.MTGRules.model.Rule;
 import com.ivancea.MTGRules.model.RulesSource;
+import com.ivancea.MTGRules.services.PermissionsRequesterService;
 import com.ivancea.MTGRules.services.RulesComparisonService;
 import com.ivancea.MTGRules.services.RulesService;
 import com.ivancea.MTGRules.services.StorageService;
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
 	@Inject
 	RulesComparisonService rulesComparisonService;
+
+	@Inject
+	PermissionsRequesterService permissionsRequesterService;
 
 	private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -104,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 		// Inflate layout and fragment
 		setContentView(R.layout.main_activity);
 
+		permissionsRequesterService.requestNotifications();
+
 		// Configure action bar
 		ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 			actionBar.setTitle(R.string.app_name);
 			viewModel.getActionbarSubtitle().observe(this, actionBar::setSubtitle);
 		}
+
 
 		// Handle initial intent
 		handleIntent(getIntent());
