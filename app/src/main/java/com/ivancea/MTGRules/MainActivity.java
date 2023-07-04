@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void searchRules(String searchText, @Nullable String rootRule) {
 		List<Rule> rules = viewModel.getCurrentRules().getValue();
-		List<Rule> rulesToSearch = rootRule == null ? rules : RuleUtils.getRuleAndSubRules(rules, rootRule);
+		List<Rule> rulesToSearch = rootRule == null ? rules : RuleUtils.getRuleAndSubsections(rules, rootRule);
 
 		List<Rule> filteredRules = RulesSearchUtils.search(searchText, rulesToSearch);
 

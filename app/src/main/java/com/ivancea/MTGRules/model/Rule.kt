@@ -4,5 +4,5 @@ data class Rule(
     var title: String,
     var text: String,
 ) {
-    val subRules: List<Rule> = ArrayList()
+    val subRules = ArrayList<Rule>()
 }

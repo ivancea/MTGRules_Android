@@ -111,7 +111,7 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 		holder.getRuleTitle().setText(makeRuleTitleSpannable(rule.getTitle()));
 
 		if (IS_PARENT_RULE_PATTERN.matcher(rule.getTitle()).matches()) {
-			holder.getRuleSubtitle().setText(rule.getText());
+			holder.getRuleSubtitle().setText(makeRuleTextSpannable(holder, rule.getText()));
 			holder.getRuleText().setText("");
 			holder.getRuleText().setVisibility(View.GONE);
 		} else {
@@ -174,10 +174,10 @@ public class RuleListAdapter extends RecyclerView.Adapter<RuleListAdapter.ViewHo
 		holder.itemView.setSelected(rule.getTitle().equals(selectedRuleTitle));
 	}
 
-	private Spannable makeRuleTitleSpannable(String ruleTTile) {
-		Spannable spannable = new SpannableString(ruleTTile);
+	private Spannable makeRuleTitleSpannable(String ruleTitle) {
+		Spannable spannable = new SpannableString(ruleTitle);
 
-		highlightSearchText(spannable, ruleTTile);
+		highlightSearchText(spannable, ruleTitle);
 
 		return spannable;
 	}

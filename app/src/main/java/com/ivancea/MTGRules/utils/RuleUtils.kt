@@ -19,7 +19,7 @@ object RuleUtils {
     }
 
     @JvmStatic
-    fun getRuleAndSubRules(rules: List<Rule>, title: String): List<Rule> {
+    fun getRuleAndSubsections(rules: List<Rule>, title: String): List<Rule> {
         val foundRules = getRuleAndParents(rules, title).toList()
 
         if (foundRules.isEmpty()) {
@@ -33,7 +33,7 @@ object RuleUtils {
         // - It has 4 characters or less ("1.", "123.")
         // - It's not a leaf rule, and so it has no sub-sections
         if (rule.title.last() != '.' || rule.title.length <= 4 || foundRules.size < 3) {
-            return flatten(rule).toList()
+            return listOf(rule)
         }
 
         // It may have sub-sections ("100.1" -> "100.1a", "100.1b", ...)
@@ -52,15 +52,15 @@ object RuleUtils {
 
     @JvmStatic
     fun getRuleAndParents(rules: List<Rule>, title: String): Stream<Rule> {
-        if (!Character.isDigit(title[0])) {
-            val glossaryRule = rules[rules.size - 1]
+        if (!title[0].isDigit()) {
+            val glossaryRule = rules.last()
             val foundRule =
                 glossaryRule.subRules.find { (glossaryRuleTitle): Rule -> glossaryRuleTitle == title }
 
             return if (foundRule != null) {
                 Stream.of(glossaryRule, foundRule)
             } else {
-                Stream.empty()
+                Stream.of(glossaryRule)
             }
         }
 
