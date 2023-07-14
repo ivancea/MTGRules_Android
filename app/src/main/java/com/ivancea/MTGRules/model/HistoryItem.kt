@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class HistoryItem(
     val type: Type,
-    val value: Serializable
+    val value: Serializable?
 ) {
     enum class Type {
         Ignored,
