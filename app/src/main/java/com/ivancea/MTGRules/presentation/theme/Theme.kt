@@ -8,7 +8,7 @@ fun TodoListTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = colorPalette,
+        colors = darkColorPalette,
         typography = Typography,
         content = content
     )

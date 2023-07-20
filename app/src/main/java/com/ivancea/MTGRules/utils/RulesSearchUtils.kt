@@ -1,7 +1,7 @@
 package com.ivancea.MTGRules.utils
 
 import com.ivancea.MTGRules.model.Rule
-import kotlin.streams.toList
+import java.util.stream.Collectors.toList
 
 object RulesSearchUtils {
     @JvmStatic
@@ -19,7 +19,7 @@ object RulesSearchUtils {
                     title.contains(token, ignoreCase = true) || text.contains(token, ignoreCase = true)
                 }
             }
-            .toList()
+            .collect(toList())
 
         return filteredRules
     }

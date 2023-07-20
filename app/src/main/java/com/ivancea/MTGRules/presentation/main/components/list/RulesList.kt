@@ -34,10 +34,10 @@ fun RulesList(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         items(items = rules) { item ->
-            RulesListItem(rule = item)
+            RulesListItem(rule = item, rules = rules)
         }
     }
 }
