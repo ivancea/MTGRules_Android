@@ -1,5 +1,6 @@
 package com.ivancea.MTGRules.presentation.main.components.main
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,10 +15,14 @@ import com.ivancea.MTGRules.presentation.theme.TodoListTheme
 import com.ivancea.MTGRules.ui.main.MainViewModel
 
 @Composable
+@ExperimentalFoundationApi
 fun MainComponent(
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val rules = viewModel.visibleRules.collectAsState().value
+    val visibleRules = viewModel.visibleRules.collectAsState().value
+    val currentRules = viewModel.visibleRules.collectAsState().value
+    val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
+    val searchText = viewModel.searchText.collectAsState().value
 
     TodoListTheme {
         Surface(
@@ -26,7 +31,12 @@ fun MainComponent(
         ) {
             Scaffold { padding ->
                 Box(modifier = Modifier.padding(padding)) {
-                    RulesList(rules = rules)
+                    RulesList(
+                        rules = visibleRules,
+                        currentRules = currentRules,
+                        scrollToRule = selectedRule,
+                        searchText = searchText
+                    )
                 }
             }
         }

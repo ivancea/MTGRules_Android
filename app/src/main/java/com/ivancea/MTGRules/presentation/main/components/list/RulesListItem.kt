@@ -1,14 +1,13 @@
 package com.ivancea.MTGRules.presentation.main.components.list
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,52 +20,63 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivancea.MTGRules.model.Rule
+import com.ivancea.MTGRules.presentation.common.NonConsumingClickableText
 import com.ivancea.MTGRules.utils.IntentSender
+import com.ivancea.MTGRules.utils.RulesSearchUtils
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-private val IS_PARENT_RULE_PATTERN: Pattern = Pattern.compile("^(\\d{1,3}\\.|Glossary)$")
-private val RULE_LINK_PATTERN =
+private val parentRulePattern = Pattern.compile("^(\\d{1,3}\\.|Glossary)$")
+private val ruleLinkPattern =
     Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b")
 
 private const val NAVIGATE_RULE_ANNOTATION_KEY = "navigate-rule"
 
 @Composable
+@ExperimentalFoundationApi
 fun RulesListItem(
     rule: Rule,
-    rules: List<Rule>
+    glossaryTermsPatterns: List<Pair<Pattern, String>>,
+    searchTextPattern: Pattern?
 ) {
     val context = LocalContext.current
-    val withSubtitle = IS_PARENT_RULE_PATTERN.matcher(rule.title).matches()
+    val withSubtitle = parentRulePattern.matcher(rule.title).matches()
 
-    Box(modifier = Modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { IntentSender.openRule(context, rule.title, false) }
-                .padding(8.dp)
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { IntentSender.openRule(context, rule.title, false) },
+                onLongClick = { IntentSender.openRule(context, "Glossary", false) },
+            )
+            .padding(8.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            val annotatedRuleTitle = annotateRuleTitle(rule, searchTextPattern)
+
+            Text(
+                text = annotatedRuleTitle,
+                color = MaterialTheme.colors.primary,
+                style = TextStyle(fontWeight = FontWeight.Bold)
+            )
+
+            if (withSubtitle) {
+                val annotatedRuleSubtitle = annotateRuleTitle(rule, searchTextPattern)
+
                 Text(
-                    text = rule.title,
+                    text = annotatedRuleSubtitle,
                     color = MaterialTheme.colors.primary,
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
-
-                if (withSubtitle) {
-                    Text(
-                        text = rule.text,
-                        color = MaterialTheme.colors.primary,
-                        style = TextStyle(fontWeight = FontWeight.Bold)
-                    )
-                }
             }
-            if (!withSubtitle) {
-                val annotatedRuleText = annotateRuleText(rule, rules)
+        }
+        if (!withSubtitle) {
+            val annotatedRuleText = annotateRuleText(rule, glossaryTermsPatterns, searchTextPattern)
 
-                ClickableText(
-                    text = annotatedRuleText,
-                    style = TextStyle(color = MaterialTheme.colors.primary),
-                ) {
+            NonConsumingClickableText(
+                text = annotatedRuleText,
+                style = TextStyle(color = MaterialTheme.colors.primary),
+                onClick = {
                     annotatedRuleText.getStringAnnotations(
                         tag = NAVIGATE_RULE_ANNOTATION_KEY,
                         start = it,
@@ -74,8 +84,15 @@ fun RulesListItem(
                     ).firstOrNull()?.let { annotation ->
                         IntentSender.openRule(context, annotation.item, false)
                     }
+                },
+                shouldConsume = {
+                    annotatedRuleText.getStringAnnotations(
+                        tag = NAVIGATE_RULE_ANNOTATION_KEY,
+                        start = it,
+                        end = it
+                    ).firstOrNull() != null
                 }
-            }
+            )
         }
     }
 }
@@ -83,14 +100,13 @@ fun RulesListItem(
 @Composable
 @ReadOnlyComposable
 @SuppressLint("ComposableNaming")
-private fun annotateRuleText(
+private fun annotateRuleTitle(
     rule: Rule,
-    rules: List<Rule>
+    searchTextPattern: Pattern?
 ): AnnotatedString {
-    val builder = AnnotatedString.Builder(rule.text)
+    val builder = AnnotatedString.Builder(rule.title)
 
-    formatRuleTitleLinks(builder, rule.text)
-    formatGlossaryLinks(builder, rule.text, rules)
+    highlightSearchText(builder, rule.title, searchTextPattern)
 
     return builder.toAnnotatedString()
 }
@@ -98,8 +114,52 @@ private fun annotateRuleText(
 @Composable
 @ReadOnlyComposable
 @SuppressLint("ComposableNaming")
+private fun annotateRuleText(
+    rule: Rule,
+    glossaryTermsPatterns: List<Pair<Pattern, String>>,
+    searchTextPattern: Pattern?
+): AnnotatedString {
+    val builder = AnnotatedString.Builder(rule.text)
+
+    formatRuleTitleLinks(builder, rule.text)
+    formatGlossaryLinks(builder, rule.text, glossaryTermsPatterns)
+    highlightSearchText(builder, rule.text, searchTextPattern)
+
+    return builder.toAnnotatedString()
+}
+
+@Composable
+@ReadOnlyComposable
+@SuppressLint("ComposableNaming")
+private fun highlightSearchText(
+    builder: AnnotatedString.Builder,
+    ruleText: String,
+    searchTextPattern: Pattern?
+) {
+    if (searchTextPattern == null) {
+        return
+    }
+
+    val searchTextMatcher: Matcher = searchTextPattern.matcher(ruleText)
+
+    while (searchTextMatcher.find()) {
+        // Highlight with a background color
+        builder.addStyle(
+            SpanStyle(
+                background = MaterialTheme.colors.secondary,
+                fontWeight = FontWeight.Bold
+            ),
+            searchTextMatcher.start(),
+            searchTextMatcher.end()
+        )
+    }
+}
+
+@Composable
+@ReadOnlyComposable
+@SuppressLint("ComposableNaming")
 private fun formatRuleTitleLinks(builder: AnnotatedString.Builder, ruleText: String) {
-    val linkMatcher = RULE_LINK_PATTERN.matcher(ruleText)
+    val linkMatcher = ruleLinkPattern.matcher(ruleText)
 
     while (linkMatcher.find()) {
         val ruleTitle: String = normalizeRuleTitle(
@@ -123,20 +183,11 @@ private fun formatRuleTitleLinks(builder: AnnotatedString.Builder, ruleText: Str
 private fun formatGlossaryLinks(
     builder: AnnotatedString.Builder,
     ruleText: String,
-    rules: List<Rule>
+    glossaryTermsPatterns: List<Pair<Pattern, String>>
 ) {
-    val glossaryRule = rules[rules.size - 1]
-    val glossaryTerms = glossaryRule.subRules
-        .map(Rule::title)
-        .sortedByDescending { obj: String -> obj.length }
+    for ((pattern, glossaryTerm) in glossaryTermsPatterns) {
+        val matcher = pattern.matcher(ruleText)
 
-    for (glossaryTerm in glossaryTerms) {
-        // TODO: Cache patterns on rule set change
-        val matcher = Pattern.compile(
-            "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(glossaryTerm)) + "\\b",
-            Pattern.CASE_INSENSITIVE
-        )
-            .matcher(ruleText)
         while (matcher.find()) {
             annotateRuleTitleLink(
                 builder = builder,
@@ -165,7 +216,7 @@ private fun annotateRuleTitleLink(
     )
     builder.addStyle(
         SpanStyle(
-            color = MaterialTheme.colors.secondary,
+            color = MaterialTheme.colors.primaryVariant,
             fontWeight = FontWeight.Bold
         ),
         start,
@@ -173,16 +224,13 @@ private fun annotateRuleTitleLink(
     )
 }
 
-/**
- * Takes a regex, and returns another regex that also accepts plurals.
- *
- * Note: This method should be replaced with a proper pluralization library, or should use translations.
- *
- * @param glossaryRegex The glossary regex to pluralize
- * @return A regex accepting plurals
- */
-private fun makePluralAcceptingGlossaryRegex(glossaryRegex: String): String? {
-    return "$glossaryRegex(?:s|es)?"
+private fun makeSearchTextPattern(searchText: String): Pattern {
+    val tokens = RulesSearchUtils.tokenize(searchText)
+    val regex = tokens
+        .map { s: String -> Pattern.quote(s) }
+        .joinToString { "|" }
+
+    return Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
 }
 
 private fun normalizeRuleTitle(

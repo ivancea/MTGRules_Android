@@ -15,6 +15,7 @@ import android.widget.SimpleCursorAdapter
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -73,6 +74,8 @@ class MainActivity : AppCompatActivity() {
     private var viewModel: MainViewModel? = null
     private var ttsOk: Boolean? = null
     private var tts: TextToSpeech? = null
+
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

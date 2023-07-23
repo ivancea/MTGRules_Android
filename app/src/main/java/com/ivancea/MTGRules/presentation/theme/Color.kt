@@ -6,7 +6,10 @@ val darkColorPalette = androidx.compose.material.darkColors(
 	primary = Color.White,
 
 	// For links
-	secondary = Color(0xFFAAAAAA),
+	primaryVariant = Color.Gray,
+
+	// For search text highlight
+	secondary = Color.Yellow.copy(alpha = 0.4f),
 
 	background = Color.Black,
 )
