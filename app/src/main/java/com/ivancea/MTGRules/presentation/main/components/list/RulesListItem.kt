@@ -52,7 +52,7 @@ fun RulesListItem(
             .padding(8.dp)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val annotatedRuleTitle = annotateRuleTitle(rule, searchTextPattern)
+            val annotatedRuleTitle = annotateRuleTitle(rule.title, searchTextPattern)
 
             Text(
                 text = annotatedRuleTitle,
@@ -61,7 +61,7 @@ fun RulesListItem(
             )
 
             if (withSubtitle) {
-                val annotatedRuleSubtitle = annotateRuleTitle(rule, searchTextPattern)
+                val annotatedRuleSubtitle = annotateRuleTitle(rule.text, searchTextPattern)
 
                 Text(
                     text = annotatedRuleSubtitle,
@@ -71,7 +71,7 @@ fun RulesListItem(
             }
         }
         if (!withSubtitle) {
-            val annotatedRuleText = annotateRuleText(rule, glossaryTermsPatterns, searchTextPattern)
+            val annotatedRuleText = annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern)
 
             NonConsumingClickableText(
                 text = annotatedRuleText,
@@ -101,12 +101,12 @@ fun RulesListItem(
 @ReadOnlyComposable
 @SuppressLint("ComposableNaming")
 private fun annotateRuleTitle(
-    rule: Rule,
+    text: String,
     searchTextPattern: Pattern?
 ): AnnotatedString {
-    val builder = AnnotatedString.Builder(rule.title)
+    val builder = AnnotatedString.Builder(text)
 
-    highlightSearchText(builder, rule.title, searchTextPattern)
+    highlightSearchText(builder, text, searchTextPattern)
 
     return builder.toAnnotatedString()
 }
@@ -115,15 +115,15 @@ private fun annotateRuleTitle(
 @ReadOnlyComposable
 @SuppressLint("ComposableNaming")
 private fun annotateRuleText(
-    rule: Rule,
+    text: String,
     glossaryTermsPatterns: List<Pair<Pattern, String>>,
     searchTextPattern: Pattern?
 ): AnnotatedString {
-    val builder = AnnotatedString.Builder(rule.text)
+    val builder = AnnotatedString.Builder(text)
 
-    formatRuleTitleLinks(builder, rule.text)
-    formatGlossaryLinks(builder, rule.text, glossaryTermsPatterns)
-    highlightSearchText(builder, rule.text, searchTextPattern)
+    formatRuleTitleLinks(builder, text)
+    formatGlossaryLinks(builder, text, glossaryTermsPatterns)
+    highlightSearchText(builder, text, searchTextPattern)
 
     return builder.toAnnotatedString()
 }
