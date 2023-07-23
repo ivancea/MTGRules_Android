@@ -17,18 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.presentation.common.NonConsumingClickableText
 import com.ivancea.MTGRules.utils.IntentSender
-import com.ivancea.MTGRules.utils.RulesSearchUtils
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 private val parentRulePattern = Pattern.compile("^(\\d{1,3}\\.|Glossary)$")
 private val ruleLinkPattern =
     Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b")
+private val examplePattern = Pattern.compile("^Example:", Pattern.MULTILINE)
 
 private const val NAVIGATE_RULE_ANNOTATION_KEY = "navigate-rule"
 
@@ -71,7 +72,8 @@ fun RulesListItem(
             }
         }
         if (!withSubtitle) {
-            val annotatedRuleText = annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern)
+            val annotatedRuleText =
+                annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern)
 
             NonConsumingClickableText(
                 text = annotatedRuleText,
@@ -124,6 +126,7 @@ private fun annotateRuleText(
     formatRuleTitleLinks(builder, text)
     formatGlossaryLinks(builder, text, glossaryTermsPatterns)
     highlightSearchText(builder, text, searchTextPattern)
+    formatExample(builder, text)
 
     return builder.toAnnotatedString()
 }
@@ -145,10 +148,7 @@ private fun highlightSearchText(
     while (searchTextMatcher.find()) {
         // Highlight with a background color
         builder.addStyle(
-            SpanStyle(
-                background = MaterialTheme.colors.secondary,
-                fontWeight = FontWeight.Bold
-            ),
+            SpanStyle(background = MaterialTheme.colors.secondary),
             searchTextMatcher.start(),
             searchTextMatcher.end()
         )
@@ -196,6 +196,18 @@ private fun formatGlossaryLinks(
                 end = matcher.end()
             )
         }
+    }
+}
+
+private fun formatExample(builder: AnnotatedString.Builder, ruleText: String) {
+    val exampleMatcher = examplePattern.matcher(ruleText)
+
+    if (exampleMatcher.find()) {
+        builder.addStyle(
+            SpanStyle(fontStyle = FontStyle.Italic),
+            exampleMatcher.start(),
+            ruleText.length
+        )
     }
 }
 
