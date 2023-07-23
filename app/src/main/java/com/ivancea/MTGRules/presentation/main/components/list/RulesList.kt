@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.ivancea.MTGRules.model.Rule
+import com.ivancea.MTGRules.utils.RulesSearchUtils
 import java.util.regex.Pattern
 
 
@@ -32,10 +33,7 @@ fun RulesList(
         if (searchText == null) {
             null
         } else {
-            Pattern.compile(
-                "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(searchText)) + "\\b",
-                Pattern.CASE_INSENSITIVE
-            )
+            makeSearchTextPattern(searchText)
         }
     }
     val listState = rememberLazyListState()
@@ -96,6 +94,13 @@ fun makeGlossaryTermsPatterns(currentRules: List<Rule>): List<Pair<Pattern, Stri
     }
 
     return patterns
+}
+
+private fun makeSearchTextPattern(searchText: String): Pattern {
+    val tokens = RulesSearchUtils.tokenize(searchText)
+    val regex = tokens.joinToString("|") { s: String -> Pattern.quote(s) }
+
+    return Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
 }
 
 /**

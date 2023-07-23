@@ -224,15 +224,6 @@ private fun annotateRuleTitleLink(
     )
 }
 
-private fun makeSearchTextPattern(searchText: String): Pattern {
-    val tokens = RulesSearchUtils.tokenize(searchText)
-    val regex = tokens
-        .map { s: String -> Pattern.quote(s) }
-        .joinToString { "|" }
-
-    return Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
-}
-
 private fun normalizeRuleTitle(
     ruleNumber: String?,
     subRuleNumber: String?,
