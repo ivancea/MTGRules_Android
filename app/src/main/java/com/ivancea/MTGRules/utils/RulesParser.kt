@@ -51,10 +51,7 @@ object RulesParser {
                 } else {
                     if (blankLines == 0) {
                         val rule = rules.last().subRules.last().subRules.last()
-                        rule.text = """
-                        ${rule.text}
-                        $t
-                        """.trimIndent()
+                        rule.text = "${rule.text}\n$t"
                     } else {
                         val pos = t.indexOf(' ')
                         val r =
