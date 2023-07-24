@@ -14,4 +14,5 @@ class MainViewModel : ViewModel() {
     val actionbarSubtitle = MutableStateFlow<String?>(null)
     val showSymbols = MutableStateFlow(true)
     val darkTheme = MutableStateFlow(true)
+    val showAboutDialog = MutableStateFlow(false)
 }

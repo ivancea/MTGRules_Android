@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ivancea.MTGRules.presentation.main.components.about.AboutDialog
 import com.ivancea.MTGRules.presentation.main.components.list.RulesList
 import com.ivancea.MTGRules.presentation.theme.TodoListTheme
 import com.ivancea.MTGRules.ui.main.MainViewModel
@@ -25,6 +26,7 @@ fun MainComponent(
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
     val showSymbols = viewModel.showSymbols.collectAsState().value
+    val showAboutDialog = viewModel.showAboutDialog.collectAsState().value
 
     TodoListTheme(darkTheme = darkTheme) {
         Surface(
@@ -41,6 +43,10 @@ fun MainComponent(
                         showSymbols = showSymbols,
                     )
                 }
+            }
+
+            if (showAboutDialog) {
+                AboutDialog(onClose = { viewModel.showAboutDialog.value = false })
             }
         }
     }

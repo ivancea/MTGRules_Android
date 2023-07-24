@@ -30,7 +30,6 @@ import com.ivancea.MTGRules.services.PermissionsRequesterService
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
 import com.ivancea.MTGRules.services.StorageService
-import com.ivancea.MTGRules.ui.main.AboutFragment
 import com.ivancea.MTGRules.ui.main.MainViewModel
 import com.ivancea.MTGRules.utils.IntentSender.changeTheme
 import com.ivancea.MTGRules.utils.IntentSender.openRandomRule
@@ -482,7 +481,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
         menu.findItem(R.id.about).setOnMenuItemClickListener { view: MenuItem? ->
-            AboutFragment().show(supportFragmentManager, null)
+            viewModel!!.showAboutDialog.value = true
             true
         }
         return super.onCreateOptionsMenu(menu)

@@ -49,7 +49,7 @@ fun RulesListItem(
 ) {
     val context = LocalContext.current
     val withSubtitle = parentRulePattern.matcher(rule.title).matches()
-    var showMenu = remember { mutableStateOf(false) }
+    val showMenu = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
