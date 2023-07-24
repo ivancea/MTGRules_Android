@@ -23,6 +23,7 @@ fun MainComponent(
     val currentRules = viewModel.visibleRules.collectAsState().value
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
+    val showSymbols = viewModel.showSymbols.collectAsState().value
 
     TodoListTheme {
         Surface(
@@ -35,7 +36,8 @@ fun MainComponent(
                         rules = visibleRules,
                         currentRules = currentRules,
                         scrollToRule = selectedRule,
-                        searchText = searchText
+                        searchText = searchText,
+                        showSymbols = showSymbols,
                     )
                 }
             }

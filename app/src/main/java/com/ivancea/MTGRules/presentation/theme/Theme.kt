@@ -9,7 +9,7 @@ fun TodoListTheme(
 ) {
     MaterialTheme(
         colors = darkColorPalette,
-        typography = Typography,
+        typography = appTypography,
         content = content
     )
 }

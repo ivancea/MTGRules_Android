@@ -11,5 +11,8 @@ val darkColorPalette = androidx.compose.material.darkColors(
 	// For search text highlight
 	secondary = Color.Yellow.copy(alpha = 0.4f),
 
+	// For symbols background
+	secondaryVariant = Color.Gray.copy(alpha = 0.4f),
+
 	background = Color.Black,
 )

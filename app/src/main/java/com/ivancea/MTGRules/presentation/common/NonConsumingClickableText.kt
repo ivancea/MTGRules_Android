@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ fun NonConsumingClickableText(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
     style: TextStyle = TextStyle.Default,
+    inlineContent: Map<String, InlineTextContent> = mapOf(),
     softWrap: Boolean = true,
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
@@ -80,6 +82,7 @@ fun NonConsumingClickableText(
         text = text,
         modifier = modifier.then(pressIndicator),
         style = style,
+        inlineContent = inlineContent,
         softWrap = softWrap,
         overflow = overflow,
         maxLines = maxLines,

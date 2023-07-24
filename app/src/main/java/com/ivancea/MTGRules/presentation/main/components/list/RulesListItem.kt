@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.presentation.common.NonConsumingClickableText
 import com.ivancea.MTGRules.utils.IntentSender
@@ -30,6 +32,7 @@ private val parentRulePattern = Pattern.compile("^(\\d{1,3}\\.|Glossary)$")
 private val ruleLinkPattern =
     Pattern.compile("\\b(?<rule>\\d{3})(?:\\.(?<subRule>\\d+)(?<letter>[a-z])?)?\\b")
 private val examplePattern = Pattern.compile("^Example:", Pattern.MULTILINE)
+private val symbolPattern = Pattern.compile("\\{(?<symbol>[\\w/]+)\\}")
 
 private const val NAVIGATE_RULE_ANNOTATION_KEY = "navigate-rule"
 
@@ -38,7 +41,9 @@ private const val NAVIGATE_RULE_ANNOTATION_KEY = "navigate-rule"
 fun RulesListItem(
     rule: Rule,
     glossaryTermsPatterns: List<Pair<Pattern, String>>,
-    searchTextPattern: Pattern?
+    searchTextPattern: Pattern?,
+    showSymbols: Boolean,
+    textInlineContent: Map<String, InlineTextContent>
 ) {
     val context = LocalContext.current
     val withSubtitle = parentRulePattern.matcher(rule.title).matches()
@@ -48,7 +53,7 @@ fun RulesListItem(
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { IntentSender.openRule(context, rule.title, false) },
-                onLongClick = { IntentSender.openRule(context, "Glossary", false) },
+                onLongClick = { },
             )
             .padding(8.dp)
     ) {
@@ -73,11 +78,12 @@ fun RulesListItem(
         }
         if (!withSubtitle) {
             val annotatedRuleText =
-                annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern)
+                annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern, showSymbols)
 
             NonConsumingClickableText(
                 text = annotatedRuleText,
                 style = TextStyle(color = MaterialTheme.colors.primary),
+                inlineContent = textInlineContent,
                 onClick = {
                     annotatedRuleText.getStringAnnotations(
                         tag = NAVIGATE_RULE_ANNOTATION_KEY,
@@ -119,7 +125,8 @@ private fun annotateRuleTitle(
 private fun annotateRuleText(
     text: String,
     glossaryTermsPatterns: List<Pair<Pattern, String>>,
-    searchTextPattern: Pattern?
+    searchTextPattern: Pattern?,
+    showSymbols: Boolean
 ): AnnotatedString {
     val builder = AnnotatedString.Builder(text)
 
@@ -127,6 +134,10 @@ private fun annotateRuleText(
     formatGlossaryLinks(builder, text, glossaryTermsPatterns)
     highlightSearchText(builder, text, searchTextPattern)
     formatExample(builder, text)
+
+    if (showSymbols) {
+        replaceSymbols(builder, text)
+    }
 
     return builder.toAnnotatedString()
 }
@@ -208,6 +219,27 @@ private fun formatExample(builder: AnnotatedString.Builder, ruleText: String) {
             exampleMatcher.start(),
             ruleText.length
         )
+    }
+}
+
+private fun replaceSymbols(
+    builder: AnnotatedString.Builder,
+    ruleText: String
+) {
+    val symbolMatcher = symbolPattern.matcher(ruleText)
+
+    while (symbolMatcher.find()) {
+        val symbol = symbolMatcher.group("symbol")!!
+
+        if (Symbols.drawablesBySymbol.containsKey(symbol)) {
+            builder.addStringAnnotation(
+                // From InlineTextContent.INLINE_CONTENT_TAG
+                "androidx.compose.foundation.text.inlineContent",
+                symbol,
+                symbolMatcher.start(),
+                symbolMatcher.end()
+            )
+        }
     }
 }
 
