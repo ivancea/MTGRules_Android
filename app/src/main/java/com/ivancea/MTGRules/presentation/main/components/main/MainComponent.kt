@@ -19,13 +19,14 @@ import com.ivancea.MTGRules.ui.main.MainViewModel
 fun MainComponent(
     viewModel: MainViewModel = hiltViewModel()
 ) {
+    val darkTheme = viewModel.darkTheme.collectAsState().value
     val visibleRules = viewModel.visibleRules.collectAsState().value
     val currentRules = viewModel.visibleRules.collectAsState().value
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
     val showSymbols = viewModel.showSymbols.collectAsState().value
 
-    TodoListTheme {
+    TodoListTheme(darkTheme = darkTheme) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()

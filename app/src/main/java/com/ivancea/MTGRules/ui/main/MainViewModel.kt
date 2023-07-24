@@ -13,4 +13,5 @@ class MainViewModel : ViewModel() {
     val history = MutableStateFlow(emptyList<HistoryItem>())
     val actionbarSubtitle = MutableStateFlow<String?>(null)
     val showSymbols = MutableStateFlow(true)
+    val darkTheme = MutableStateFlow(true)
 }

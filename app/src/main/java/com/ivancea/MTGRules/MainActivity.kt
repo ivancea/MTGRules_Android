@@ -325,6 +325,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTheme(useLightTheme: Boolean) {
+        viewModel!!.darkTheme.value = !useLightTheme
+
+        // TODO: Remove after Jetpack migration
         setTheme(if (useLightTheme) R.style.LightTheme else R.style.DarkTheme)
     }
 

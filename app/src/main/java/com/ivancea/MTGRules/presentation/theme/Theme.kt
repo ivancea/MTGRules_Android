@@ -5,10 +5,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun TodoListTheme(
+    darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = darkColorPalette,
+        colors = if (darkTheme) darkColorPalette else lightColorPalette,
         typography = appTypography,
         content = content
     )
