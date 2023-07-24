@@ -2,7 +2,7 @@ package com.ivancea.MTGRules.utils
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.streams.toList
+import java.util.stream.Collectors
 
 internal class RulesUtilsTest {
     @Test
@@ -20,10 +20,10 @@ internal class RulesUtilsTest {
             }
         }
 
-        rules.flatMap { RuleUtils.flatten(it).toList() }
+        rules.flatMap { RuleUtils.flatten(it).collect(Collectors.toList()) }
             .filter { it.title[0].isLetter() || it.title.endsWith(".") }.forEach {
                 val result = RuleUtils.getRuleAndSubsections(rules, it.title)
-                val expected = RuleUtils.flatten(it).toList()
+                val expected = RuleUtils.flatten(it).collect(Collectors.toList())
 
                 assertEquals(expected, result)
             }

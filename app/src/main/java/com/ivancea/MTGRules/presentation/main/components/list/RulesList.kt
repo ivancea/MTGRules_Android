@@ -97,12 +97,16 @@ fun RulesList(
 }
 
 fun makeGlossaryTermsPatterns(currentRules: List<Rule>): List<Pair<Pattern, String>> {
+    val patterns = arrayListOf<Pair<Pattern, String>>()
+
+    if (currentRules.isEmpty()) {
+        return patterns
+    }
+
     val glossaryRule = currentRules.last()
     val glossaryTerms = glossaryRule.subRules
         .map(Rule::title)
         .sortedByDescending { obj: String -> obj.length }
-
-    val patterns = arrayListOf<Pair<Pattern, String>>()
 
     for (glossaryTerm in glossaryTerms) {
         // TODO: Cache patterns on rule set change

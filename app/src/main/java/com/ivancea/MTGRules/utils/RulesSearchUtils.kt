@@ -29,7 +29,7 @@ object RulesSearchUtils {
         val tokens = HashSet<String>()
 
         // The negative lookbehind avoids matching escaped backslashes
-        val blocks = query.split("(?<!\\\\)\"".toRegex()).toList()
+        val blocks = query.split("(?<!\\\\)\"".toRegex())
 
         for (i in blocks.indices) {
             // Convert escaped quotes to quotes

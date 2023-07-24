@@ -13,6 +13,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
@@ -47,13 +49,14 @@ fun RulesListItem(
 ) {
     val context = LocalContext.current
     val withSubtitle = parentRulePattern.matcher(rule.title).matches()
+    var showMenu = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { IntentSender.openRule(context, rule.title, false) },
-                onLongClick = { },
+                onLongClick = { showMenu.value = true },
             )
             .padding(8.dp)
     ) {
@@ -102,6 +105,8 @@ fun RulesListItem(
                 }
             )
         }
+
+        ItemDropdownMenu(rule = rule, showMenu = showMenu)
     }
 }
 
