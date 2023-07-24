@@ -62,7 +62,7 @@ fun RulesList(
             val index = rules.indexOfFirst { it.title == scrollToRule }
 
             if (index != -1) {
-                listState.scrollToItem(index)
+                listState.scrollToItem(index, -10)
             }
         }
     }

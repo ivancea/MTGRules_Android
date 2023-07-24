@@ -22,7 +22,7 @@ fun MainComponent(
 ) {
     val darkTheme = viewModel.darkTheme.collectAsState().value
     val visibleRules = viewModel.visibleRules.collectAsState().value
-    val currentRules = viewModel.visibleRules.collectAsState().value
+    val currentRules = viewModel.currentRules.collectAsState().value
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
     val showSymbols = viewModel.showSymbols.collectAsState().value
