@@ -13,7 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivancea.MTGRules.presentation.main.components.about.AboutDialog
 import com.ivancea.MTGRules.presentation.main.components.list.RulesList
 import com.ivancea.MTGRules.presentation.theme.TodoListTheme
-import com.ivancea.MTGRules.ui.main.MainViewModel
+import com.ivancea.MTGRules.presentation.MainViewModel
 
 @Composable
 @ExperimentalFoundationApi

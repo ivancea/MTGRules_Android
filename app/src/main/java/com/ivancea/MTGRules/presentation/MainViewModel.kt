@@ -1,4 +1,4 @@
-package com.ivancea.MTGRules.ui.main
+package com.ivancea.MTGRules.presentation
 
 import androidx.lifecycle.ViewModel
 import com.ivancea.MTGRules.model.HistoryItem

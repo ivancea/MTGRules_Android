@@ -30,7 +30,7 @@ import com.ivancea.MTGRules.services.PermissionsRequesterService
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
 import com.ivancea.MTGRules.services.StorageService
-import com.ivancea.MTGRules.ui.main.MainViewModel
+import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.utils.IntentSender.changeTheme
 import com.ivancea.MTGRules.utils.IntentSender.openRandomRule
 import com.ivancea.MTGRules.utils.IntentSender.openRule
@@ -106,8 +106,6 @@ class MainActivity : AppCompatActivity() {
             useRules(rulesSource)
         }
 
-        // Inflate layout and fragment
-        //setContentView(R.layout.main_activity)
         setContent {
             MainComponent()
         }
