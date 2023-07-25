@@ -34,4 +34,5 @@
     <string name="context_search_in_rule">Buscar en regla</string>
     <string name="context_search_in_rule_dialog_title">Buscar en regla %1$s</string>
     <string name="context_search_in_rule_dialog_message">Buscar solo en la regla y en sus subreglas</string>
+    <string name="menu_more">Más opciones</string>
 </resources>

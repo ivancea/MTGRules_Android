@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.about.AboutDialog
 import com.ivancea.MTGRules.presentation.main.components.list.RulesList
 import com.ivancea.MTGRules.presentation.theme.TodoListTheme
-import com.ivancea.MTGRules.presentation.MainViewModel
 
 @Composable
 @ExperimentalFoundationApi
@@ -21,8 +21,9 @@ fun MainComponent(
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val darkTheme = viewModel.darkTheme.collectAsState().value
-    val visibleRules = viewModel.visibleRules.collectAsState().value
+    val currentRulesSource = viewModel.currentRulesSource.collectAsState().value
     val currentRules = viewModel.currentRules.collectAsState().value
+    val visibleRules = viewModel.visibleRules.collectAsState().value
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
     val showSymbols = viewModel.showSymbols.collectAsState().value
@@ -33,7 +34,15 @@ fun MainComponent(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Scaffold { padding ->
+            Scaffold(
+                topBar = {
+                    TopBarMenu(
+                        darkTheme = darkTheme,
+                        rulesSource = currentRulesSource,
+                        onShowAbout = { viewModel.showAboutDialog.value = true },
+                    )
+                },
+            ) { padding ->
                 Box(modifier = Modifier.padding(padding)) {
                     RulesList(
                         rules = visibleRules,

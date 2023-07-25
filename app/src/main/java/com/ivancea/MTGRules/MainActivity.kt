@@ -25,17 +25,13 @@ import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.RulesSource
+import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.main.MainComponent
 import com.ivancea.MTGRules.services.PermissionsRequesterService
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
 import com.ivancea.MTGRules.services.StorageService
-import com.ivancea.MTGRules.presentation.MainViewModel
-import com.ivancea.MTGRules.utils.IntentSender.changeTheme
-import com.ivancea.MTGRules.utils.IntentSender.openRandomRule
-import com.ivancea.MTGRules.utils.IntentSender.openRule
-import com.ivancea.MTGRules.utils.IntentSender.openSearch
-import com.ivancea.MTGRules.utils.IntentSender.toggleSymbols
+import com.ivancea.MTGRules.utils.IntentSender
 import com.ivancea.MTGRules.utils.RuleUtils
 import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndParents
 import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndSubsections
@@ -44,11 +40,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Collections
 import java.util.Locale
 import java.util.Random
 import java.util.concurrent.CompletableFuture
-import java.util.function.Supplier
 import java.util.stream.Collectors
 import javax.inject.Inject
 
@@ -197,15 +191,12 @@ class MainActivity : AppCompatActivity() {
                     val existingRule = viewModel!!.visibleRules.value.stream()
                         .filter { (title1): Rule -> title1 == title }
                         .findAny().orElse(null)
-                    if (existingRule == null || !existingRule.subRules.isEmpty() || !isLastHistoryItemNavigation) {
-                        val rules: MutableList<Rule> = getRuleAndParents(
+                    if (existingRule == null || existingRule.subRules.isNotEmpty() || !isLastHistoryItemNavigation) {
+                        val rules = getRuleAndParents(
                             viewModel!!.currentRules.value,
                             title
-                        ).collect(
-                            Collectors.toCollection(
-                                Supplier { ArrayList() })
-                        )
-                        if (!rules.isEmpty()) {
+                        ).collect(Collectors.toCollection { ArrayList() })
+                        if (rules.isNotEmpty()) {
                             val rule = rules[rules.size - 1]
                             if (rule.subRules.isEmpty()) {
                                 rules.removeAt(rules.size - 1)
@@ -291,18 +282,18 @@ class MainActivity : AppCompatActivity() {
         viewModel!!.history.value = newHistory
         when (type) {
             HistoryItem.Type.Rule -> {
-                openRule(this, value as String, true)
+                IntentSender.openRule(this, value as String, true)
             }
 
             HistoryItem.Type.Search -> {
                 val values = value as Array<String>
                 val searchText = values[0]
                 val rootRule = if (values.size == 2) values[1] else null
-                openSearch(this, searchText, rootRule, true)
+                IntentSender.openSearch(this, searchText, rootRule, true)
             }
 
             HistoryItem.Type.Random -> {
-                openRandomRule(this, value as Int, true)
+                IntentSender.openRandomRule(this, value as Int, true)
             }
 
             HistoryItem.Type.Ignored -> {
@@ -312,9 +303,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val isLastHistoryItemNavigation: Boolean
-        private get() {
+        get() {
             val history = viewModel!!.history.value
-            return !history.isEmpty() && history[history.size - 1].type == HistoryItem.Type.Rule
+            return history.isNotEmpty() && history[history.size - 1].type == HistoryItem.Type.Rule
         }
 
     private fun logEvent(event: String) {
@@ -341,6 +332,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun useRules(rulesSource: RulesSource) {
         val rules = rulesService!!.loadRules(rulesSource)
+        viewModel!!.currentRulesSource.value = rulesSource
         viewModel!!.currentRules.value = rules
         viewModel!!.visibleRules.value = rules
         viewModel!!.selectedRuleTitle.value = null
@@ -401,28 +393,28 @@ class MainActivity : AppCompatActivity() {
                 adapter.cursor.moveToPosition(position)
                 val title = adapter.cursor.getString(1)
                 searchView.clearFocus()
-                openRule(this@MainActivity, title, false)
+                IntentSender.openRule(this@MainActivity, title, false)
                 return true
             }
         })
-        menu.findItem(R.id.home).setOnMenuItemClickListener { view: MenuItem? ->
-            openRule(this, "", false)
+        menu.findItem(R.id.home).setOnMenuItemClickListener { _: MenuItem? ->
+            IntentSender.openRule(this, "", false)
             true
         }
-        menu.findItem(R.id.randomRule).setOnMenuItemClickListener { view: MenuItem? ->
-            openRandomRule(this, null, false)
+        menu.findItem(R.id.randomRule).setOnMenuItemClickListener { _: MenuItem? ->
+            IntentSender.openRandomRule(this, null, false)
             true
         }
-        menu.findItem(R.id.changeTheme).setOnMenuItemClickListener { view: MenuItem? ->
-            changeTheme(this)
+        menu.findItem(R.id.changeTheme).setOnMenuItemClickListener { _: MenuItem? ->
+            IntentSender.changeTheme(this)
             true
         }
-        menu.findItem(R.id.toggleSymbols).setOnMenuItemClickListener { view: MenuItem? ->
-            toggleSymbols(this)
+        menu.findItem(R.id.toggleSymbols).setOnMenuItemClickListener { _: MenuItem? ->
+            IntentSender.toggleSymbols(this)
             true
         }
-        menu.findItem(R.id.compareRules).setOnMenuItemClickListener { view: MenuItem? ->
-            val formattedRulesSources: List<String?> = rulesService!!.rulesSources.stream()
+        menu.findItem(R.id.compareRules).setOnMenuItemClickListener { _: MenuItem? ->
+            val formattedRulesSources = rulesService!!.rulesSources.stream()
                 .map { (_, date): RulesSource ->
                     date.format(
                         DateTimeFormatter.ofLocalizedDate(
@@ -430,11 +422,10 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
-                .collect(
-                    Collectors.toCollection(
-                        Supplier { ArrayList() })
-                )
-            Collections.reverse(formattedRulesSources)
+                .collect(Collectors.toCollection { ArrayList() })
+
+            formattedRulesSources.reverse()
+
             showPicker(R.string.dialog_select_source_rules, formattedRulesSources)
                 .thenAccept { selectedSourceIndex: Int ->
                     showPicker(R.string.dialog_select_target_rules, formattedRulesSources)
@@ -478,7 +469,7 @@ class MainActivity : AppCompatActivity() {
                 }
             true
         }
-        menu.findItem(R.id.about).setOnMenuItemClickListener { view: MenuItem? ->
+        menu.findItem(R.id.about).setOnMenuItemClickListener { _: MenuItem? ->
             viewModel!!.showAboutDialog.value = true
             true
         }
@@ -489,14 +480,15 @@ class MainActivity : AppCompatActivity() {
         val future = CompletableFuture<Int>()
         AlertDialog.Builder(this)
             .setTitle(titleId)
-            .setNegativeButton(R.string.dialog_cancel) { dialog: DialogInterface?, which: Int -> }
+            .setNegativeButton(R.string.dialog_cancel) { _: DialogInterface?, _: Int -> }
             .setItems(
                 pickElement.toTypedArray()
-            ) { dialog: DialogInterface?, which: Int -> future.complete(which) }
+            ) { _: DialogInterface?, which: Int -> future.complete(which) }
             .show()
         return future
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (!popHistoryItem()) {
             super.onBackPressed()

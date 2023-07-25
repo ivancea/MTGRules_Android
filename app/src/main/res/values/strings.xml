@@ -35,4 +35,5 @@
     <string name="context_search_in_rule">Search in rule</string>
     <string name="context_search_in_rule_dialog_title">Search in rule %1$s</string>
     <string name="context_search_in_rule_dialog_message">Search only in the rule and its subrules</string>
+    <string name="menu_more">More options</string>
 </resources>
