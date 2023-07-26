@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.ivancea.MTGRules.R
@@ -82,4 +83,10 @@ fun SearchInRuleDialog(rule: Rule, onClose: () -> Unit) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    SearchInRuleDialog(rule = Rule("100.1", "Some text"), onClose = {})
 }

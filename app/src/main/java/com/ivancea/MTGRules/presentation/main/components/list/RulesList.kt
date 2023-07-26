@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.isUnspecified
@@ -82,7 +83,7 @@ fun RulesList(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background),
     ) {
         items(items = rules, key = { it.title }) { item ->
             RulesListItem(
@@ -167,4 +168,21 @@ private fun makeSymbolsMap(context: Context, lineHeight: TextUnit): Map<String, 
             )
         }
     }
+}
+
+@Preview
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun Preview() {
+    RulesList(
+        rules = listOf(
+            Rule("1.", "Block"),
+            Rule("100.", "Parent rule"),
+            Rule("100.1", "First rule")
+        ),
+        currentRules = listOf(),
+        scrollToRule = null,
+        searchText = "rule",
+        showSymbols = true
+    )
 }

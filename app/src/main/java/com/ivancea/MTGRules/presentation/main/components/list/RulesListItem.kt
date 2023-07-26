@@ -2,6 +2,7 @@ package com.ivancea.MTGRules.presentation.main.components.list
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
@@ -54,6 +56,7 @@ fun RulesListItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
             .combinedClickable(
                 onClick = { IntentSender.openRule(context, rule.title, false) },
                 onLongClick = { showMenu.value = true },
@@ -287,4 +290,36 @@ private fun normalizeRuleTitle(
     }
 
     return "$ruleNumber.$subRuleNumber$subRuleLetter"
+}
+
+@Preview
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PreviewWithSubtitle() {
+    RulesListItem(
+        rule = Rule(
+            title = "100.",
+            text = "My rule 100"
+        ),
+        glossaryTermsPatterns = emptyList(),
+        searchTextPattern = Pattern.compile("0"),
+        showSymbols = true,
+        textInlineContent = emptyMap()
+    )
+}
+
+@Preview
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun PreviewWithSubtext() {
+    RulesListItem(
+        rule = Rule(
+            title = "100.5a",
+            text = "My rule with text and a symbol :CHAOS:"
+        ),
+        glossaryTermsPatterns = emptyList(),
+        searchTextPattern = Pattern.compile("a"),
+        showSymbols = true,
+        textInlineContent = emptyMap()
+    )
 }

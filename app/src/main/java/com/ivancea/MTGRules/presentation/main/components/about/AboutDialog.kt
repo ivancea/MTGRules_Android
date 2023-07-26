@@ -15,10 +15,12 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.presentation.common.LinkedText
+import com.ivancea.MTGRules.presentation.main.components.main.TopBarMenu
 
 @Composable
 fun AboutDialog(onClose: () -> Unit) {
@@ -114,4 +116,9 @@ fun AboutDialog(onClose: () -> Unit) {
             )
         }
     }
+}
+@Preview
+@Composable
+private fun Preview() {
+    AboutDialog(onClose = {})
 }
