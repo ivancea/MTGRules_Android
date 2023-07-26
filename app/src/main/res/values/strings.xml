@@ -29,7 +29,7 @@
     <string name="notification_channel_new_rules_body">Rules: %1$s</string>
     <string name="context_share">Share</string>
     <string name="menu_toggle_symbols">Show/Hide symbols</string>
-    <string name="search_hint">"E.g. \"can be\" planeswalker "</string>
+    <string name="search_hint">E.g. \"can be\" target</string>
     <string name="notification_permission_title">Notification permissions</string>
     <string name="notification_permission_message">We will send you notifications about new rules, and maybe new relevant things in the future.\n\nGrant the notifications permission if you want those notifications.\n\nYou can also choose which notifications to receive in the android app configuration.</string>
     <string name="context_search_in_rule">Search in rule</string>
