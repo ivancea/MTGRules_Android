@@ -1,31 +1,21 @@
 package com.ivancea.MTGRules
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.DialogInterface
 import android.content.Intent
-import android.database.MatrixCursor
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.util.StatsLog.logEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.CursorAdapter
-import android.widget.SearchView
-import android.widget.SimpleCursorAdapter
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.constants.Actions
 import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
-import com.ivancea.MTGRules.model.RulesSource
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.main.MainComponent
 import com.ivancea.MTGRules.services.PermissionsRequesterService
@@ -38,9 +28,6 @@ import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndParents
 import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndSubsections
 import com.ivancea.MTGRules.utils.RulesSearchUtils.search
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Locale
 import java.util.Random
 import java.util.concurrent.CompletableFuture
@@ -48,7 +35,7 @@ import java.util.stream.Collectors
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     @JvmField
     @Inject
     var storageService: StorageService? = null
@@ -102,20 +89,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             MainComponent()
         }
+
         permissionsRequesterService!!.requestNotifications()
-
-        // Configure action bar
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.setLogo(R.drawable.ic_launcher_foreground)
-            actionBar.setTitle(R.string.app_name)
-            // Collect in coroutine
-
-            lifecycleScope.launch {
-                viewModel!!.actionbarSubtitle.flowWithLifecycle(lifecycle)
-                    .collect(actionBar::setSubtitle)
-            }
-        }
 
         // Handle initial intent
         handleIntent(intent)
@@ -203,7 +178,12 @@ class MainActivity : AppCompatActivity() {
                             rules.addAll(rules[rules.size - 1].subRules)
                             viewModel!!.visibleRules.value = rules
                             if (addToHistory) {
-                                viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
+                                viewModel!!.pushHistoryItem(
+                                    HistoryItem(
+                                        HistoryItem.Type.Rule,
+                                        title
+                                    )
+                                )
                             }
                         }
                     }
@@ -301,9 +281,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme(useLightTheme: Boolean) {
         viewModel!!.darkTheme.value = !useLightTheme
-
-        // TODO: Remove after Jetpack migration
-        setTheme(if (useLightTheme) R.style.LightTheme else R.style.DarkTheme)
     }
 
     private fun searchRules(searchText: String?, rootRule: String?) {
@@ -315,147 +292,6 @@ class MainActivity : AppCompatActivity() {
         viewModel!!.visibleRules.value = filteredRules
         viewModel!!.selectedRuleTitle.value = null
         viewModel!!.searchText.value = searchText
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.search).actionView as SearchView?
-        searchView!!.queryHint = getString(R.string.search_hint)
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        val columnNames = arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1)
-        val viewIds = intArrayOf(android.R.id.text1)
-        val adapter: CursorAdapter = SimpleCursorAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            null,
-            columnNames,
-            viewIds,
-            0
-        )
-        searchView.suggestionsAdapter = adapter
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                val columns = arrayOf("_id", SearchManager.SUGGEST_COLUMN_TEXT_1)
-                val cursor = MatrixCursor(columns)
-                val newTextUpperCase = newText.uppercase(Locale.getDefault())
-                val rules = viewModel!!.currentRules.value
-                if (!newText.isEmpty()) {
-                    rules[rules.size - 1].subRules.stream()
-                        .map(Rule::title)
-                        .filter { r: String ->
-                            r.uppercase(Locale.getDefault()).contains(newTextUpperCase)
-                        }
-                        .forEach { r: String -> cursor.newRow().add(r.hashCode()).add(r) }
-                }
-                adapter.changeCursor(cursor)
-                adapter.notifyDataSetChanged()
-                return true
-            }
-        })
-        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-            override fun onSuggestionSelect(position: Int): Boolean {
-                return false
-            }
-
-            override fun onSuggestionClick(position: Int): Boolean {
-                adapter.cursor.moveToPosition(position)
-                val title = adapter.cursor.getString(1)
-                searchView.clearFocus()
-                IntentSender.openRule(this@MainActivity, title, false)
-                return true
-            }
-        })
-        menu.findItem(R.id.home).setOnMenuItemClickListener { _: MenuItem? ->
-            IntentSender.openRule(this, "", false)
-            true
-        }
-        menu.findItem(R.id.randomRule).setOnMenuItemClickListener { _: MenuItem? ->
-            IntentSender.openRandomRule(this, null, false)
-            true
-        }
-        menu.findItem(R.id.changeTheme).setOnMenuItemClickListener { _: MenuItem? ->
-            IntentSender.changeTheme(this)
-            true
-        }
-        menu.findItem(R.id.toggleSymbols).setOnMenuItemClickListener { _: MenuItem? ->
-            IntentSender.toggleSymbols(this)
-            true
-        }
-        menu.findItem(R.id.compareRules).setOnMenuItemClickListener { _: MenuItem? ->
-            val formattedRulesSources = rulesService!!.rulesSources.stream()
-                .map { (_, date): RulesSource ->
-                    date.format(
-                        DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.MEDIUM
-                        )
-                    )
-                }
-                .collect(Collectors.toCollection { ArrayList() })
-
-            formattedRulesSources.reverse()
-
-            showPicker(R.string.dialog_select_source_rules, formattedRulesSources)
-                .thenAccept { selectedSourceIndex: Int ->
-                    showPicker(R.string.dialog_select_target_rules, formattedRulesSources)
-                        .thenAccept { selectedTargetIndex: Int ->
-                            val sourceRulesSource =
-                                rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedSourceIndex - 1]
-                            val targetRulesSource =
-                                rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedTargetIndex - 1]
-
-                            viewModel!!.compareRules(
-                                sourceRulesSource,
-                                targetRulesSource
-                            )
-                            viewModel!!.logEvent(Events.COMPARE_RULES)
-                        }
-                }
-            true
-        }
-        menu.findItem(R.id.changeRules).setOnMenuItemClickListener { view: MenuItem? ->
-            val formattedRulesSources = rulesService!!.rulesSources.stream()
-                .map { (_, date): RulesSource ->
-                    date.format(
-                        DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.MEDIUM
-                        )
-                    )
-                }
-                .collect(
-                    Collectors.toCollection { ArrayList() }
-                )
-            formattedRulesSources.reverse()
-            showPicker(R.string.dialog_select_rules, formattedRulesSources)
-                .thenAccept { selectedIndex: Int ->
-                    val rulesSource =
-                        rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedIndex - 1]
-                    viewModel!!.useRules(rulesSource)
-                    viewModel!!.logEvent(Events.CHANGE_RULES)
-                }
-            true
-        }
-        menu.findItem(R.id.about).setOnMenuItemClickListener { _: MenuItem? ->
-            viewModel!!.showAboutDialog.value = true
-            true
-        }
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun showPicker(titleId: Int, pickElement: List<String?>): CompletableFuture<Int> {
-        val future = CompletableFuture<Int>()
-        AlertDialog.Builder(this)
-            .setTitle(titleId)
-            .setNegativeButton(R.string.dialog_cancel) { _: DialogInterface?, _: Int -> }
-            .setItems(
-                pickElement.toTypedArray()
-            ) { _: DialogInterface?, which: Int -> future.complete(which) }
-            .show()
-        return future
     }
 
     @Deprecated("Deprecated in Java")

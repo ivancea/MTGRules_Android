@@ -110,7 +110,6 @@ fun makeGlossaryTermsPatterns(currentRules: List<Rule>): List<Pair<Pattern, Stri
         .sortedByDescending { obj: String -> obj.length }
 
     for (glossaryTerm in glossaryTerms) {
-        // TODO: Cache patterns on rule set change
         val pattern = Pattern.compile(
             "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(glossaryTerm)) + "\\b",
             Pattern.CASE_INSENSITIVE

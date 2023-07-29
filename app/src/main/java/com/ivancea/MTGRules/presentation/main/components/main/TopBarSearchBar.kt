@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,7 +30,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.model.Rule
@@ -48,7 +48,7 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
     var searchValueState by remember { mutableStateOf(TextFieldValue(text = "")) }
     var showSuggestions by remember { mutableStateOf(false) }
 
-    val trimmedSearchText = remember(searchValueState.text) { searchValueState.text.trim() }
+    val trimmedSearchText = searchValueState.text.trim()
     val suggestions = remember(trimmedSearchText) {
         val rules = viewModel.currentRules.value
 
@@ -102,7 +102,7 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
                     IconButton(onClick = { searchExpanded = false }) {
                         Icon(
                             Icons.Default.Close,
-                            stringResource(R.string.menu_search),
+                            null,
                             tint = MaterialTheme.colors.primary
                         )
                     }
@@ -135,25 +135,23 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
                     }
                 )
             )
+
             ExposedDropdownMenu(
                 expanded = showSuggestions,
                 onDismissRequest = { showSuggestions = false }
             ) {
                 suggestions.forEach { suggestion ->
-                    DropdownMenuItem(onClick = {
-                        IntentSender.openRule(context, suggestion, false)
-                        showSuggestions = false
-                    }) {
-                        Text(suggestion)
+                    key(suggestion) {
+                        DropdownMenuItem(onClick = {
+                            focusManager.clearFocus()
+                            IntentSender.openRule(context, suggestion, false)
+                            showSuggestions = false
+                        }) {
+                            Text(suggestion)
+                        }
                     }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun Preview() {
-    TopBarSearchBar()
 }
