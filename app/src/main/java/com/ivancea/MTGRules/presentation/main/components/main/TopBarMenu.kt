@@ -59,6 +59,9 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
         DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
     )
 
+    var showChooseRulesDialog by remember { mutableStateOf(false) }
+    var showCompareRulesDialog by remember { mutableStateOf(false) }
+
     TopAppBar(
         backgroundColor = MaterialTheme.colors.surface,
         title = {
@@ -116,7 +119,7 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
 
                 // Change rules
                 DropdownMenuItem(onClick = {
-                    /*TODO*/
+                    showChooseRulesDialog = true
                     showDropdown = false
                 }) {
                     Row(
@@ -161,7 +164,7 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
 
                 // Compare rules
                 DropdownMenuItem(onClick = {
-                    /*TODO*/
+                    showCompareRulesDialog = true
                     showDropdown = false
                 }) {
                     Row(
@@ -189,6 +192,18 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
             }
         }
     )
+
+    if (showChooseRulesDialog) {
+        ChooseRulesDialog(
+            onClose = { showChooseRulesDialog = false }
+        )
+    }
+
+    if (showCompareRulesDialog) {
+        CompareRulesDialog(
+            onClose = { showCompareRulesDialog = false }
+        )
+    }
 }
 
 @Composable

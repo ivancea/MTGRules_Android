@@ -7,6 +7,7 @@ import android.content.Intent
 import android.database.MatrixCursor
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.util.StatsLog.logEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CursorAdapter
@@ -63,7 +64,6 @@ class MainActivity : AppCompatActivity() {
     @JvmField
     @Inject
     var permissionsRequesterService: PermissionsRequesterService? = null
-    private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var viewModel: MainViewModel? = null
     private var ttsOk: Boolean? = null
     private var tts: TextToSpeech? = null
@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Set variables
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         tts = TextToSpeech(this) { status: Int ->
             if (status == TextToSpeech.SUCCESS) {
@@ -97,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         viewModel!!.showSymbols.value = showSymbols
         if (viewModel!!.currentRules.value.isEmpty()) {
             val rulesSource = rulesService!!.latestRulesSource
-            useRules(rulesSource)
+            viewModel!!.useRules(rulesSource)
         }
 
         setContent {
@@ -152,14 +151,14 @@ class MainActivity : AppCompatActivity() {
                 val rootRule = intent.getStringExtra(Actions.ROOT_RULE)
                 searchRules(searchString, rootRule)
                 if (addToHistory) {
-                    pushHistoryItem(
+                    viewModel!!.pushHistoryItem(
                         HistoryItem(
                             HistoryItem.Type.Search,
                             arrayOf(searchString, rootRule)
                         )
                     )
                 }
-                logEvent(Events.SEARCH_RULES)
+                viewModel!!.logEvent(Events.SEARCH_RULES)
             }
 
             Actions.ACTION_READ -> {
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                         null,
                         "rules"
                     )
-                    logEvent(Events.READ_RULE)
+                    viewModel!!.logEvent(Events.READ_RULE)
                 }
             }
 
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel!!.selectedRuleTitle.value = null
                     viewModel!!.searchText.value = null
                     if (addToHistory) {
-                        pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
+                        viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
                     }
                 } else {
                     val existingRule = viewModel!!.visibleRules.value.stream()
@@ -204,7 +203,7 @@ class MainActivity : AppCompatActivity() {
                             rules.addAll(rules[rules.size - 1].subRules)
                             viewModel!!.visibleRules.value = rules
                             if (addToHistory) {
-                                pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
+                                viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
                             }
                         }
                     }
@@ -235,10 +234,10 @@ class MainActivity : AppCompatActivity() {
                         viewModel!!.selectedRuleTitle.value = null
                         viewModel!!.searchText.value = null
                         if (addToHistory) {
-                            pushHistoryItem(HistoryItem(HistoryItem.Type.Random, seed))
+                            viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Random, seed))
                         }
                     }
-                logEvent(Events.RANDOM_RULE)
+                viewModel!!.logEvent(Events.RANDOM_RULE)
             }
 
             Actions.ACTION_CHANGE_THEME -> {
@@ -256,14 +255,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun pushHistoryItem(historyItem: HistoryItem) {
-        val newHistory = java.util.ArrayList(
-            viewModel!!.history.value
-        )
-        newHistory.add(historyItem)
-        viewModel!!.history.value = newHistory
-    }
-
     private fun popHistoryItem(): Boolean {
         val newHistory = java.util.ArrayList(
             viewModel!!.history.value
@@ -272,7 +263,7 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         newHistory.removeAt(newHistory.size - 1)
-        while (!newHistory.isEmpty() && newHistory[newHistory.size - 1].type == HistoryItem.Type.Ignored) {
+        while (newHistory.isNotEmpty() && newHistory[newHistory.size - 1].type == HistoryItem.Type.Ignored) {
             newHistory.removeAt(newHistory.size - 1)
         }
         if (newHistory.isEmpty()) {
@@ -308,10 +299,6 @@ class MainActivity : AppCompatActivity() {
             return history.isNotEmpty() && history[history.size - 1].type == HistoryItem.Type.Rule
         }
 
-    private fun logEvent(event: String) {
-        mFirebaseAnalytics!!.logEvent(event, null)
-    }
-
     private fun setTheme(useLightTheme: Boolean) {
         viewModel!!.darkTheme.value = !useLightTheme
 
@@ -328,20 +315,6 @@ class MainActivity : AppCompatActivity() {
         viewModel!!.visibleRules.value = filteredRules
         viewModel!!.selectedRuleTitle.value = null
         viewModel!!.searchText.value = searchText
-    }
-
-    private fun useRules(rulesSource: RulesSource) {
-        val rules = rulesService!!.loadRules(rulesSource)
-        viewModel!!.currentRulesSource.value = rulesSource
-        viewModel!!.currentRules.value = rules
-        viewModel!!.visibleRules.value = rules
-        viewModel!!.selectedRuleTitle.value = null
-        viewModel!!.searchText.value = null
-        viewModel!!.history.value = listOf(HistoryItem(HistoryItem.Type.Rule, ""))
-        viewModel!!.actionbarSubtitle
-            .value = getString(R.string.action_bar_rules) + ": " + rulesSource.date.format(
-            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -434,15 +407,12 @@ class MainActivity : AppCompatActivity() {
                                 rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedSourceIndex - 1]
                             val targetRulesSource =
                                 rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedTargetIndex - 1]
-                            val sourceRules = rulesService!!.loadRules(sourceRulesSource)
-                            val targetRules = rulesService!!.loadRules(targetRulesSource)
-                            val comparedRules =
-                                rulesComparisonService!!.compareRules(sourceRules, targetRules)
-                            viewModel!!.visibleRules.value = comparedRules
-                            viewModel!!.selectedRuleTitle.value = null
-                            viewModel!!.searchText.value = null
-                            pushHistoryItem(HistoryItem(HistoryItem.Type.Ignored, null))
-                            logEvent(Events.COMPARE_RULES)
+
+                            viewModel!!.compareRules(
+                                sourceRulesSource,
+                                targetRulesSource
+                            )
+                            viewModel!!.logEvent(Events.COMPARE_RULES)
                         }
                 }
             true
@@ -464,8 +434,8 @@ class MainActivity : AppCompatActivity() {
                 .thenAccept { selectedIndex: Int ->
                     val rulesSource =
                         rulesService!!.rulesSources[rulesService!!.rulesSources.size - selectedIndex - 1]
-                    useRules(rulesSource)
-                    logEvent(Events.CHANGE_RULES)
+                    viewModel!!.useRules(rulesSource)
+                    viewModel!!.logEvent(Events.CHANGE_RULES)
                 }
             true
         }
