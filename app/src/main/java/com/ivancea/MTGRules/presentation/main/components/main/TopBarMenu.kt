@@ -89,7 +89,7 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
             }
 
             // Search
-            SearchBar()
+            TopBarSearchBar()
 
             // More dropdown
             IconButton(onClick = { showDropdown = true }) {
@@ -202,75 +202,6 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
     if (showCompareRulesDialog) {
         CompareRulesDialog(
             onClose = { showCompareRulesDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun SearchBar() {
-    val context = LocalContext.current
-    val focusManager = LocalFocusManager.current
-
-    val textFieldFocusRequester = remember { FocusRequester() }
-    var searchExpanded by remember { mutableStateOf(false) }
-    var searchText by remember { mutableStateOf("") }
-
-    BackHandler(searchExpanded) {
-        searchExpanded = false
-    }
-
-    if (!searchExpanded) {
-        IconButton(onClick = { searchExpanded = true }) {
-            Icon(
-                Icons.Default.Search,
-                stringResource(R.string.menu_search),
-                tint = MaterialTheme.colors.primary
-            )
-        }
-    } else {
-        SideEffect {
-            textFieldFocusRequester.requestFocus()
-        }
-
-        TextField(
-            value = searchText,
-            singleLine = true,
-            onValueChange = {
-                searchText = it
-            },
-            trailingIcon = {
-                IconButton(onClick = { searchExpanded = false }) {
-                    Icon(
-                        Icons.Default.Close,
-                        stringResource(R.string.menu_search),
-                        tint = MaterialTheme.colors.primary
-                    )
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(textFieldFocusRequester),
-            label = {
-                Text(
-                    stringResource(R.string.menu_search),
-                    color = MaterialTheme.colors.primary
-                )
-            },
-            placeholder = {
-                Text(
-                    stringResource(R.string.search_hint),
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.7f)
-                )
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                    IntentSender.openSearch(context, searchText, null, false)
-                }
-            )
         )
     }
 }
