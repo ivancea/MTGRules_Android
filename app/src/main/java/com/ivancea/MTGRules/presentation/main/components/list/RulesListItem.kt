@@ -2,8 +2,12 @@ package com.ivancea.MTGRules.presentation.main.components.list
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,10 +17,12 @@ import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -29,6 +35,8 @@ import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.presentation.common.NonConsumingClickableText
 import com.ivancea.MTGRules.utils.IntentSender
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -44,6 +52,7 @@ private const val NAVIGATE_RULE_ANNOTATION_KEY = "navigate-rule"
 @ExperimentalFoundationApi
 fun RulesListItem(
     rule: Rule,
+    isNavigatedRule: Boolean,
     glossaryTermsPatterns: List<Pair<Pattern, String>>,
     searchTextPattern: Pattern?,
     showSymbols: Boolean,
@@ -52,6 +61,21 @@ fun RulesListItem(
     val context = LocalContext.current
     val withSubtitle = parentRulePattern.matcher(rule.title).matches()
     val showMenu = remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+
+    LaunchedEffect(isNavigatedRule) {
+        if (isNavigatedRule) {
+            launch {
+                val press = PressInteraction.Press(Offset.Zero)
+                interactionSource.emit(press)
+
+                delay(300)
+
+                val release = PressInteraction.Release(press)
+                interactionSource.emit(release)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -60,6 +84,8 @@ fun RulesListItem(
             .combinedClickable(
                 onClick = { IntentSender.openRule(context, rule.title, false) },
                 onLongClick = { showMenu.value = true },
+                indication = LocalIndication.current,
+                interactionSource = interactionSource
             )
             .padding(8.dp)
     ) {
@@ -301,6 +327,7 @@ private fun PreviewWithSubtitle() {
             title = "100.",
             text = "My rule 100"
         ),
+        isNavigatedRule = false,
         glossaryTermsPatterns = emptyList(),
         searchTextPattern = Pattern.compile("0"),
         showSymbols = true,
@@ -317,6 +344,7 @@ private fun PreviewWithSubtext() {
             title = "100.5a",
             text = "My rule with text and a symbol :CHAOS:"
         ),
+        isNavigatedRule = false,
         glossaryTermsPatterns = emptyList(),
         searchTextPattern = Pattern.compile("a"),
         showSymbols = true,

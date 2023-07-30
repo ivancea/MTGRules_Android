@@ -83,11 +83,14 @@ fun RulesList(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background),
     ) {
         items(items = rules, key = { it.title }) { item ->
             RulesListItem(
                 rule = item,
+                isNavigatedRule = item.title == scrollToRule,
                 glossaryTermsPatterns = glossaryTermsPatterns,
                 searchTextPattern = searchTextPattern,
                 showSymbols = showSymbols,
