@@ -1,9 +1,6 @@
 package com.ivancea.MTGRules
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.SearchManager
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -30,7 +27,6 @@ import com.ivancea.MTGRules.utils.RulesSearchUtils.search
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import java.util.Random
-import java.util.concurrent.CompletableFuture
 import java.util.stream.Collectors
 import javax.inject.Inject
 
@@ -161,30 +157,25 @@ class MainActivity : ComponentActivity() {
                     if (addToHistory) {
                         viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
                     }
-                } else {
-                    val existingRule = viewModel!!.visibleRules.value.stream()
-                        .filter { (title1): Rule -> title1 == title }
-                        .findAny().orElse(null)
-                    if (existingRule == null || existingRule.subRules.isNotEmpty() || !isLastHistoryItemNavigation) {
-                        val rules = getRuleAndParents(
-                            viewModel!!.currentRules.value,
-                            title
-                        ).collect(Collectors.toCollection { ArrayList() })
-                        if (rules.isNotEmpty()) {
-                            val rule = rules[rules.size - 1]
-                            if (rule.subRules.isEmpty()) {
-                                rules.removeAt(rules.size - 1)
-                            }
-                            rules.addAll(rules[rules.size - 1].subRules)
-                            viewModel!!.visibleRules.value = rules
-                            if (addToHistory) {
-                                viewModel!!.pushHistoryItem(
-                                    HistoryItem(
-                                        HistoryItem.Type.Rule,
-                                        title
-                                    )
+                } else if (viewModel!!.selectedRuleTitle.value != title){
+                    val rules = getRuleAndParents(
+                        viewModel!!.currentRules.value,
+                        title
+                    ).collect(Collectors.toCollection { ArrayList() })
+                    if (rules.isNotEmpty()) {
+                        val rule = rules[rules.size - 1]
+                        if (rule.subRules.isEmpty()) {
+                            rules.removeAt(rules.size - 1)
+                        }
+                        rules.addAll(rules[rules.size - 1].subRules)
+                        viewModel!!.visibleRules.value = rules
+                        if (addToHistory) {
+                            viewModel!!.pushHistoryItem(
+                                HistoryItem(
+                                    HistoryItem.Type.Rule,
+                                    title
                                 )
-                            }
+                            )
                         }
                     }
                     viewModel!!.selectedRuleTitle.value = title
