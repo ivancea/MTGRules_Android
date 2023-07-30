@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.isUnspecified
 import androidx.core.content.res.ResourcesCompat
+import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.utils.RulesSearchUtils
@@ -73,7 +75,7 @@ fun RulesList(
             modifier = Modifier.fillMaxSize(),
         ) {
             Text(
-                text = "No items", // stringResource(R.string.list__no_items),
+                text = stringResource(R.string.list_no_items),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.align(Alignment.Center)
             )
