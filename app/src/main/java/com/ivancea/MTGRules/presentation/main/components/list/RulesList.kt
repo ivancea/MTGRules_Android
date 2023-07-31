@@ -1,15 +1,12 @@
 package com.ivancea.MTGRules.presentation.main.components.list
 
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,16 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.isUnspecified
-import androidx.core.content.res.ResourcesCompat
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
@@ -56,7 +46,7 @@ fun RulesList(
     }
     val lineHeight = MaterialTheme.typography.body1.lineHeight
     val textInlineContent =
-        remember(context, lineHeight) { makeSymbolsMap(context, lineHeight) }
+        remember(context, lineHeight) { Symbols.makeSymbolsMap(context, lineHeight) }
     val listState = remember(rules, scrollToRule) {
         if (scrollToRule != null) {
             val firstRulesOffset = rules.indexOfFirst { it.title == scrollToRule }
@@ -143,35 +133,6 @@ private fun makeSearchTextPattern(searchText: String): Pattern {
  */
 private fun makePluralAcceptingGlossaryRegex(glossaryRegex: String): String {
     return "$glossaryRegex(?:s|es)?"
-}
-
-/**
- * A map of inline content to be passed to the [Text] composable.
- * It will allow for the use of symbols in the rules.
- */
-private fun makeSymbolsMap(context: Context, lineHeight: TextUnit): Map<String, InlineTextContent> {
-    return Symbols.drawablesBySymbol.mapValues { (_, resource) ->
-        val drawable = ResourcesCompat.getDrawable(context.resources, resource, context.theme)
-        val height = if (lineHeight.isUnspecified) {
-            TextUnit(16f, TextUnitType.Sp)
-        } else {
-            lineHeight
-        }
-        val width =
-            height.times(drawable!!.intrinsicWidth.toDouble() / drawable.intrinsicHeight.toDouble())
-
-        InlineTextContent(
-            Placeholder(width, height, PlaceholderVerticalAlign.TextCenter)
-        ) {
-            Image(
-                painterResource(resource),
-                contentDescription = it,
-                modifier = Modifier
-                    .background(color = MaterialTheme.colors.secondaryVariant)
-                    .fillMaxSize()
-            )
-        }
-    }
 }
 
 @Preview

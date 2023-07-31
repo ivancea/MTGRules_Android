@@ -1,8 +1,30 @@
 package com.ivancea.MTGRules.constants
 
+import android.content.Context
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isUnspecified
+import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import com.ivancea.MTGRules.R
 
 object Symbols {
+    @JvmStatic
     val drawablesBySymbol = mapOf(
         "W" to R.drawable.symbol_w,
         "U" to R.drawable.symbol_u,
@@ -57,9 +79,35 @@ object Symbols {
         "TK" to R.drawable.symbol_tk,
     )
 
+    /**
+     * A map of inline content to be passed to the [Text] composable.
+     * It will allow for the use of symbols in the rules.
+     */
     @JvmStatic
-    fun getDrawableId(symbol: String): Int? {
-        return drawablesBySymbol[symbol]
-    }
+    fun makeSymbolsMap(context: Context, lineHeight: TextUnit): Map<String, InlineTextContent> {
+        return drawablesBySymbol.mapValues { (_, resource) ->
+            val drawable = ResourcesCompat.getDrawable(context.resources, resource, context.theme)
+            val height = if (lineHeight.isUnspecified) {
+                TextUnit(16f, TextUnitType.Sp)
+            } else {
+                lineHeight
+            }
+            val width =
+                height.times(drawable!!.intrinsicWidth.toDouble() / drawable.intrinsicHeight.toDouble())
 
+            InlineTextContent(
+                Placeholder(width, height, PlaceholderVerticalAlign.TextCenter)
+            ) {
+                Image(
+                    painterResource(resource),
+                    contentDescription = it,
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(20.dp))
+                        .background(color = MaterialTheme.colors.secondaryVariant)
+                        .padding(2.dp)
+                        .fillMaxSize()
+                )
+            }
+        }
+    }
 }

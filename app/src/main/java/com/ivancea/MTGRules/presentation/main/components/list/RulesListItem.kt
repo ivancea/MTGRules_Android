@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -338,16 +337,21 @@ private fun PreviewWithSubtitle() {
 @Preview
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-private fun PreviewWithSubtext() {
+private fun PreviewWithSubtextAndSymbols() {
+    val context = LocalContext.current
+    val lineHeight = MaterialTheme.typography.body1.lineHeight
+    val textInlineContent =
+        remember(context, lineHeight) { Symbols.makeSymbolsMap(context, lineHeight) }
+
     RulesListItem(
         rule = Rule(
             title = "100.5a",
-            text = "My rule with text and a symbol :CHAOS:"
+            text = "Symbols: " + Symbols.drawablesBySymbol.keys.joinToString(" ") { "{$it}" }
         ),
         isNavigatedRule = false,
         glossaryTermsPatterns = emptyList(),
         searchTextPattern = Pattern.compile("a"),
         showSymbols = true,
-        textInlineContent = emptyMap()
+        textInlineContent = textInlineContent
     )
 }
