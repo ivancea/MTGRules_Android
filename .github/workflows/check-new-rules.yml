@@ -10,25 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch webpage
+      - name: Fetch webpage and search for rules
         id: fetch-webpage
-        run: echo "page=$(curl ${MAGIC_WEBPAGE_URL})" >> $GITHUB_OUTPUT
-        env:
-          MAGIC_WEBPAGE_URL: ${{ vars.MAGIC_WEBPAGE_URL }}
-
-      - name: Search for rules
-        id: search
         run: |
-          if echo "${{ steps.fetch-webpage.outputs.page }}" | grep -q "${LAST_RULES_URL}"; then
+          page=$(curl ${MAGIC_WEBPAGE_URL})
+
+          if echo "${page}" | grep -q "${LAST_RULES_URL}"; then
             echo "found=true" >> $GITHUB_OUTPUT
           else
             echo "found=false" >> $GITHUB_OUTPUT
           fi
         env:
+          MAGIC_WEBPAGE_URL: ${{ vars.MAGIC_WEBPAGE_URL }}
           LAST_RULES_URL: ${{ vars.LAST_RULES_URL }}
 
       - name: Notify new rules
-        if: steps.search.outputs.found == 'false'
+        if: steps.fetch-webpage.outputs.found == 'false'
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
