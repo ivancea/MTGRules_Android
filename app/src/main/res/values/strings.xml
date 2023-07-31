@@ -16,7 +16,6 @@
     <string name="toast_tts_not_ready">Text-to-speech not ready yet</string>
     <string name="toast_tts_not_working">Text-to-speech not working</string>
     <string name="action_bar_rules">Rules</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="about_description">This app is supposed to be a fast and functional source of Magic rules</string>
     <string name="about_unofficial">This is NOT an official app and it is NOT affiliated with <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
     <string name="about_any_request">Any request or feature?</string>
@@ -29,10 +28,12 @@
     <string name="notification_channel_new_rules_body">Rules: %1$s</string>
     <string name="context_share">Share</string>
     <string name="menu_toggle_symbols">Show/Hide symbols</string>
-    <string name="search_hint">"E.g. \"can be\" planeswalker "</string>
+    <string name="search_hint">E.g. \"can be\" target</string>
     <string name="notification_permission_title">Notification permissions</string>
     <string name="notification_permission_message">We will send you notifications about new rules, and maybe new relevant things in the future.\n\nGrant the notifications permission if you want those notifications.\n\nYou can also choose which notifications to receive in the android app configuration.</string>
     <string name="context_search_in_rule">Search in rule</string>
     <string name="context_search_in_rule_dialog_title">Search in rule %1$s</string>
     <string name="context_search_in_rule_dialog_message">Search only in the rule and its subrules</string>
+    <string name="menu_more">More options</string>
+    <string name="list_no_items">No items</string>
 </resources>

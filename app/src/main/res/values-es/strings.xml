@@ -28,10 +28,12 @@
     <string name="notification_channel_new_rules_body">Reglas: %1$s</string>
     <string name="context_share">Compartir</string>
     <string name="menu_toggle_symbols">Mostrar/Ocultar símbolos</string>
-    <string name="search_hint">"Ej. \"can be\" planeswalker "</string>
+    <string name="search_hint">"Ej. \"can be\" target "</string>
     <string name="notification_permission_title">Permisos de notificaciones</string>
     <string name="notification_permission_message">Te enviaremos notificaciones cuando se añaden nuevas reglas, y quizás otras novedades relevantes en el futuro.\n\nAcepta los permisos de notificaciones si quieres recibirlas.\n\nTambién puedes elegir qué notificaciones recibir en la configuración de la aplicación de Android.</string>
     <string name="context_search_in_rule">Buscar en regla</string>
     <string name="context_search_in_rule_dialog_title">Buscar en regla %1$s</string>
     <string name="context_search_in_rule_dialog_message">Buscar solo en la regla y en sus subreglas</string>
+    <string name="menu_more">Más opciones</string>
+    <string name="list_no_items">No hay elementos</string>
 </resources>

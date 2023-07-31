@@ -1,7 +1,7 @@
 package com.ivancea.MTGRules.utils
 
 import com.ivancea.MTGRules.model.Rule
-import kotlin.streams.toList
+import java.util.stream.Collectors.toList
 
 object RulesSearchUtils {
     @JvmStatic
@@ -19,7 +19,7 @@ object RulesSearchUtils {
                     title.contains(token, ignoreCase = true) || text.contains(token, ignoreCase = true)
                 }
             }
-            .toList()
+            .collect(toList())
 
         return filteredRules
     }
@@ -29,7 +29,7 @@ object RulesSearchUtils {
         val tokens = HashSet<String>()
 
         // The negative lookbehind avoids matching escaped backslashes
-        val blocks = query.split("(?<!\\\\)\"".toRegex()).toList()
+        val blocks = query.split("(?<!\\\\)\"".toRegex())
 
         for (i in blocks.indices) {
             // Convert escaped quotes to quotes

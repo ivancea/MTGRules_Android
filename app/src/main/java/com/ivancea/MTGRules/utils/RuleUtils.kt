@@ -1,8 +1,8 @@
 package com.ivancea.MTGRules.utils
 
 import com.ivancea.MTGRules.model.Rule
+import java.util.stream.Collectors
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 object RuleUtils {
     @JvmStatic
@@ -20,7 +20,7 @@ object RuleUtils {
 
     @JvmStatic
     fun getRuleAndSubsections(rules: List<Rule>, title: String): List<Rule> {
-        val foundRules = getRuleAndParents(rules, title).toList()
+        val foundRules = getRuleAndParents(rules, title).collect(Collectors.toList())
 
         if (foundRules.isEmpty()) {
             return emptyList()

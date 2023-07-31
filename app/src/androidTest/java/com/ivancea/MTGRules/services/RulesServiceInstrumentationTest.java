@@ -99,8 +99,8 @@ public class RulesServiceInstrumentationTest {
 				continue;
 			}
 
-			assertNotNull(
-				Symbols.getDrawableId(symbol),
+			assertTrue(
+				Symbols.getDrawablesBySymbol().containsKey(symbol),
 				"Symbol " + symbol + " has a drawable"
 			);
 		}
