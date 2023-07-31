@@ -20,9 +20,9 @@ jobs:
         id: search
         run: |
           if echo "${{ steps.fetch-webpage.outputs.page }}" | grep -q "${LAST_RULES_URL}"; then
-            run: echo "found=true" >> $GITHUB_OUTPUT
+            echo "found=true" >> $GITHUB_OUTPUT
           else
-          run: echo "found=false" >> $GITHUB_OUTPUT
+            echo "found=false" >> $GITHUB_OUTPUT
           fi
         env:
           LAST_RULES_URL: ${{ secrets.LAST_RULES_URL }}
