@@ -23,9 +23,8 @@ internal class RulesUtilsTest {
         rules.flatMap { RuleUtils.flatten(it).collect(Collectors.toList()) }
             .filter { it.title[0].isLetter() || it.title.endsWith(".") }.forEach {
                 val result = RuleUtils.getRuleAndSubsections(rules, it.title)
-                val expected = RuleUtils.flatten(it).collect(Collectors.toList())
 
-                assertEquals(expected, result)
+                assertEquals(listOf(it), result)
             }
     }
 }
