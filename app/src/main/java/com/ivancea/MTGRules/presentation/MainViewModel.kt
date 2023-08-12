@@ -1,6 +1,7 @@
 package com.ivancea.MTGRules.presentation
 
 import android.app.Application
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.constants.Events
@@ -30,6 +31,7 @@ class MainViewModel @Inject constructor(
     val history = MutableStateFlow(emptyList<HistoryItem>())
 
     val showSymbols = MutableStateFlow(true)
+    val showAds = MutableStateFlow(false)
     val darkTheme = MutableStateFlow(true)
     val showAboutDialog = MutableStateFlow(false)
 
@@ -63,7 +65,7 @@ class MainViewModel @Inject constructor(
         history.value = newHistory
     }
 
-    fun logEvent(event: String) {
-        firebaseAnalytics.logEvent(event, null)
+    fun logEvent(event: String, bundle: Bundle? = null) {
+        firebaseAnalytics.logEvent(event, bundle)
     }
 }

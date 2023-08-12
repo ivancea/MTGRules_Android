@@ -68,4 +68,11 @@ object IntentSender {
         intent.action = Actions.ACTION_TOGGLE_SYMBOLS
         context.startActivity(intent)
     }
+
+    @JvmStatic
+    fun toggleAds(context: Context) {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.action = Actions.ACTION_TOGGLE_ADS
+        context.startActivity(intent)
+    }
 }

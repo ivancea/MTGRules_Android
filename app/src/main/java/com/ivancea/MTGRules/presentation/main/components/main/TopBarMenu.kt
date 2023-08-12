@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.EmojiSymbols
@@ -18,6 +19,8 @@ import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Merge
+import androidx.compose.material.icons.filled.MonetizationOn
+import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.runtime.Composable
@@ -36,7 +39,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () -> Unit) {
+fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, onShowAbout: () -> Unit) {
     val context = LocalContext.current
 
     var showDropdown by remember { mutableStateOf(false) }
@@ -159,6 +162,26 @@ fun TopBarMenu(darkTheme: Boolean, rulesSource: RulesSource?, onShowAbout: () ->
                     ) {
                         Icon(Icons.Default.Merge, null)
                         Text(stringResource(R.string.menu_compare_rules))
+                    }
+                }
+
+                // Activate ads
+                DropdownMenuItem(onClick = {
+                    IntentSender.toggleAds(context)
+                    showDropdown = false
+                }) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (showAds) {
+                            Icon(Icons.Default.MoneyOff, null)
+                            Text(stringResource(R.string.menu_deactivate_ads))
+                        } else {
+                            Icon(Icons.Default.AttachMoney, null)
+                            Text(stringResource(R.string.menu_activate_ads))
+                        }
+
                     }
                 }
 

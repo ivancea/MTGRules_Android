@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.constants.Actions
 import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.model.HistoryItem
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
         // Save the last rules source
         val currentRulesSource = rulesService!!.latestRulesSource.date
-        storageService!!.setLastRulesSource(currentRulesSource)
+        storageService!!.lastRulesSource = currentRulesSource
 
         // Set theme
         val useLightTheme = storageService!!.useLightTheme
@@ -77,6 +78,9 @@ class MainActivity : ComponentActivity() {
         // Load ViewModel
         val showSymbols = storageService!!.showSymbols
         viewModel!!.showSymbols.value = showSymbols
+        val showAds = storageService!!.showAds
+        viewModel!!.showAds.value = showAds
+
         if (viewModel!!.currentRules.value.isEmpty()) {
             val rulesSource = rulesService!!.latestRulesSource
             viewModel!!.useRules(rulesSource)
@@ -157,7 +161,7 @@ class MainActivity : ComponentActivity() {
                     if (addToHistory) {
                         viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
                     }
-                } else if (viewModel!!.selectedRuleTitle.value != title){
+                } else if (viewModel!!.selectedRuleTitle.value != title) {
                     val rules = getRuleAndParents(
                         viewModel!!.currentRules.value,
                         title
@@ -222,6 +226,16 @@ class MainActivity : ComponentActivity() {
                 val newShowSymbols = !storageService!!.showSymbols
                 viewModel!!.showSymbols.value = newShowSymbols
                 storageService!!.showSymbols = newShowSymbols
+            }
+
+            Actions.ACTION_TOGGLE_ADS -> {
+                val newShowAds = !storageService!!.showAds
+                viewModel!!.showAds.value = newShowAds
+                storageService!!.showAds = newShowAds
+
+                val bundle = Bundle()
+                bundle.putBoolean(FirebaseAnalytics.Param.VALUE, newShowAds)
+                viewModel!!.logEvent(Events.TOGGLE_ADS, bundle)
             }
         }
     }

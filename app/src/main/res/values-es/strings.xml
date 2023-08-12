@@ -36,4 +36,6 @@
     <string name="context_search_in_rule_dialog_message">Buscar solo en la regla y en sus subreglas</string>
     <string name="menu_more">Más opciones</string>
     <string name="list_no_items">No hay elementos</string>
+    <string name="menu_activate_ads">Apoya la app: Activar anuncios</string>
+    <string name="menu_deactivate_ads">Dejar de apoyar la app con anuncios</string>
 </resources>

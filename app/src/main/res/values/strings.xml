@@ -36,4 +36,6 @@
     <string name="context_search_in_rule_dialog_message">Search only in the rule and its subrules</string>
     <string name="menu_more">More options</string>
     <string name="list_no_items">No items</string>
+    <string name="menu_activate_ads">Support the app: Enable ads</string>
+    <string name="menu_deactivate_ads">Stop supporting the app with ads</string>
 </resources>

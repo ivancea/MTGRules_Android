@@ -7,6 +7,7 @@ public final class Actions {
 	public static final String ACTION_RANDOM_RULE = "com.ivancea.RANDOM_RULE";
 	public static final String ACTION_CHANGE_THEME = "com.ivancea.CHANGE_THEME";
 	public static final String ACTION_TOGGLE_SYMBOLS = "com.ivancea.TOGGLE_SYMBOLS";
+	public static final String ACTION_TOGGLE_ADS = "com.ivancea.TOGGLE_ADS";
 	public static final String ACTION_READ = "com.ivancea.READ";
 
 	// Intent extras
