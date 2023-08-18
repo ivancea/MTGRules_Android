@@ -10,6 +10,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.ivancea.MTGRules.constants.Actions
 import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.model.HistoryItem
@@ -56,6 +59,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        configureFirebaseRemoteConfig()
+
         // Set variables
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         tts = TextToSpeech(this) { status: Int ->
@@ -94,6 +99,16 @@ class MainActivity : ComponentActivity() {
 
         // Handle initial intent
         handleIntent(intent)
+    }
+
+    private fun configureFirebaseRemoteConfig() {
+        Firebase.remoteConfig.setConfigSettingsAsync(
+            remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600
+            }
+        )
+
+        Firebase.remoteConfig.fetchAndActivate()
     }
 
     override fun onStop() {

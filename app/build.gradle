@@ -17,8 +17,8 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionCode 63
-        versionName "2.8.1"
+        versionCode 64
+        versionName "2.8.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
@@ -54,15 +54,18 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-config-ktx'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation 'androidx.compose.material:material:1.4.3'
     implementation 'androidx.compose.material:material-icons-extended:1.4.3'
-    implementation 'com.google.firebase:firebase-crashlytics:18.4.0'
-    implementation 'com.google.firebase:firebase-analytics:21.3.0'
-    implementation 'com.google.firebase:firebase-perf:20.4.0'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     testImplementation "org.junit.jupiter:junit-jupiter:$jupiter_version"

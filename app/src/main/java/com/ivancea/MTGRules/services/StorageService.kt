@@ -2,6 +2,8 @@ package com.ivancea.MTGRules.services
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.ivancea.MTGRules.constants.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDate
@@ -35,7 +37,7 @@ class StorageService @Inject constructor(@ApplicationContext context: Context) {
         }
 
     var showAds: Boolean
-        get() = preferences.getBoolean(Preferences.SHOW_ADS, false)
+        get() = preferences.getBoolean(Preferences.SHOW_ADS, Firebase.remoteConfig.getBoolean("ads_active_by_default"))
         set(newShowAds) {
             preferences.edit()
                 .putBoolean(Preferences.SHOW_ADS, newShowAds)
