@@ -11,8 +11,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-
-private const val AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
+import com.ivancea.MTGRules.constants.FirebaseConfig
 
 @Composable
 fun AdBanner(showAds: Boolean) {
@@ -31,8 +30,7 @@ fun AdBanner(showAds: Boolean) {
                 val adSize =
                     AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, width)
                 setAdSize(adSize)
-                adUnitId = AD_UNIT_ID
-
+                adUnitId = FirebaseConfig.getBannerAdUnitId()
                 adListener = object : com.google.android.gms.ads.AdListener() {
                     override fun onAdFailedToLoad(error: LoadAdError) {
                         Log.w("AdBanner", error.message)
