@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Merge
-import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Shuffle
@@ -39,7 +38,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, onShowAbout: () -> Unit) {
+fun TopBarMenu(
+    darkTheme: Boolean,
+    showAds: Boolean,
+    rulesSource: RulesSource?,
+    onShowAbout: () -> Unit
+) {
     val context = LocalContext.current
 
     var showDropdown by remember { mutableStateOf(false) }
@@ -94,8 +98,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
             ) {
                 // Random rule
                 DropdownMenuItem(onClick = {
-                    IntentSender.openRandomRule(context, null, false)
                     showDropdown = false
+                    IntentSender.openRandomRule(context, null, false)
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -108,8 +112,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // Change rules
                 DropdownMenuItem(onClick = {
-                    showChooseRulesDialog = true
                     showDropdown = false
+                    showChooseRulesDialog = true
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -122,8 +126,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // Change theme
                 DropdownMenuItem(onClick = {
-                    IntentSender.changeTheme(context)
                     showDropdown = false
+                    IntentSender.changeTheme(context)
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -139,8 +143,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // Show symbols
                 DropdownMenuItem(onClick = {
-                    IntentSender.toggleSymbols(context)
                     showDropdown = false
+                    IntentSender.toggleSymbols(context)
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -153,8 +157,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // Compare rules
                 DropdownMenuItem(onClick = {
-                    showCompareRulesDialog = true
                     showDropdown = false
+                    showCompareRulesDialog = true
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -167,8 +171,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // Activate ads
                 DropdownMenuItem(onClick = {
-                    IntentSender.toggleAds(context)
                     showDropdown = false
+                    IntentSender.toggleAds(context)
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -187,8 +191,8 @@ fun TopBarMenu(darkTheme: Boolean, showAds: Boolean, rulesSource: RulesSource?, 
 
                 // About
                 DropdownMenuItem(onClick = {
-                    onShowAbout()
                     showDropdown = false
+                    onShowAbout()
                 }) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
