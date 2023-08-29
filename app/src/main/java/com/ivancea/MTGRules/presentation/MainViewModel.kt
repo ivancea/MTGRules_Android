@@ -5,11 +5,13 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.constants.Events
+import com.ivancea.MTGRules.constants.FirebaseConfig
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.RulesSource
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
+import com.ivancea.MTGRules.services.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -18,11 +20,13 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     val application: Application,
     val rulesService: RulesService,
-    private val rulesComparisonService: RulesComparisonService
+    private val rulesComparisonService: RulesComparisonService,
+    private val storageService: StorageService
 ) : ViewModel() {
     private val applicationContext get() = application.applicationContext
     private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(applicationContext) }
 
+    val configLoaded = MutableStateFlow(false)
     val currentRulesSource = MutableStateFlow<RulesSource?>(null)
     val currentRules = MutableStateFlow(emptyList<Rule>())
     val visibleRules = MutableStateFlow(emptyList<Rule>())
@@ -31,7 +35,8 @@ class MainViewModel @Inject constructor(
     val history = MutableStateFlow(emptyList<HistoryItem>())
 
     val showSymbols = MutableStateFlow(true)
-    val showAds = MutableStateFlow(false)
+    val showAds = MutableStateFlow(storageService.showAds)
+    val bannerAdUnitId = MutableStateFlow(FirebaseConfig.getBannerAdUnitId())
     val darkTheme = MutableStateFlow(true)
     val showAboutDialog = MutableStateFlow(false)
 

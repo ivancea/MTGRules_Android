@@ -11,10 +11,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ConfigUpdate
+import com.google.firebase.remoteconfig.ConfigUpdateListener
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.ivancea.MTGRules.constants.Actions
 import com.ivancea.MTGRules.constants.Events
+import com.ivancea.MTGRules.constants.FirebaseConfig
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.presentation.MainViewModel
@@ -59,10 +63,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         configureFirebaseRemoteConfig()
 
-        // Set variables
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         tts = TextToSpeech(this) { status: Int ->
             if (status == TextToSpeech.SUCCESS) {
                 ttsOk = true
@@ -108,7 +112,14 @@ class MainActivity : ComponentActivity() {
             }
         )
 
-        Firebase.remoteConfig.fetchAndActivate()
+        Firebase.remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                viewModel!!.showAds.value = storageService!!.showAds
+                viewModel!!.bannerAdUnitId.value = FirebaseConfig.getBannerAdUnitId()
+            }
+
+            viewModel!!.configLoaded.value = true
+        }
     }
 
     override fun onStop() {

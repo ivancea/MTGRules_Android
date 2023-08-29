@@ -32,7 +32,9 @@ fun MainComponent(
     val selectedRule = viewModel.selectedRuleTitle.collectAsState().value
     val searchText = viewModel.searchText.collectAsState().value
     val showSymbols = viewModel.showSymbols.collectAsState().value
+    val configLoaded = viewModel.configLoaded.collectAsState().value
     val showAds = viewModel.showAds.collectAsState().value
+    val bannerAdUnitId = viewModel.bannerAdUnitId.collectAsState().value
     val showAboutDialog = viewModel.showAboutDialog.collectAsState().value
 
     TodoListTheme(darkTheme = darkTheme) {
@@ -63,7 +65,9 @@ fun MainComponent(
                         )
                     }
 
-                    AdBanner(showAds = showAds)
+                    if (configLoaded) {
+                        AdBanner(showAds = showAds, bannerAdUnitId = bannerAdUnitId)
+                    }
                 }
             }
 
