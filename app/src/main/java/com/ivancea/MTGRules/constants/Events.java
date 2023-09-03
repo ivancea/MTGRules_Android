@@ -9,4 +9,5 @@ public final class Events {
 	public static final String CHANGE_RULES = "change_rules";
 	public static final String COMPARE_RULES = "compare_rules";
 	public static final String TOGGLE_ADS = "toggle_ads";
+	public static final String AD_ERROR = "ad_error";
 }

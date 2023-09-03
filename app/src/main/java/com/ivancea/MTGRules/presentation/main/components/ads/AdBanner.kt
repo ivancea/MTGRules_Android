@@ -1,6 +1,5 @@
 package com.ivancea.MTGRules.presentation.main.components.ads
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,10 +10,9 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.ivancea.MTGRules.constants.FirebaseConfig
 
 @Composable
-fun AdBanner(showAds: Boolean, bannerAdUnitId: String) {
+fun AdBanner(showAds: Boolean, bannerAdUnitId: String, onAdError: (adError: LoadAdError) -> Unit) {
     if (!showAds) {
         return
     }
@@ -33,7 +31,7 @@ fun AdBanner(showAds: Boolean, bannerAdUnitId: String) {
                 adUnitId = bannerAdUnitId
                 adListener = object : com.google.android.gms.ads.AdListener() {
                     override fun onAdFailedToLoad(error: LoadAdError) {
-                        Log.w("AdBanner", error.message)
+                        onAdError(error)
                     }
                 }
 

@@ -1,12 +1,10 @@
 package com.ivancea.MTGRules.presentation.main.components.main
 
+import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -14,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.about.AboutDialog
 import com.ivancea.MTGRules.presentation.main.components.ads.AdBanner
@@ -53,7 +53,9 @@ fun MainComponent(
                 }
             ) { padding ->
                 Column(
-                    modifier = Modifier.padding(padding).fillMaxSize()
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
                 ) {
                     Box(modifier = Modifier.weight(1f, true)) {
                         RulesList(
@@ -66,7 +68,15 @@ fun MainComponent(
                     }
 
                     if (configLoaded) {
-                        AdBanner(showAds = showAds, bannerAdUnitId = bannerAdUnitId)
+                        AdBanner(
+                            showAds = showAds,
+                            bannerAdUnitId = bannerAdUnitId,
+                            onAdError = {
+                                val bundle = Bundle()
+                                bundle.putInt(FirebaseAnalytics.Param.VALUE, it.code)
+                                viewModel.logEvent(Events.AD_ERROR, bundle)
+                            }
+                        )
                     }
                 }
             }
