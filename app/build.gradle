@@ -17,7 +17,7 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionCode 68
+        versionCode 69
         versionName "2.8.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
@@ -66,8 +66,8 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     testImplementation "org.junit.jupiter:junit-jupiter:$jupiter_version"
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
@@ -77,13 +77,13 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.activity:activity-compose:1.8.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
-    implementation 'com.google.android.gms:play-services-ads:22.3.0'
-    implementation 'com.google.ads.mediation:facebook:6.15.0.0'
+    implementation 'com.google.android.gms:play-services-ads:22.4.0'
+    implementation 'com.google.ads.mediation:facebook:6.16.0.0'
 
 
     // Testing
