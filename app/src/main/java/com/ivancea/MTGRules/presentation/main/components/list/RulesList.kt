@@ -51,10 +51,14 @@ fun RulesList(
         if (scrollToRule != null) {
             val firstRulesOffset = rules.indexOfFirst { it.title == scrollToRule }
 
-            LazyListState(
-                firstRulesOffset,
-                -10
-            )
+            if (firstRulesOffset == -1) {
+                LazyListState()
+            } else {
+                LazyListState(
+                    firstRulesOffset,
+                    -10
+                )
+            }
         } else {
             LazyListState()
         }

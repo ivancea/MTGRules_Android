@@ -3,9 +3,11 @@
 buildscript {
     ext {
         kotlin_version = '1.8.10'
-        compose_version = '1.6.0-alpha01'
+        compose_version = '1.6.4'
         jupiter_version = '5.10.0'
         dagger_version = '2.47'
+        hilt_version = '1.2.0'
+        androidx_lifecycle_version = '2.7.0'
     }
     repositories {
         google()
