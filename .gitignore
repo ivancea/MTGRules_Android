@@ -20,3 +20,4 @@ release
 *.keystore
 *.pepk
 google-services.json
+.idea/deploymentTargetSelector.xml
