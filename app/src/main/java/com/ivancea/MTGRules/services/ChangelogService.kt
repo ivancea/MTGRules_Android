@@ -29,6 +29,8 @@ class ChangelogService @Inject constructor(
     @param:ActivityContext private val context: Context,
     private val storageService: StorageService
 ) {
+    private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(context) }
+
     data class ChangelogEntry(
         /**
          * The version code over which this changes was applied.
@@ -65,6 +67,8 @@ class ChangelogService @Inject constructor(
         if (changelogEntriesToNotify.isEmpty()) {
             return
         }
+
+        firebaseAnalytics.logEvent(Events.CHANGELOG_ALERT_SHOWN, null)
 
         AlertDialog.Builder(context)
             .setTitle(R.string.alert_changelog_title)
