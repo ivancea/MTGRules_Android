@@ -8,8 +8,10 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.app.NotificationCompat
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.MainActivity
 import com.ivancea.MTGRules.R
+import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.constants.Notifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDate
@@ -20,6 +22,8 @@ import javax.inject.Inject
 class NotificationsService @Inject constructor(@param:ApplicationContext private val context: Context) {
     private val notificationManager: NotificationManager =
         context.getSystemService(NotificationManager::class.java)
+
+    private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(context) }
 
     init {
         configureChannel()
@@ -54,6 +58,7 @@ class NotificationsService @Inject constructor(@param:ApplicationContext private
                     lastRuleSource.dayOfMonth
 
         notificationManager.notify(notificationId, builder.build())
+        firebaseAnalytics.logEvent(Events.NEW_RULES_NOTIFICATION_SENT, null)
     }
 
     private fun configureChannel() {

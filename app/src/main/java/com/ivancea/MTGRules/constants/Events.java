@@ -10,4 +10,5 @@ public final class Events {
 	public static final String COMPARE_RULES = "compare_rules";
 	public static final String TOGGLE_ADS = "toggle_ads";
 	public static final String AD_ERROR = "ad_error";
+	public static final String NEW_RULES_NOTIFICATION_SENT = "new_rules_notification_sent";
 }
