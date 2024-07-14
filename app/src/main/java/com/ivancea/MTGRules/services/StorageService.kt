@@ -63,6 +63,23 @@ class StorageService @Inject constructor(@ApplicationContext context: Context) {
                 .apply()
         }
 
+    var lastOpenedVersion: Long?
+        get() {
+            val value = preferences.getLong(Preferences.LAST_OPENED_VERSION, 0L)
+            return if (value == 0L) null else value
+        }
+        set(newLastOpenedVersion) {
+            if (newLastOpenedVersion == null) {
+                preferences.edit()
+                    .remove(Preferences.LAST_OPENED_VERSION)
+                    .apply()
+            } else {
+                preferences.edit()
+                    .putLong(Preferences.LAST_OPENED_VERSION, newLastOpenedVersion)
+                    .apply()
+            }
+        }
+
     var notificationsPermissionRequested: Boolean
         get() = preferences.getBoolean(Preferences.NOTIFICATIONS_PERMISSION_REQUESTED, false)
         set(newNotificationsPermissionRequested) {

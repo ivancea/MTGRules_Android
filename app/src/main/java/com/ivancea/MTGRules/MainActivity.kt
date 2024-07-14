@@ -23,6 +23,7 @@ import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.main.MainComponent
+import com.ivancea.MTGRules.services.ChangelogService
 import com.ivancea.MTGRules.services.PermissionsRequesterService
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
@@ -54,7 +55,12 @@ class MainActivity : ComponentActivity() {
 
     @JvmField
     @Inject
+    var changelogService: ChangelogService? = null
+
+    @JvmField
+    @Inject
     var permissionsRequesterService: PermissionsRequesterService? = null
+
     private var viewModel: MainViewModel? = null
     private var ttsOk: Boolean? = null
     private var tts: TextToSpeech? = null
@@ -100,6 +106,8 @@ class MainActivity : ComponentActivity() {
         }
 
         permissionsRequesterService!!.requestNotifications()
+
+        changelogService!!.notifyChangelog()
 
         // Handle initial intent
         handleIntent(intent)
