@@ -34,8 +34,8 @@ class PermissionsRequesterService @Inject constructor(
         }
 
         AlertDialog.Builder(context)
-            .setTitle(R.string.notification_permission_title)
-            .setMessage(R.string.notification_permission_message)
+            .setTitle(R.string.alert_notification_permission_title)
+            .setMessage(R.string.alert_notification_permission_message)
             .setPositiveButton(R.string.dialog_ok) { _, _ ->
                 context.requestPermissions(
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),

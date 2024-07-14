@@ -29,8 +29,8 @@
     <string name="context_share">Compartir</string>
     <string name="menu_toggle_symbols">Mostrar/Ocultar símbolos</string>
     <string name="search_hint">"Ej. \"can be\" target "</string>
-    <string name="notification_permission_title">Permisos de notificaciones</string>
-    <string name="notification_permission_message">Te enviaremos notificaciones cuando se añaden nuevas reglas, y quizás otras novedades relevantes en el futuro.\n\nAcepta los permisos de notificaciones si quieres recibirlas.\n\nTambién puedes elegir qué notificaciones recibir en la configuración de la aplicación de Android.</string>
+    <string name="alert_notification_permission_title">Permisos de notificaciones</string>
+    <string name="alert_notification_permission_message">Te enviaremos notificaciones cuando se añaden nuevas reglas, y quizás otras novedades relevantes en el futuro.\n\nAcepta los permisos de notificaciones si quieres recibirlas.\n\nTambién puedes elegir qué notificaciones recibir en la configuración de la aplicación de Android.</string>
     <string name="context_search_in_rule">Buscar en regla</string>
     <string name="context_search_in_rule_dialog_title">Buscar en regla %1$s</string>
     <string name="context_search_in_rule_dialog_message">Buscar solo en la regla y en sus subreglas</string>
@@ -38,4 +38,10 @@
     <string name="list_no_items">No hay elementos</string>
     <string name="menu_activate_ads">Apoya la app: Activar anuncios</string>
     <string name="menu_deactivate_ads">Dejar de apoyar la app con anuncios</string>
+    <string name="menu_other_rules">Otras reglas...</string>
+    <string name="menu_other_rules_magic_tournament_rules">Reglas de torneo de Magic</string>
+    <string name="menu_other_rules_infraction_procedure_guide">Guía de procedimientos de infracciones</string>
+    <string name="menu_other_rules_other_documents">Otros documentos</string>
+    <string name="menu_other_rules_about">Sobre los enlaces</string>
+    <string name="alert_about_other_rules_message">Aquí tienes enlaces a reglas y documentos externos. Si estuvieran desactualizados o los links no funcionasen, puedes encontrar las últimas versiones en el enlace \"Otros documentos\"</string>
 </resources>

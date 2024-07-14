@@ -3,8 +3,11 @@ package com.ivancea.MTGRules.utils
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 import com.ivancea.MTGRules.MainActivity
 import com.ivancea.MTGRules.constants.Actions
+import java.net.URL
 
 object IntentSender {
     @JvmStatic
@@ -74,5 +77,16 @@ object IntentSender {
         val intent = Intent(context, MainActivity::class.java)
         intent.action = Actions.ACTION_TOGGLE_ADS
         context.startActivity(intent)
+    }
+
+    @JvmStatic
+    fun openExternalUri(context: Context, uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        context.startActivity(intent)
+    }
+
+    @JvmStatic
+    fun openExternalUri(context: Context, uri: String) {
+        openExternalUri(context, Uri.parse(uri))
     }
 }

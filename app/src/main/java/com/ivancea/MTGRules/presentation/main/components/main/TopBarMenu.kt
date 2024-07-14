@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.DarkMode
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.EmojiSymbols
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Merge
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.MoreVert
@@ -92,117 +94,16 @@ fun TopBarMenu(
                     tint = MaterialTheme.colors.primary
                 )
             }
-            DropdownMenu(
-                expanded = showDropdown,
-                onDismissRequest = { showDropdown = false }
-            ) {
-                // Random rule
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    IntentSender.openRandomRule(context, null, false)
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Shuffle, null)
-                        Text(stringResource(R.string.menu_random_rule))
-                    }
-                }
 
-                // Change rules
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    showChooseRulesDialog = true
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.ClearAll, null)
-                        Text(stringResource(R.string.menu_change_rules))
-                    }
-                }
-
-                // Change theme
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    IntentSender.changeTheme(context)
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            if (darkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
-                            null
-                        )
-                        Text(stringResource(R.string.menu_change_theme))
-                    }
-                }
-
-                // Show symbols
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    IntentSender.toggleSymbols(context)
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.EmojiSymbols, null)
-                        Text(stringResource(R.string.menu_toggle_symbols))
-                    }
-                }
-
-                // Compare rules
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    showCompareRulesDialog = true
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Merge, null)
-                        Text(stringResource(R.string.menu_compare_rules))
-                    }
-                }
-
-                // Activate ads
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    IntentSender.toggleAds(context)
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (showAds) {
-                            Icon(Icons.Default.MoneyOff, null)
-                            Text(stringResource(R.string.menu_deactivate_ads))
-                        } else {
-                            Icon(Icons.Default.AttachMoney, null)
-                            Text(stringResource(R.string.menu_activate_ads))
-                        }
-
-                    }
-                }
-
-                // About
-                DropdownMenuItem(onClick = {
-                    showDropdown = false
-                    onShowAbout()
-                }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Help, null)
-                        Text(stringResource(R.string.menu_about))
-                    }
-                }
-            }
+            TopBarMenuDropdown(
+                showDropdown = showDropdown,
+                darkTheme = darkTheme,
+                showAds = showAds,
+                onShowAbout = onShowAbout,
+                onShowChooseRulesDialog = { showChooseRulesDialog = true },
+                onShowCompareRulesDialog = { showCompareRulesDialog = true },
+                onClose = { showDropdown = false },
+            )
         }
     )
 
