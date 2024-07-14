@@ -1,28 +1,13 @@
 package com.ivancea.MTGRules.services
 
 import android.app.AlertDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.ProgressDialog.show
 import android.content.Context
-import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import androidx.annotation.StringRes
-import androidx.core.app.NotificationCompat
-import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.content.pm.PackageInfoCompat.getLongVersionCode
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.ivancea.MTGRules.MainActivity
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.constants.Events
-import com.ivancea.MTGRules.constants.Notifications
 import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import javax.inject.Inject
 
 class ChangelogService @Inject constructor(
