@@ -6,14 +6,12 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ConfigUpdate
-import com.google.firebase.remoteconfig.ConfigUpdateListener
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.ivancea.MTGRules.constants.Actions
@@ -65,6 +63,14 @@ class MainActivity : ComponentActivity() {
     private var ttsOk: Boolean? = null
     private var tts: TextToSpeech? = null
 
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (!popHistoryItem()) {
+                finish()
+            }
+        }
+    }
+
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +114,8 @@ class MainActivity : ComponentActivity() {
         permissionsRequesterService!!.requestNotifications()
 
         changelogService!!.notifyChangelog()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         // Handle initial intent
         handleIntent(intent)
@@ -160,7 +168,7 @@ class MainActivity : ComponentActivity() {
                 val rootRule = intent.getStringExtra(Actions.ROOT_RULE)
                 searchRules(searchString, rootRule)
                 if (addToHistory) {
-                    viewModel!!.pushHistoryItem(
+                    pushHistoryItem(
                         HistoryItem(
                             HistoryItem.Type.Search,
                             arrayOf(searchString, rootRule)
@@ -193,7 +201,7 @@ class MainActivity : ComponentActivity() {
                     viewModel!!.selectedRuleTitle.value = null
                     viewModel!!.searchText.value = null
                     if (addToHistory) {
-                        viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
+                        pushHistoryItem(HistoryItem(HistoryItem.Type.Rule, title))
                     }
                 } else if (viewModel!!.selectedRuleTitle.value != title) {
                     val rules = getRuleAndParents(
@@ -208,7 +216,7 @@ class MainActivity : ComponentActivity() {
                         rules.addAll(rules[rules.size - 1].subRules)
                         viewModel!!.visibleRules.value = rules
                         if (addToHistory) {
-                            viewModel!!.pushHistoryItem(
+                            pushHistoryItem(
                                 HistoryItem(
                                     HistoryItem.Type.Rule,
                                     title
@@ -243,7 +251,7 @@ class MainActivity : ComponentActivity() {
                         viewModel!!.selectedRuleTitle.value = null
                         viewModel!!.searchText.value = null
                         if (addToHistory) {
-                            viewModel!!.pushHistoryItem(HistoryItem(HistoryItem.Type.Random, seed))
+                            pushHistoryItem(HistoryItem(HistoryItem.Type.Random, seed))
                         }
                     }
                 viewModel!!.logEvent(Events.RANDOM_RULE)
@@ -274,13 +282,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun pushHistoryItem(historyItem: HistoryItem) {
+        viewModel!!.pushHistoryItem(historyItem)
+
+        onBackPressedCallback.isEnabled = isLastHistoryItemNavigation;
+    }
+
     private fun popHistoryItem(): Boolean {
+        if (viewModel!!.history.value.isEmpty()) {
+            return false
+        }
+
         val newHistory = java.util.ArrayList(
             viewModel!!.history.value
         )
-        if (newHistory.isEmpty()) {
-            return false
-        }
         newHistory.removeAt(newHistory.size - 1)
         while (newHistory.isNotEmpty() && newHistory[newHistory.size - 1].type == HistoryItem.Type.Ignored) {
             newHistory.removeAt(newHistory.size - 1)
@@ -312,10 +327,24 @@ class MainActivity : ComponentActivity() {
         return true
     }
 
+    /**
+     * Checks if there is no more than 1 navigation item (The current one) in the history.
+     */
     private val isLastHistoryItemNavigation: Boolean
         get() {
             val history = viewModel!!.history.value
-            return history.isNotEmpty() && history[history.size - 1].type == HistoryItem.Type.Rule
+
+            var foundEntry = false
+            for (entry in history) {
+                if (entry.type == HistoryItem.Type.Ignored) {
+                    if (foundEntry) {
+                        return false
+                    }
+                    foundEntry = true
+                }
+            }
+
+            return true
         }
 
     private fun setTheme(useLightTheme: Boolean) {
@@ -331,12 +360,5 @@ class MainActivity : ComponentActivity() {
         viewModel!!.visibleRules.value = filteredRules
         viewModel!!.selectedRuleTitle.value = null
         viewModel!!.searchText.value = searchText
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (!popHistoryItem()) {
-            super.onBackPressed()
-        }
     }
 }

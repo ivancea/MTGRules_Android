@@ -62,6 +62,9 @@ class MainViewModel @Inject constructor(
         logEvent(Events.COMPARE_RULES)
     }
 
+    /**
+     * Only to be called by MainActivity
+     */
     fun pushHistoryItem(historyItem: HistoryItem) {
         val newHistory = java.util.ArrayList(
             history.value

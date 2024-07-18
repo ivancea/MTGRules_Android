@@ -49,13 +49,13 @@ fun RulesList(
         remember(context, lineHeight) { Symbols.makeSymbolsMap(context, lineHeight) }
     val listState = remember(rules, scrollToRule) {
         if (scrollToRule != null) {
-            val firstRulesOffset = rules.indexOfFirst { it.title == scrollToRule }
+            val firstRuleOffset = rules.indexOfFirst { it.title == scrollToRule }
 
-            if (firstRulesOffset == -1) {
+            if (firstRuleOffset == -1) {
                 LazyListState()
             } else {
                 LazyListState(
-                    firstRulesOffset,
+                    firstRuleOffset,
                     -10
                 )
             }
