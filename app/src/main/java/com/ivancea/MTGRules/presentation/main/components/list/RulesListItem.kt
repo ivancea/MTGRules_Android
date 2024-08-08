@@ -46,7 +46,7 @@ fun RulesListItem(
     textInlineContent: Map<String, InlineTextContent>
 ) {
     val context = LocalContext.current
-    val withSubtitle = parentRulePattern.matcher(rule.title).matches()
+    val textAsSubtitle = parentRulePattern.matcher(rule.title).matches()
     val showMenu = remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -85,7 +85,7 @@ fun RulesListItem(
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
 
-            if (withSubtitle) {
+            if (textAsSubtitle) {
                 val annotatedRuleSubtitle = annotateRuleTitle(rule.text, searchTextPattern)
 
                 Text(
@@ -95,7 +95,7 @@ fun RulesListItem(
                 )
             }
         }
-        if (!withSubtitle) {
+        if (!textAsSubtitle) {
             val annotatedRuleText =
                 annotateRuleText(rule.text, glossaryTermsPatterns, searchTextPattern, showSymbols)
 

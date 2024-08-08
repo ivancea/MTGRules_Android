@@ -61,7 +61,6 @@ fun RemovedRule(
             textInlineContent = textInlineContent
         )
     }
-
 }
 
 @Preview

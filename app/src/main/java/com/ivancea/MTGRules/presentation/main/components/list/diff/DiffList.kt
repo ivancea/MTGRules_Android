@@ -4,9 +4,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +20,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.RulesDiff
 import com.ivancea.MTGRules.model.RulesSource
-import com.ivancea.MTGRules.presentation.main.components.list.RulesListItem
 import com.ivancea.MTGRules.presentation.main.components.list.makeGlossaryTermsPatterns
 import com.ivancea.MTGRules.presentation.main.components.list.makeSearchTextPattern
 import java.net.URI
@@ -110,7 +113,15 @@ ${it.targetRule!!.text}"""
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
     ) {
-        items(items = diff.changes, key = { it.title }) { item ->
+        itemsIndexed(items = diff.changes, key = { _, item -> item.title }) { index, item ->
+            if (index != 0) {
+                Divider (
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth()
+                )
+            }
+
             if (item.sourceRule == null && item.targetRule != null) {
                 AddedRule(
                     rule = item.targetRule,
@@ -130,20 +141,14 @@ ${it.targetRule!!.text}"""
                     textInlineContent = sourceTextInlineContent,
                 )
             } else {
-                RulesListItem(
-                    rule = Rule(
-                        "(M) " + item.title,
-                        """${item.sourceRule!!.text}
-
-CHANGED TO
-
-${item.targetRule!!.text}"""
-                    ),
+                ChangedRule(
+                    changedRule = item,
                     isNavigatedRule = item.title == scrollToRule,
                     glossaryTermsPatterns = glossaryTermsPatterns,
                     searchTextPattern = searchTextPattern,
                     showSymbols = showSymbols,
-                    textInlineContent = targetTextInlineContent,
+                    sourceTextInlineContent = sourceTextInlineContent,
+                    targetTextInlineContent = targetTextInlineContent,
                 )
             }
         }
