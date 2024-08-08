@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.isUnspecified
 import androidx.core.content.res.ResourcesCompat
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.model.RulesSource
+import java.time.LocalDate
 
 object Symbols {
     @JvmStatic
@@ -79,6 +80,16 @@ object Symbols {
         "TK" to R.drawable.symbol_tk,
     )
 
+    val drawablesBySymbolBefore_2024_08_02 = drawablesBySymbol.mapKeys {
+        when (it.key) {
+            // Pawprint symbol added
+            "P" -> "-"
+            // Phyrexian colorless symbol changed
+            "H" -> "P"
+            else -> it.key
+        }
+    }
+
     // TODO: Require a rules version to get the symbols map
 
     /**
@@ -89,7 +100,13 @@ object Symbols {
      */
     @JvmStatic
     fun makeSymbolsMap(rulesSource: RulesSource?, context: Context, lineHeight: TextUnit): Map<String, InlineTextContent> {
-        return drawablesBySymbol.mapValues { (_, resource) ->
+        var currentDrawablesBySymbol = if (rulesSource != null && rulesSource.date < LocalDate.of(2024, 8, 2)) {
+            drawablesBySymbolBefore_2024_08_02
+        } else {
+            drawablesBySymbol
+        }
+
+        return currentDrawablesBySymbol.mapValues { (_, resource) ->
             val drawable = ResourcesCompat.getDrawable(context.resources, resource, context.theme)
             val height = if (lineHeight.isUnspecified) {
                 TextUnit(16f, TextUnitType.Sp)
