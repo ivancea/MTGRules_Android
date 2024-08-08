@@ -19,6 +19,7 @@ import com.ivancea.MTGRules.constants.Events
 import com.ivancea.MTGRules.constants.FirebaseConfig
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
+import com.ivancea.MTGRules.model.VisibleRules
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.main.MainComponent
 import com.ivancea.MTGRules.services.ChangelogService
@@ -197,7 +198,7 @@ class MainActivity : ComponentActivity() {
             Actions.ACTION_NAVIGATE_RULE -> {
                 val title = intent.getStringExtra(Actions.DATA)
                 if (title!!.isEmpty()) {
-                    viewModel!!.visibleRules.value = viewModel!!.currentRules.value
+                    viewModel!!.visibleRules.value = VisibleRules.Rules(viewModel!!.currentRules.value)
                     viewModel!!.selectedRuleTitle.value = null
                     viewModel!!.searchText.value = null
                     if (addToHistory) {
@@ -214,7 +215,7 @@ class MainActivity : ComponentActivity() {
                             rules.removeAt(rules.size - 1)
                         }
                         rules.addAll(rules[rules.size - 1].subRules)
-                        viewModel!!.visibleRules.value = rules
+                        viewModel!!.visibleRules.value = VisibleRules.Rules(rules)
                         if (addToHistory) {
                             pushHistoryItem(
                                 HistoryItem(
@@ -247,7 +248,7 @@ class MainActivity : ComponentActivity() {
                             viewModel!!.currentRules.value,
                             title
                         ).collect(Collectors.toList())
-                        viewModel!!.visibleRules.value = newVisibleRules
+                        viewModel!!.visibleRules.value = VisibleRules.Rules(newVisibleRules)
                         viewModel!!.selectedRuleTitle.value = null
                         viewModel!!.searchText.value = null
                         if (addToHistory) {
@@ -357,7 +358,7 @@ class MainActivity : ComponentActivity() {
         val filteredRules = search(
             searchText!!, rulesToSearch
         )
-        viewModel!!.visibleRules.value = filteredRules
+        viewModel!!.visibleRules.value = VisibleRules.Rules(filteredRules)
         viewModel!!.selectedRuleTitle.value = null
         viewModel!!.searchText.value = searchText
     }

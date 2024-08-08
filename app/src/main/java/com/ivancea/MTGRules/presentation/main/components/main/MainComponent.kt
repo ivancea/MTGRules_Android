@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ivancea.MTGRules.constants.Events
+import com.ivancea.MTGRules.model.VisibleRules
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.about.AboutDialog
 import com.ivancea.MTGRules.presentation.main.components.ads.AdBanner
 import com.ivancea.MTGRules.presentation.main.components.list.RulesList
+import com.ivancea.MTGRules.presentation.main.components.list.diff.DiffList
 import com.ivancea.MTGRules.presentation.theme.TodoListTheme
 
 @Composable
@@ -58,13 +60,28 @@ fun MainComponent(
                         .fillMaxSize()
                 ) {
                     Box(modifier = Modifier.weight(1f, true)) {
-                        RulesList(
-                            rules = visibleRules,
-                            currentRules = currentRules,
-                            scrollToRule = selectedRule,
-                            searchText = searchText,
-                            showSymbols = showSymbols,
-                        )
+                        when (visibleRules) {
+                            is VisibleRules.Empty -> {}
+                            is VisibleRules.Rules -> {
+                                RulesList(
+                                    rulesSource = currentRulesSource,
+                                    rules = visibleRules.rules,
+                                    currentRules = currentRules,
+                                    scrollToRule = selectedRule,
+                                    searchText = searchText,
+                                    showSymbols = showSymbols,
+                                )
+                            }
+                            is VisibleRules.Diff -> {
+                                DiffList(
+                                    diff = visibleRules.diff,
+                                    currentRules = currentRules,
+                                    scrollToRule = selectedRule,
+                                    searchText = searchText,
+                                    showSymbols = showSymbols,
+                                )
+                            }
+                        }
                     }
 
                     if (configLoaded) {

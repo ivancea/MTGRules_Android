@@ -3,7 +3,6 @@ package com.ivancea.MTGRules.constants
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,13 +18,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isUnspecified
-import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import com.ivancea.MTGRules.R
+import com.ivancea.MTGRules.model.RulesSource
 
 object Symbols {
     @JvmStatic
     val drawablesBySymbol = mapOf(
+        "H" to R.drawable.symbol_phyrexian,
         "W" to R.drawable.symbol_w,
         "U" to R.drawable.symbol_u,
         "B" to R.drawable.symbol_b,
@@ -54,7 +54,7 @@ object Symbols {
         "2/B" to R.drawable.symbol_2b,
         "2/R" to R.drawable.symbol_2r,
         "2/G" to R.drawable.symbol_2g,
-        "P" to R.drawable.symbol_p,
+        "P" to R.drawable.symbol_pawprint,
         "W/P" to R.drawable.symbol_wp,
         "U/P" to R.drawable.symbol_up,
         "B/P" to R.drawable.symbol_bp,
@@ -79,12 +79,16 @@ object Symbols {
         "TK" to R.drawable.symbol_tk,
     )
 
+    // TODO: Require a rules version to get the symbols map
+
     /**
      * A map of inline content to be passed to the [Text] composable.
      * It will allow for the use of symbols in the rules.
+     *
+     * The [RulesSource] parameter is used as some symbols may change between rules versions.
      */
     @JvmStatic
-    fun makeSymbolsMap(context: Context, lineHeight: TextUnit): Map<String, InlineTextContent> {
+    fun makeSymbolsMap(rulesSource: RulesSource?, context: Context, lineHeight: TextUnit): Map<String, InlineTextContent> {
         return drawablesBySymbol.mapValues { (_, resource) ->
             val drawable = ResourcesCompat.getDrawable(context.resources, resource, context.theme)
             val height = if (lineHeight.isUnspecified) {

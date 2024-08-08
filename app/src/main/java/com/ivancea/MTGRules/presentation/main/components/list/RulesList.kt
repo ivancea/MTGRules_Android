@@ -20,13 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ivancea.MTGRules.R
 import com.ivancea.MTGRules.constants.Symbols
 import com.ivancea.MTGRules.model.Rule
-import com.ivancea.MTGRules.utils.RulesSearchUtils
-import java.util.regex.Pattern
+import com.ivancea.MTGRules.model.RulesSource
+import java.net.URI
+import java.nio.charset.StandardCharsets
+import java.time.LocalDate
 
 
 @Composable
 @ExperimentalFoundationApi
 fun RulesList(
+    rulesSource: RulesSource?,
     rules: List<Rule>,
     currentRules: List<Rule>,
     scrollToRule: String?,
@@ -46,7 +49,7 @@ fun RulesList(
     }
     val lineHeight = MaterialTheme.typography.body1.lineHeight
     val textInlineContent =
-        remember(context, lineHeight) { Symbols.makeSymbolsMap(context, lineHeight) }
+        remember(rulesSource, context, lineHeight) { Symbols.makeSymbolsMap(rulesSource, context, lineHeight) }
     val listState = remember(rules, scrollToRule) {
         if (scrollToRule != null) {
             val firstRuleOffset = rules.indexOfFirst { it.title == scrollToRule }
@@ -96,54 +99,16 @@ fun RulesList(
     }
 }
 
-fun makeGlossaryTermsPatterns(currentRules: List<Rule>): List<Pair<Pattern, String>> {
-    val patterns = arrayListOf<Pair<Pattern, String>>()
-
-    if (currentRules.isEmpty()) {
-        return patterns
-    }
-
-    val glossaryRule = currentRules.last()
-    val glossaryTerms = glossaryRule.subRules
-        .map(Rule::title)
-        .sortedByDescending { obj: String -> obj.length }
-
-    for (glossaryTerm in glossaryTerms) {
-        val pattern = Pattern.compile(
-            "\\b" + makePluralAcceptingGlossaryRegex(Pattern.quote(glossaryTerm)) + "\\b",
-            Pattern.CASE_INSENSITIVE
-        )
-
-        patterns.add(Pair(pattern, glossaryTerm))
-    }
-
-    return patterns
-}
-
-private fun makeSearchTextPattern(searchText: String): Pattern {
-    val tokens = RulesSearchUtils.tokenize(searchText)
-    val regex = tokens.joinToString("|") { s: String -> Pattern.quote(s) }
-
-    return Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
-}
-
-/**
- * Takes a regex, and returns another regex that also accepts plurals.
- *
- * Note: This method should be replaced with a proper pluralization library, or should use translations.
- *
- * @param glossaryRegex The glossary regex to pluralize
- * @return A regex accepting plurals
- */
-private fun makePluralAcceptingGlossaryRegex(glossaryRegex: String): String {
-    return "$glossaryRegex(?:s|es)?"
-}
-
 @Preview
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun Preview() {
     RulesList(
+        rulesSource = RulesSource(
+            URI("https://test.com"),
+            LocalDate.of(2024, 1, 1),
+            StandardCharsets.UTF_8,
+        ),
         rules = listOf(
             Rule("1.", "Block"),
             Rule("100.", "Parent rule"),

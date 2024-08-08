@@ -9,6 +9,7 @@ import com.ivancea.MTGRules.constants.FirebaseConfig
 import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.RulesSource
+import com.ivancea.MTGRules.model.VisibleRules
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
 import com.ivancea.MTGRules.services.StorageService
@@ -29,7 +30,7 @@ class MainViewModel @Inject constructor(
     val configLoaded = MutableStateFlow(false)
     val currentRulesSource = MutableStateFlow<RulesSource?>(null)
     val currentRules = MutableStateFlow(emptyList<Rule>())
-    val visibleRules = MutableStateFlow(emptyList<Rule>())
+    val visibleRules = MutableStateFlow<VisibleRules>(VisibleRules.Empty)
     val selectedRuleTitle = MutableStateFlow<String?>(null)
     val searchText = MutableStateFlow<String?>(null)
     val history = MutableStateFlow(emptyList<HistoryItem>())
@@ -44,7 +45,7 @@ class MainViewModel @Inject constructor(
         val rules = rulesService.loadRules(rulesSource)
         currentRulesSource.value = rulesSource
         currentRules.value = rules
-        visibleRules.value = rules
+        visibleRules.value = VisibleRules.Rules(rules)
         selectedRuleTitle.value = null
         searchText.value = null
         history.value = listOf(HistoryItem(HistoryItem.Type.Rule, ""))
@@ -54,8 +55,8 @@ class MainViewModel @Inject constructor(
         val sourceRules = rulesService.loadRules(source)
         val targetRules = rulesService.loadRules(target)
         val comparedRules =
-            rulesComparisonService.compareRules(sourceRules, targetRules)
-        visibleRules.value = comparedRules
+            rulesComparisonService.compareRules(source, target, sourceRules, targetRules)
+        visibleRules.value = VisibleRules.Diff(comparedRules)
         selectedRuleTitle.value = null
         searchText.value = null
         pushHistoryItem(HistoryItem(HistoryItem.Type.Ignored, null))
