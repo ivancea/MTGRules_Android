@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -48,16 +49,16 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
     var searchValueState by remember { mutableStateOf(TextFieldValue(text = "")) }
     var showSuggestions by remember { mutableStateOf(false) }
 
-    val trimmedSearchText = searchValueState.text.trim()
-    val suggestions = remember(trimmedSearchText) {
-        val rules = viewModel.currentRules.value
+    var currentRules = viewModel.currentRules.collectAsState().value
 
+    val trimmedSearchText = searchValueState.text.trim()
+    val suggestions = remember(currentRules, trimmedSearchText) {
         if (trimmedSearchText.length < 3) {
             emptyList()
         } else {
             val uppercaseSearchText = trimmedSearchText.uppercase(Locale.getDefault())
 
-            rules[rules.size - 1].subRules
+            currentRules[currentRules.size - 1].subRules
                 .map(Rule::title)
                 .filter { r ->
                     r.uppercase(Locale.getDefault()).contains(uppercaseSearchText)

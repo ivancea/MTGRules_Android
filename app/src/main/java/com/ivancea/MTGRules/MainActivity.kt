@@ -33,6 +33,7 @@ import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndParents
 import com.ivancea.MTGRules.utils.RuleUtils.getRuleAndSubsections
 import com.ivancea.MTGRules.utils.RulesSearchUtils.search
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
 import java.util.Locale
 import java.util.Random
 import java.util.stream.Collectors
@@ -164,6 +165,16 @@ class MainActivity : ComponentActivity() {
         }
         val addToHistory = !intent.getBooleanExtra(Actions.IGNORE_HISTORY, false)
         when (intent.action) {
+            Actions.ACTION_LOAD_RULES_SOURCE -> {
+                val rulesSourceDateString = intent.getStringExtra(Actions.DATA)!!
+                val rulesSourceDate = LocalDate.parse(rulesSourceDateString)
+
+                val rulesSource = rulesService!!.rulesSources.find { it.date == rulesSourceDate }
+
+                viewModel!!.useRules(rulesSource!!)
+                viewModel!!.logEvent(Events.CHANGE_RULES)
+            }
+
             Intent.ACTION_SEARCH -> {
                 val searchString = intent.getStringExtra(SearchManager.QUERY)
                 val rootRule = intent.getStringExtra(Actions.ROOT_RULE)

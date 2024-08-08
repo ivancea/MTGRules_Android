@@ -378,7 +378,6 @@ public class RulesService {
 				     rulesSource.getEncoding()
 			     )
 		) {
-
 			return RulesParser.loadRules(reader);
 		} catch (Exception e) {
 			e.printStackTrace();

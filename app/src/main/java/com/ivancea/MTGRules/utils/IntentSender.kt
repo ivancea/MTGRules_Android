@@ -4,10 +4,9 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
 import com.ivancea.MTGRules.MainActivity
 import com.ivancea.MTGRules.constants.Actions
-import java.net.URL
+import com.ivancea.MTGRules.model.RulesSource
 
 object IntentSender {
     @JvmStatic
@@ -15,6 +14,14 @@ object IntentSender {
         val intent = Intent(context, MainActivity::class.java)
         intent.action = Actions.ACTION_READ
         intent.putExtra(Actions.DATA, text)
+        context.startActivity(intent)
+    }
+
+    @JvmStatic
+    fun loadRulesSource(context: Context, rulesSource: RulesSource) {
+        val intent = Intent(context, MainActivity::class.java)
+        intent.action = Actions.ACTION_LOAD_RULES_SOURCE
+        intent.putExtra(Actions.DATA, rulesSource.date.toString())
         context.startActivity(intent)
     }
 
