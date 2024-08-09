@@ -32,6 +32,12 @@ class ChangelogService @Inject constructor(
             changes = listOf(
                 R.string.changelog_added_external_links_menu
             )
+        ),
+        ChangelogEntry(
+            version = 76,
+            changes = listOf(
+                R.string.changelog_improved_diff_and_fix_rules_change
+            )
         )
     )
 

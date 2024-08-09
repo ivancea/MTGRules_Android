@@ -46,4 +46,5 @@
     <string name="alert_about_other_rules_message">Aquí tienes enlaces a reglas y documentos externos. Si estuvieran desactualizados o los links no funcionasen, puedes encontrar las últimas versiones en el enlace \"Otros documentos\"</string>
     <string name="changelog_added_external_links_menu">Añadidos enlaces a otros documentos de reglas en el menú (IPG, MTR...)</string>
     <string name="alert_changelog_title">Lista de cambios</string>
+    <string name="changelog_improved_diff_and_fix_rules_change">Mejorado la vista del comparador de reglas, y corregido un error que no permitía ver reglas antiguas</string>
 </resources>

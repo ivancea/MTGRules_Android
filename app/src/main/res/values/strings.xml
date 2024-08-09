@@ -46,4 +46,5 @@
     <string name="alert_about_other_rules_message">Here you have links to external rules and documents. In case they were outdated or the links broken, you can find the latest ones in the \"Other documents\" link</string>
     <string name="changelog_added_external_links_menu">Added links to other rules documents in the menu (IPG, MTR...)</string>
     <string name="alert_changelog_title">Changelog</string>
+    <string name="changelog_improved_diff_and_fix_rules_change">Improved the rules comparison view, and fixed a bug that prevented viewing older rules</string>
 </resources>
