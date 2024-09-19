@@ -2,8 +2,10 @@ package com.ivancea.MTGRules.services;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +57,7 @@ public class RulesServiceInstrumentationTest {
 
 	@Test
 	public void anyRules() {
-		assertTrue(rulesService.getRulesSources().size() > 0);
+		assertThat(rulesService.getRulesSources(), not(empty()));
 	}
 
 	@ParameterizedTest
@@ -75,10 +78,17 @@ public class RulesServiceInstrumentationTest {
 	@MethodSource("getRulesSources")
 	public void allSymbolsMapped(RulesSource rulesSource) {
 		List<Rule> rules = rulesService.loadRules(rulesSource);
+		List<String> missingSymbols = new ArrayList<>();
 
 		for (Rule rule : rules) {
-			checkSymbols(rule);
+			checkSymbols(rule, missingSymbols);
 		}
+
+		assertThat(
+			"Missing symbols",
+			missingSymbols,
+			empty()
+		);
 	}
 
 	private static final Pattern SYMBOL_PATTERN = Pattern.compile("\\{(?<symbol>[\\w/]+)\\}");
@@ -89,7 +99,7 @@ public class RulesServiceInstrumentationTest {
 		add("rN2"); // Saga with roman numeral: Not found with the number
 	}};
 
-	private void checkSymbols(Rule rule) {
+	private void checkSymbols(Rule rule, List<String> missingSymbols) {
 		Matcher matcher = SYMBOL_PATTERN.matcher(rule.getText());
 
 		while (matcher.find()) {
@@ -99,14 +109,13 @@ public class RulesServiceInstrumentationTest {
 				continue;
 			}
 
-			assertTrue(
-				Symbols.getDrawablesBySymbol().containsKey(symbol),
-				"Symbol " + symbol + " has a drawable"
-			);
+			if (!Symbols.getDrawablesBySymbol().containsKey(symbol)) {
+				missingSymbols.add(symbol);
+			}
 		}
 
 		for (Rule subRule : rule.getSubRules()) {
-			checkSymbols(subRule);
+			checkSymbols(subRule, missingSymbols);
 		}
 	}
 
