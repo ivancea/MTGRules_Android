@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+    implementation platform('com.google.firebase:firebase-bom:33.3.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
@@ -77,16 +77,16 @@ dependencies {
 
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
-    implementation 'androidx.activity:activity-compose:1.9.0'
+    implementation 'androidx.activity:activity-compose:1.9.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
-    implementation 'com.google.android.gms:play-services-ads:23.2.0'
-    implementation 'com.google.ads.mediation:facebook:6.17.0.0'
+    implementation 'com.google.android.gms:play-services-ads:23.3.0'
+    implementation 'com.google.ads.mediation:facebook:6.18.0.0'
 
 
     // Testing
-    androidTestImplementation 'androidx.test:runner:1.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     androidTestImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
