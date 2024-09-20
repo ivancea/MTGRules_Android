@@ -27,9 +27,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,7 +74,23 @@ public class RulesServiceInstrumentationTest {
 
 		List<Rule> rulesWithoutGlossary = rules.subList(0, rules.size() - 1);
 
-		checkRulesRecursively(rulesWithoutGlossary, null);
+		Map<String, Integer> repeatedRules = new HashMap<>();
+
+		checkRulesRecursively(rulesWithoutGlossary, repeatedRules, null);
+
+		var repeatedRuleKeys = repeatedRules.entrySet().stream()
+			.filter(entry -> entry.getValue() > 1)
+			.map(Map.Entry::getKey)
+			.toList();
+
+		// Rules 17/09/2024 have repeated keys
+		if (!rulesSource.getDate().equals(LocalDate.of(2024, 9, 17))) {
+			assertThat(
+				"Repeated rules",
+				repeatedRuleKeys,
+				empty()
+			);
+		}
 	}
 
 	@ParameterizedTest
@@ -142,7 +161,7 @@ public class RulesServiceInstrumentationTest {
 		}
 	}
 
-	private void checkRulesRecursively(List<Rule> rules, @Nullable Rule parentRule) {
+	private void checkRulesRecursively(List<Rule> rules, Map<String, Integer> repeatedRules, @Nullable Rule parentRule) {
 		Integer parentRuleNumber = parentRule == null
 			? null
 			: Integer.parseInt(parentRule.getTitle().split("\\.")[0]);
@@ -152,6 +171,8 @@ public class RulesServiceInstrumentationTest {
 			assertNotNull(rule.getTitle(), "Rule title");
 			assertNotNull(rule.getText(), "Rule text");
 			assertTrue(NUMERIC_RULE_PATTERN.matcher(rule.getTitle()).matches(), "Rule title is numeric");
+
+			repeatedRules.merge(rule.getTitle(), 1, Integer::sum);
 
 			int ruleNumber = Integer.parseInt(rule.getTitle().split("\\.")[0]);
 
@@ -175,7 +196,7 @@ public class RulesServiceInstrumentationTest {
 
 			lastRuleNumber = ruleNumber;
 
-			checkRulesRecursively(rule.getSubRules(), rule);
+			checkRulesRecursively(rule.getSubRules(), repeatedRules, rule);
 		}
 	}
 }

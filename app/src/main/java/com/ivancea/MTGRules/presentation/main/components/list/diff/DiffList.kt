@@ -113,7 +113,7 @@ ${it.targetRule!!.text}"""
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
     ) {
-        itemsIndexed(items = diff.changes, key = { _, item -> item.title }) { index, item ->
+        itemsIndexed(items = diff.changes, key = { index, item -> "${item.title} $index" }) { index, item ->
             if (index != 0) {
                 Divider (
                     modifier = Modifier

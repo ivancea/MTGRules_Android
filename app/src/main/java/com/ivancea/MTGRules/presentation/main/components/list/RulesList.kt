@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -86,7 +86,7 @@ fun RulesList(
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
     ) {
-        items(items = rules, key = { it.title }) { item ->
+        itemsIndexed(rules, key = { index, item -> "${item.title} $index" }) { _, item ->
             RulesListItem(
                 rule = item,
                 isNavigatedRule = item.title == scrollToRule,
