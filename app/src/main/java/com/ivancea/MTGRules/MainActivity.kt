@@ -300,6 +300,7 @@ class MainActivity : ComponentActivity() {
         onBackPressedCallback.isEnabled = isLastHistoryItemNavigation;
     }
 
+    @Suppress("unchecked_cast")
     private fun popHistoryItem(): Boolean {
         if (viewModel!!.history.value.isEmpty()) {
             return false

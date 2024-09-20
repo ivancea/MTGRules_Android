@@ -105,6 +105,19 @@ fun AboutDialog(onClose: () -> Unit) {
                 pattern = android.util.Patterns.EMAIL_ADDRESS,
                 onClick = { email -> uriHandler.openUri("mailto:$email") }
             )
+            LinkedText(
+                stringResource(
+                    R.string.about_github
+                ),
+                style = MaterialTheme.typography.body1.merge(
+                    TextStyle(
+                        color = MaterialTheme.colors.primary,
+                        textAlign = TextAlign.Center
+                    )
+                ),
+                pattern = android.util.Patterns.WEB_URL,
+                onClick = { uri -> uriHandler.openUri(uri) }
+            )
         }
     }
 }

@@ -19,7 +19,7 @@
     <string name="action_bar_rules">Reglas</string>
     <string name="about_description">Esta App está pensada para ser una fuenta rápida y funcional de las reglas de Magic</string>
     <string name="about_unofficial">Esta NO es una aplicación oficial y NO está afiliada con <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
-    <string name="about_any_request">¿Alguna petición o funcionalidad?</string>
+    <string name="about_any_request">¿Alguna petición?</string>
     <string name="dialog_select_source_rules">Seleccionar reglas origen</string>
     <string name="dialog_select_target_rules">Seleccionar reglas destino</string>
     <string name="compare_changed_to">CAMBIA A</string>

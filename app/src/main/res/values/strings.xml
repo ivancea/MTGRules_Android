@@ -18,7 +18,7 @@
     <string name="action_bar_rules">Rules</string>
     <string name="about_description">This app is supposed to be a fast and functional source of Magic rules</string>
     <string name="about_unofficial">This is NOT an official app and it is NOT affiliated with <b>Wizards of the Coast (https://magic.wizards.com)</b></string>
-    <string name="about_any_request">Any request or feature?</string>
+    <string name="about_any_request">Any request?</string>
     <string name="about_email" translatable="false">ivancea96@outlook.com</string>
     <string name="dialog_select_source_rules">Select source rules</string>
     <string name="dialog_select_target_rules">Select target rules</string>
@@ -47,4 +47,5 @@
     <string name="changelog_added_external_links_menu">Added links to other rules documents in the menu (IPG, MTR...)</string>
     <string name="alert_changelog_title">Changelog</string>
     <string name="changelog_improved_diff_and_fix_rules_change">Improved the rules comparison view, and fixed a bug that prevented viewing older rules</string>
+    <string name="about_github" translatable="false">https://github.com/ivancea/MTGRules_Android</string>
 </resources>
