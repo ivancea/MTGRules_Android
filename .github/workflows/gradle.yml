@@ -19,6 +19,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'gradle'
     - name: Create google-services.json
       env:
         GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
