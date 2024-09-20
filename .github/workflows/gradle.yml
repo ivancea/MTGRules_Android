@@ -19,8 +19,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Build
-      uses: gradle/actions/setup-gradle@v3
     - name: Create google-services.json
       env:
         GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
