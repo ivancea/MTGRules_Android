@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,27 +30,13 @@ jobs:
         run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
       - name: Build with Gradle
         run: ./gradlew build --stacktrace
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: 'gradle'
-    - name: Create google-services.json
-      env:
-        GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
-    - name: Test with Gradle
-      run: ./gradlew test --stacktrace
   android-tests:
     runs-on: ubuntu-latest
     strategy:
+      # We want to know if a version failure is due to the version itself or the code
+      fail-fast: false
       matrix:
-        api-level: [24, 29]
+        api-level: [26, 34]
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
