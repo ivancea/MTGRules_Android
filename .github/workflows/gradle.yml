@@ -75,4 +75,5 @@ jobs:
           target: google_apis
           arch: x86_64
           force-avd-creation: false
+          emulator-options: -no-snapshot-save
           script: ./gradlew connectedDebugAndroidTest --stacktrace
