@@ -31,6 +31,7 @@ jobs:
         run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
       - name: Build with Gradle
         run: ./gradlew build --stacktrace
+
   android-tests:
     runs-on: ubuntu-latest
     strategy:
@@ -50,10 +51,28 @@ jobs:
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          script: echo "Generated AVD snapshot for caching."
       - name: Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
+          force-avd-creation: false
           script: ./gradlew connectedDebugAndroidTest --stacktrace
