@@ -17,6 +17,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v4
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -28,5 +44,27 @@ jobs:
       env:
         GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
-    - name: Build with Gradle
-      run: ./gradlew build --stacktrace
+    - name: Test with Gradle
+      run: ./gradlew test --stacktrace
+  android-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [24, 29]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $GOOGLE_SERVICES > $GITHUB_WORKSPACE/app/google-services.json
+      - name: Instrumented Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          script: ./gradlew connectedDebugAndroidTest --stacktrace
