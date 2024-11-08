@@ -98,7 +98,8 @@ dependencies {
 
 configurations {
     configureEach {
+        // NOTE: This would also disable the test runner
         // To use only JUnit 5
-        exclude group: 'junit', module: 'junit'
+        // exclude group: 'junit', module: 'junit'
     }
 }
