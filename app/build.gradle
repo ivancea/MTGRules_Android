@@ -17,7 +17,7 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionCode 81
+        versionCode 82
         versionName "2.10.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
