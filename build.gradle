@@ -24,6 +24,9 @@ buildscript {
         // To prevent Hilt dependency error
         classpath "com.squareup:javapoet:1.13.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // Secrets and variables
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
     }
 }
 

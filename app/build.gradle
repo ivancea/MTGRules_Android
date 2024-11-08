@@ -9,6 +9,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.compose'
     id 'com.google.dagger.hilt.android'
     id 'de.mannodermaus.android-junit5'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -46,7 +47,8 @@ android {
         jvmTarget = JavaVersion.VERSION_17
     }
     buildFeatures {
-        compose true
+        compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.2'
@@ -102,4 +104,9 @@ configurations {
         // To use only JUnit 5
         // exclude group: 'junit', module: 'junit'
     }
+}
+
+secrets {
+    propertiesFileName = 'secrets.properties'
+    defaultPropertiesFileName = 'secrets.defaults.properties'
 }
