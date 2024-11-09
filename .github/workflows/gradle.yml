@@ -35,7 +35,7 @@ jobs:
   android-tests:
     runs-on: ubuntu-latest
     strategy:
-      # We want to know if a version failure is due to the version itself or the code
+      # We want to know if a failure happens just in one version or in all of them
       fail-fast: false
       matrix:
         api-level: [26, 34]
@@ -64,16 +64,19 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: default
           arch: x86_64
+          profile: Nexus 4
           force-avd-creation: false
+          emulator-options: -no-window -no-boot-anim -no-audio
           script: echo "Generated AVD snapshot for caching."
-      - name: Instrumented Tests
+      - name: Run Android Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: default
           arch: x86_64
+          profile: Nexus 4
           force-avd-creation: false
-          emulator-options: -no-snapshot-save
+          emulator-options: -no-snapshot-save -no-window -no-boot-anim -no-audio
           script: ./gradlew connectedDebugAndroidTest --stacktrace
