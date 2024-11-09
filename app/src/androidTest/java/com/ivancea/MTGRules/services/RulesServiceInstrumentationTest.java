@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RulesServiceInstrumentationTest {
@@ -81,7 +82,7 @@ public class RulesServiceInstrumentationTest {
 		var repeatedRuleKeys = repeatedRules.entrySet().stream()
 			.filter(entry -> entry.getValue() > 1)
 			.map(Map.Entry::getKey)
-			.toList();
+			.collect(Collectors.toList());
 
 		// Rules 17/09/2024 have repeated keys
 		if (!rulesSource.getDate().equals(LocalDate.of(2024, 9, 17))) {
