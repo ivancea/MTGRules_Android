@@ -38,7 +38,7 @@ jobs:
       # We want to know if a failure happens just in one version or in all of them
       fail-fast: false
       matrix:
-        api-level: [26, 35]
+        api-level: [26, 34]
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
