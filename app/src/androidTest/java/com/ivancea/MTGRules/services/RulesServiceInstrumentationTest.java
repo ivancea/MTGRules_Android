@@ -129,6 +129,11 @@ public class RulesServiceInstrumentationTest {
 				continue;
 			}
 
+			if (rule.getTitle().equals("201.5b") && symbol.equals("BB")) {
+				// Type in rules
+				continue;
+			}
+
 			if (!Symbols.getDrawablesBySymbol().containsKey(symbol)) {
 				missingSymbols.add(symbol);
 			}
