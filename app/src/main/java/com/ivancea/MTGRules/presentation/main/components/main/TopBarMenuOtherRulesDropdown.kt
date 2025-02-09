@@ -6,13 +6,13 @@ import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -74,23 +74,26 @@ fun TopBarMenuOtherRulesDropdown(
         onDismissRequest = onClose
     ) {
         for (externalLink in externalLinks) {
-            DropdownMenuItem(onClick = {
-                onClose()
-                externalLink.onClick?.let {
-                    it(context)
+            DropdownMenuItem(
+                text = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(externalLink.icon, null)
+                        Text(stringResource(externalLink.stringResourceId))
+                    }
+                },
+                onClick = {
+                    onClose()
+                    externalLink.onClick?.let {
+                        it(context)
+                    }
+                    externalLink.link?.let {
+                        IntentSender.openExternalUri(context, it)
+                    }
                 }
-                externalLink.link?.let {
-                    IntentSender.openExternalUri(context, it)
-                }
-            }) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(externalLink.icon, null)
-                    Text(stringResource(externalLink.stringResourceId))
-                }
-            }
+            )
         }
     }
 }

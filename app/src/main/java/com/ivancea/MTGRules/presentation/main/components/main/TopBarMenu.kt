@@ -2,34 +2,21 @@ package com.ivancea.MTGRules.presentation.main.components.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Help
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ClearAll
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.EmojiSymbols
-import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Merge
-import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -39,6 +26,7 @@ import com.ivancea.MTGRules.utils.IntentSender
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMenu(
     darkTheme: Boolean,
@@ -58,18 +46,21 @@ fun TopBarMenu(
     var showCompareRulesDialog by remember { mutableStateOf(false) }
 
     TopAppBar(
-        backgroundColor = MaterialTheme.colors.surface,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface
+        ),
         title = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.primary
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     subtitle,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.primary.copy(alpha = 0.7f)
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                 )
             }
         },
@@ -79,7 +70,7 @@ fun TopBarMenu(
                 Icon(
                     Icons.Default.Home,
                     stringResource(R.string.menu_home),
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -91,7 +82,7 @@ fun TopBarMenu(
                 Icon(
                     Icons.Default.MoreVert,
                     stringResource(R.string.menu_more),
-                    tint = MaterialTheme.colors.primary
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 

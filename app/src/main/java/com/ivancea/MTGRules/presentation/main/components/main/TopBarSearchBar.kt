@@ -4,17 +4,18 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,7 +39,7 @@ import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.utils.IntentSender
 import java.util.Locale
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
@@ -85,7 +86,7 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
             Icon(
                 Icons.Default.Search,
                 stringResource(R.string.menu_search),
-                tint = MaterialTheme.colors.primary
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     } else {
@@ -104,23 +105,24 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
                         Icon(
                             Icons.Default.Close,
                             null,
-                            tint = MaterialTheme.colors.primary
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .menuAnchor(MenuAnchorType.PrimaryEditable)
                     .focusRequester(textFieldFocusRequester),
                 label = {
                     Text(
                         stringResource(R.string.menu_search),
-                        color = MaterialTheme.colors.primary
+                        color = MaterialTheme.colorScheme.primary
                     )
                 },
                 placeholder = {
                     Text(
                         stringResource(R.string.search_hint),
-                        color = MaterialTheme.colors.primary.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                     )
                 },
                 keyboardOptions = KeyboardOptions(
@@ -128,6 +130,7 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {
+                        showSuggestions = false
                         focusManager.clearFocus()
 
                         if (trimmedSearchText.isNotEmpty()) {
@@ -143,13 +146,16 @@ fun TopBarSearchBar(viewModel: MainViewModel = hiltViewModel()) {
             ) {
                 suggestions.forEach { suggestion ->
                     key(suggestion) {
-                        DropdownMenuItem(onClick = {
-                            focusManager.clearFocus()
-                            IntentSender.openRule(context, suggestion, false)
-                            showSuggestions = false
-                        }) {
-                            Text(suggestion)
-                        }
+                        DropdownMenuItem(
+                            text = {
+                                Text(suggestion)
+                            },
+                            onClick = {
+                                focusManager.clearFocus()
+                                IntentSender.openRule(context, suggestion, false)
+                                showSuggestions = false
+                            }
+                        )
                     }
                 }
             }

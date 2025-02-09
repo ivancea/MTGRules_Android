@@ -2,9 +2,9 @@ package com.ivancea.MTGRules.presentation.main.components.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalUriHandler
@@ -32,9 +32,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.app_name
                 ),
-                style = MaterialTheme.typography.h3.merge(
+                style = MaterialTheme.typography.displaySmall.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -43,9 +43,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.versionName
                 ),
-                style = MaterialTheme.typography.h6.merge(
+                style = MaterialTheme.typography.titleLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -57,9 +57,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.about_description
                 ),
-                style = MaterialTheme.typography.body1.merge(
+                style = MaterialTheme.typography.bodyLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -69,9 +69,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.about_unofficial
                 ),
-                style = MaterialTheme.typography.body1.merge(
+                style = MaterialTheme.typography.bodyLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -85,9 +85,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.about_any_request
                 ),
-                style = MaterialTheme.typography.body1.merge(
+                style = MaterialTheme.typography.bodyLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -96,9 +96,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.about_email
                 ),
-                style = MaterialTheme.typography.body1.merge(
+                style = MaterialTheme.typography.bodyLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -109,9 +109,9 @@ fun AboutDialog(onClose: () -> Unit) {
                 stringResource(
                     R.string.about_github
                 ),
-                style = MaterialTheme.typography.body1.merge(
+                style = MaterialTheme.typography.bodyLarge.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),

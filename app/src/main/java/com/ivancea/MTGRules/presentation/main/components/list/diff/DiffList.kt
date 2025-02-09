@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -72,7 +72,7 @@ ${it.targetRule!!.text}"""
             makeSearchTextPattern(searchText)
         }
     }
-    val lineHeight = MaterialTheme.typography.body1.lineHeight
+    val lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
     val sourceTextInlineContent =
         remember(context, lineHeight) { Symbols.makeSymbolsMap(diff.sourceRulesSource, context, lineHeight) }
     val targetTextInlineContent =
@@ -111,7 +111,7 @@ ${it.targetRule!!.text}"""
         state = listState,
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         itemsIndexed(items = diff.changes, key = { index, item -> "${item.title} $index" }) { index, item ->
             if (index != 0) {

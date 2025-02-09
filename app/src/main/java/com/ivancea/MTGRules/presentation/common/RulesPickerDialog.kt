@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,9 +44,9 @@ fun RulesPickerDialog(
         ) {
             Text(
                 title,
-                style = MaterialTheme.typography.h5.merge(
+                style = MaterialTheme.typography.headlineSmall.merge(
                     TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
                 ),
@@ -70,8 +70,8 @@ fun RulesPickerDialog(
                             )
                         ),
                         onClick = { onSuccess(rulesSource) },
-                        style = MaterialTheme.typography.h6.merge(
-                            color = MaterialTheme.colors.primary,
+                        style = MaterialTheme.typography.titleLarge.merge(
+                            color = MaterialTheme.colorScheme.primary,
                             textAlign = TextAlign.Center
                         ),
                         modifier = Modifier.fillMaxWidth()

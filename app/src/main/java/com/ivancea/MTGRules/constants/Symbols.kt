@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -129,7 +129,7 @@ object Symbols {
                     contentDescription = it,
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(20.dp))
-                        .background(color = MaterialTheme.colors.secondaryVariant)
+                        .background(color = MaterialTheme.colorScheme.tertiaryContainer)
                         .padding(2.dp)
                         .fillMaxSize()
                 )

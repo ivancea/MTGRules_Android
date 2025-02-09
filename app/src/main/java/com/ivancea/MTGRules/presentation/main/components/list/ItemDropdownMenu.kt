@@ -3,9 +3,9 @@ package com.ivancea.MTGRules.presentation.main.components.list
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -30,6 +30,7 @@ fun ItemDropdownMenu(rule: Rule, showMenu: MutableState<Boolean>) {
         onDismissRequest = { showMenu.value = false }
     ) {
         DropdownMenuItem(
+            text = { Text(stringResource(R.string.context_copy)) },
             onClick = {
                 val clipboard =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -38,8 +39,9 @@ fun ItemDropdownMenu(rule: Rule, showMenu: MutableState<Boolean>) {
 
                 showMenu.value = false
             }
-        ) { Text(stringResource(R.string.context_copy)) }
+        )
         DropdownMenuItem(
+            text = { Text(stringResource(R.string.context_share)) },
             onClick = {
                 val text = rule.title + ": " + rule.text
 
@@ -50,21 +52,23 @@ fun ItemDropdownMenu(rule: Rule, showMenu: MutableState<Boolean>) {
 
                 showMenu.value = false
             }
-        ) { Text(stringResource(R.string.context_share)) }
+        )
         DropdownMenuItem(
+            text = { Text(stringResource(R.string.context_read)) },
             onClick = {
                 IntentSender.readText(context, rule.text)
 
                 showMenu.value = false
             }
-        ) { Text(stringResource(R.string.context_read)) }
+        )
         DropdownMenuItem(
+            text = { Text(stringResource(R.string.context_search_in_rule)) },
             onClick = {
                 showSearchInRuleDialog = true
 
                 showMenu.value = false
             }
-        ) { Text(stringResource(R.string.context_search_in_rule)) }
+        )
     }
 
     if (showSearchInRuleDialog) {

@@ -3,10 +3,10 @@ package com.ivancea.MTGRules.presentation.main.components.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +39,11 @@ fun SearchInRuleDialog(rule: Rule, onClose: () -> Unit) {
                     R.string.context_search_in_rule_dialog_title,
                     rule.title
                 ),
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.titleLarge
             )
             Text(
                 stringResource(R.string.context_search_in_rule_dialog_message),
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.titleMedium
             )
 
             TextField(value = value, onValueChange = { value = it })

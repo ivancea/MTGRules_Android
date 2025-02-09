@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +67,7 @@ fun RulesListItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .combinedClickable(
                 onClick = { IntentSender.openRule(context, rule.title, false) },
                 onLongClick = { showMenu.value = true },
@@ -81,7 +81,7 @@ fun RulesListItem(
 
             Text(
                 text = annotatedRuleTitle,
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 style = TextStyle(fontWeight = FontWeight.Bold)
             )
 
@@ -90,7 +90,7 @@ fun RulesListItem(
 
                 Text(
                     text = annotatedRuleSubtitle,
-                    color = MaterialTheme.colors.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
             }
@@ -101,7 +101,7 @@ fun RulesListItem(
 
             NonConsumingClickableText(
                 text = annotatedRuleText,
-                style = TextStyle(color = MaterialTheme.colors.primary),
+                style = TextStyle(color = MaterialTheme.colorScheme.primary),
                 inlineContent = textInlineContent,
                 onClick = {
                     annotatedRuleText.getStringAnnotations(
@@ -148,7 +148,7 @@ private fun PreviewWithSubtitle() {
 @OptIn(ExperimentalFoundationApi::class)
 private fun PreviewWithSubtextAndSymbols() {
     val context = LocalContext.current
-    val lineHeight = MaterialTheme.typography.body1.lineHeight
+    val lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
     val textInlineContent =
         remember(context, lineHeight) { Symbols.makeSymbolsMap(null, context, lineHeight) }
 

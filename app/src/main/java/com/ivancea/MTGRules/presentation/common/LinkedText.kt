@@ -1,7 +1,7 @@
 package com.ivancea.MTGRules.presentation.common
 
 import android.annotation.SuppressLint
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.AnnotatedString
@@ -60,7 +60,7 @@ private fun makeAnnotatedString(text: String, pattern: Pattern): AnnotatedString
         )
         annotatedString.addStyle(
             SpanStyle(
-                color = MaterialTheme.colors.primaryVariant,
+                color = MaterialTheme.colorScheme.secondary,
                 textDecoration = TextDecoration.Underline
             ),
             matcher.start(),

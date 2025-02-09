@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,7 +47,7 @@ fun RulesList(
             makeSearchTextPattern(searchText)
         }
     }
-    val lineHeight = MaterialTheme.typography.body1.lineHeight
+    val lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
     val textInlineContent =
         remember(rulesSource, context, lineHeight) { Symbols.makeSymbolsMap(rulesSource, context, lineHeight) }
     val listState = remember(rules, scrollToRule) {
@@ -84,7 +84,7 @@ fun RulesList(
         state = listState,
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         itemsIndexed(rules, key = { index, item -> "${item.title} $index" }) { _, item ->
             RulesListItem(

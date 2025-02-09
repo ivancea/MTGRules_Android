@@ -1,7 +1,7 @@
 package com.ivancea.MTGRules.presentation.main.components.list
 
 import android.annotation.SuppressLint
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.AnnotatedString
@@ -75,7 +75,7 @@ private fun highlightSearchText(
     while (searchTextMatcher.find()) {
         // Highlight with a background color
         builder.addStyle(
-            SpanStyle(background = MaterialTheme.colors.secondary),
+            SpanStyle(background = MaterialTheme.colorScheme.tertiary),
             searchTextMatcher.start(),
             searchTextMatcher.end()
         )
@@ -176,7 +176,7 @@ private fun annotateRuleTitleLink(
     )
     builder.addStyle(
         SpanStyle(
-            color = MaterialTheme.colors.primaryVariant,
+            color = MaterialTheme.colorScheme.secondary,
             fontWeight = FontWeight.Bold
         ),
         start,
