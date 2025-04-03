@@ -5,19 +5,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivancea.MTGRules.R
@@ -51,7 +52,7 @@ fun RulesPickerDialog(
                     )
                 ),
             )
-            Divider()
+            HorizontalDivider()
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -61,15 +62,23 @@ fun RulesPickerDialog(
                     .weight(weight = 1f, fill = false)
             ) {
                 rulesSources.asReversed().forEach { rulesSource ->
-                    ClickableText(
-                        AnnotatedString(
-                            rulesSource.date.format(
+                    Text(
+                        buildAnnotatedString {
+                            val formattedDate = rulesSource.date.format(
                                 DateTimeFormatter.ofLocalizedDate(
                                     FormatStyle.MEDIUM
                                 )
                             )
-                        ),
-                        onClick = { onSuccess(rulesSource) },
+
+                            withLink(LinkAnnotation.Clickable(
+                                tag = "rules_source-${formattedDate}",
+                                linkInteractionListener = {
+                                    onSuccess(rulesSource)
+                                }
+                            )) {
+                                append(formattedDate)
+                            }
+                        },
                         style = MaterialTheme.typography.titleLarge.merge(
                             color = MaterialTheme.colorScheme.primary,
                             textAlign = TextAlign.Center
@@ -78,7 +87,7 @@ fun RulesPickerDialog(
                     )
                 }
             }
-            Divider()
+            HorizontalDivider()
             Row(horizontalArrangement = Arrangement.End) {
                 Button(onClick = { onCancel() }) {
                     Text(stringResource(R.string.dialog_cancel))

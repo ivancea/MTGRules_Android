@@ -372,7 +372,13 @@ public class RulesService {
 						new URI("https://media.wizards.com/2025/downloads/MagicCompRules%2020250207.txt"),
 						LocalDate.of(2025, 2, 7),
 						StandardCharsets.UTF_8
-				)
+				),
+
+					new RulesSource(
+							new URI("https://media.wizards.com/2025/downloads/MagicCompRules%2020250404.txt"),
+							LocalDate.of(2025, 4, 4),
+							StandardCharsets.UTF_8
+					)
 			);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

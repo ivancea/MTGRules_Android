@@ -2,7 +2,7 @@ package com.ivancea.MTGRules.presentation.main.components.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +51,7 @@ fun AboutDialog(onClose: () -> Unit) {
                 ),
             )
 
-            Divider()
+            HorizontalDivider()
 
             Text(
                 stringResource(
@@ -79,7 +79,7 @@ fun AboutDialog(onClose: () -> Unit) {
                 onClick = { url -> uriHandler.openUri(url) }
             )
 
-            Divider()
+            HorizontalDivider()
 
             Text(
                 stringResource(
