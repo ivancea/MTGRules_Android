@@ -30,7 +30,7 @@
     <string name="menu_toggle_symbols">Mostrar/Ocultar símbolos</string>
     <string name="search_hint">"Ej. \"can be\" target "</string>
     <string name="alert_notification_permission_title">Permisos de notificaciones</string>
-    <string name="alert_notification_permission_message">Te enviaremos notificaciones cuando se añaden nuevas reglas, y quizás otras novedades relevantes en el futuro.\n\nAcepta los permisos de notificaciones si quieres recibirlas.\n\nTambién puedes elegir qué notificaciones recibir en la configuración de la aplicación de Android.</string>
+    <string name="alert_notification_permission_message">Te enviaremos notificaciones cuando se añaden nuevas reglas.\n\nAcepta los permisos de notificaciones si quieres recibirlas.\n\nTambién puedes elegir qué notificaciones recibir en la configuración de la aplicación de Android.</string>
     <string name="context_search_in_rule">Buscar en regla</string>
     <string name="context_search_in_rule_dialog_title">Buscar en regla %1$s</string>
     <string name="context_search_in_rule_dialog_message">Buscar solo en la regla y en sus subreglas</string>

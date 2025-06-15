@@ -18,8 +18,8 @@ android {
         minSdkVersion 26
         compileSdk 35
         targetSdkVersion 35
-        versionCode 85
-        versionName "2.11.0"
+        versionCode 87
+        versionName "2.12.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
     }
@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.9.0')
+    implementation platform('com.google.firebase:firebase-bom:33.15.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
@@ -68,7 +68,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material3:material3:$material3_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.core:core-ktx:1.16.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     testImplementation "org.junit.jupiter:junit-jupiter:$jupiter_version"
 
@@ -79,12 +79,13 @@ dependencies {
 
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
-    implementation 'androidx.activity:activity-compose:1.10.0'
+    implementation 'androidx.activity:activity-compose:1.10.1'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
-    implementation 'com.google.android.gms:play-services-ads:23.6.0'
-    implementation 'com.google.ads.mediation:facebook:6.18.0.0'
+    implementation "com.google.android.ump:user-messaging-platform:3.2.0"
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.google.ads.mediation:facebook:6.20.0.0'
 
 
     // Testing

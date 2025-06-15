@@ -10,6 +10,7 @@ import com.ivancea.MTGRules.model.HistoryItem
 import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.RulesSource
 import com.ivancea.MTGRules.model.VisibleRules
+import com.ivancea.MTGRules.services.AdsConsentService
 import com.ivancea.MTGRules.services.RulesComparisonService
 import com.ivancea.MTGRules.services.RulesService
 import com.ivancea.MTGRules.services.StorageService
@@ -21,8 +22,9 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     val application: Application,
     val rulesService: RulesService,
+    val adsConsentService: AdsConsentService,
     private val rulesComparisonService: RulesComparisonService,
-    private val storageService: StorageService
+    storageService: StorageService,
 ) : ViewModel() {
     private val applicationContext get() = application.applicationContext
     private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(applicationContext) }

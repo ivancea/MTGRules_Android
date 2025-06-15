@@ -23,6 +23,7 @@ import com.ivancea.MTGRules.model.Rule
 import com.ivancea.MTGRules.model.VisibleRules
 import com.ivancea.MTGRules.presentation.MainViewModel
 import com.ivancea.MTGRules.presentation.main.components.main.MainComponent
+import com.ivancea.MTGRules.services.AdsConsentService
 import com.ivancea.MTGRules.services.ChangelogService
 import com.ivancea.MTGRules.services.PermissionsRequesterService
 import com.ivancea.MTGRules.services.RulesComparisonService
@@ -61,6 +62,10 @@ class MainActivity : ComponentActivity() {
     @JvmField
     @Inject
     var permissionsRequesterService: PermissionsRequesterService? = null
+
+    @JvmField
+    @Inject
+    var adsConsentService: AdsConsentService? = null
 
     private var viewModel: MainViewModel? = null
     private var ttsOk: Boolean? = null
@@ -139,6 +144,10 @@ class MainActivity : ComponentActivity() {
             }
 
             viewModel!!.configLoaded.value = true
+
+            if (viewModel!!.showAds.value) {
+                adsConsentService!!.gatherConsent(this)
+            }
         }
     }
 
