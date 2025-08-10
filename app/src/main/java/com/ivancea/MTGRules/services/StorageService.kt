@@ -2,8 +2,6 @@ package com.ivancea.MTGRules.services
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.ivancea.MTGRules.constants.FirebaseConfig
 import com.ivancea.MTGRules.constants.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext

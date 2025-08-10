@@ -1,7 +1,7 @@
 package com.ivancea.MTGRules.constants
 
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
 import com.ivancea.MTGRules.BuildConfig
 
 object FirebaseConfig {

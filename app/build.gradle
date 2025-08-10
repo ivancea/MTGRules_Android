@@ -56,21 +56,20 @@ android {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.15.0')
+    implementation platform('com.google.firebase:firebase-bom:34.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-config'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material3:material3:$material3_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:1.7.8"
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
-    testImplementation "org.junit.jupiter:junit-jupiter:$jupiter_version"
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
     ksp "com.google.dagger:hilt-android-compiler:$dagger_version"
@@ -84,16 +83,17 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     implementation "com.google.android.ump:user-messaging-platform:3.2.0"
-    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.google.android.gms:play-services-ads:24.5.0'
     implementation 'com.google.ads.mediation:facebook:6.20.0.0'
 
 
     // Testing
-    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
     androidTestImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     androidTestImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter_version"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 
+    testImplementation "org.junit.jupiter:junit-jupiter:$jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter_version"
