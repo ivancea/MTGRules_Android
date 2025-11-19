@@ -1,24 +1,27 @@
 package com.ivancea.MTGRules.utils
 
 import com.ivancea.MTGRules.model.Rule
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.util.stream.Collectors
+import com.ivancea.MTGRules.model.RulesSource
+import java.time.LocalDate
 
 object RulesParser {
+    private val rulesFixers = mapOf<LocalDate, (String) -> String>(
+        Pair(LocalDate.of(2025, 11, 14)) { text ->
+            text.replace(
+                "\r\nExample: Spirit Water Revival",
+                "Example: Spirit Water Revival"
+            )
+        }
+    )
+
     @JvmStatic
-    fun loadRules(reader: InputStreamReader): List<Rule>? {
+    fun loadRules(text: String, rulesSource: RulesSource): List<Rule>? {
+        val lines = fixRules(text, rulesSource)
+            .lines()
+            .map { line -> sanitize(line) }
+
         val rules = ArrayList<Rule>()
 
-        val lines = BufferedReader(reader).use {
-            it.lines()
-                .map { text: String ->
-                    sanitize(
-                        text
-                    )
-                }
-                .collect(Collectors.toList())
-        }
         var lineIndex = 0
         var t: String
         do {
@@ -97,6 +100,16 @@ object RulesParser {
         }
         rules.add(glossary)
         return rules
+    }
+
+    private fun fixRules(originalRules: String, rulesSource: RulesSource): String {
+        val fixer = rulesFixers[rulesSource.date]
+
+        if (fixer != null) {
+            return fixer(originalRules)
+        }
+
+        return originalRules
     }
 
     private fun makeRule(title: String, text: String): Rule {

@@ -40,6 +40,8 @@ object Symbols {
         "3" to R.drawable.symbol_3,
         "4" to R.drawable.symbol_4,
         "5" to R.drawable.symbol_5,
+        "6" to R.drawable.symbol_6,
+        "8" to R.drawable.symbol_8,
         "W/U" to R.drawable.symbol_wu,
         "W/B" to R.drawable.symbol_wb,
         "U/B" to R.drawable.symbol_ub,

@@ -28,7 +28,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +97,7 @@ public class RulesServiceInstrumentationTest {
 	@MethodSource("getRulesSources")
 	public void allSymbolsMapped(RulesSource rulesSource) {
 		List<Rule> rules = rulesService.loadRules(rulesSource);
-		List<String> missingSymbols = new ArrayList<>();
+		Set<String> missingSymbols = new HashSet<>();
 
 		for (Rule rule : rules) {
 			checkSymbols(rule, missingSymbols);
@@ -112,14 +111,14 @@ public class RulesServiceInstrumentationTest {
 	}
 
 	private static final Pattern SYMBOL_PATTERN = Pattern.compile("\\{(?<symbol>[\\w/]+)\\}");
-	private static final Set<String> IGNORED_SYMBOLS = new HashSet<String>(){{
+	private static final Set<String> IGNORED_SYMBOLS = new HashSet<>(){{
 		add("8"); // Not found
 		add("rN"); // Saga without roman numeral: Not found in SVG
 		add("rN1"); // Saga with roman numeral: Not found with the number
 		add("rN2"); // Saga with roman numeral: Not found with the number
 	}};
 
-	private void checkSymbols(Rule rule, List<String> missingSymbols) {
+	private void checkSymbols(Rule rule, Set<String> missingSymbols) {
 		Matcher matcher = SYMBOL_PATTERN.matcher(rule.getText());
 
 		while (matcher.find()) {

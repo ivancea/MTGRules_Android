@@ -1,5 +1,6 @@
 package com.ivancea.MTGRules.utils
 
+import com.ivancea.MTGRules.services.RulesService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.stream.Collectors
@@ -9,7 +10,7 @@ internal class RulesUtilsTest {
     fun getRuleAndSubsections() {
         val rulesReader =
             this.javaClass.classLoader?.getResource("rules.txt")?.openStream()?.reader()!!
-        val rules = RulesParser.loadRules(rulesReader)!!
+        val rules = RulesParser.loadRules(rulesReader, RulesService.rulesSources[0])!!
 
         // Remove all rules recursively that end with a letter
         rules.forEach {
