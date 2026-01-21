@@ -5,13 +5,19 @@ import com.ivancea.MTGRules.model.RulesSource
 import java.time.LocalDate
 
 object RulesParser {
-    private val rulesFixers = mapOf<LocalDate, (String) -> String>(
-        Pair(LocalDate.of(2025, 11, 14)) { text ->
-            text.replace(
-                "\r\nExample: Spirit Water Revival",
-                "Example: Spirit Water Revival"
-            )
-        }
+    private val rulesFixers = mapOf<Set<LocalDate>, (String) -> String>(
+        Pair(setOf(
+            LocalDate.of(2025, 11, 14)
+        )) { text -> text.replace(
+            "\r\n\r\nExample: Spirit Water Revival",
+            "\r\nExample: Spirit Water Revival"
+        )},
+        Pair(setOf(
+            LocalDate.of(2026, 1, 16)
+        )) { text -> text.replace(
+            "\r\rExample: Spirit Water Revival",
+            "\r\nExample: Spirit Water Revival"
+        )}
     )
 
     @JvmStatic
@@ -103,13 +109,15 @@ object RulesParser {
     }
 
     private fun fixRules(originalRules: String, rulesSource: RulesSource): String {
-        val fixer = rulesFixers[rulesSource.date]
+        val fixers = rulesFixers.filterKeys { it.contains(rulesSource.date) }.values
 
-        if (fixer != null) {
-            return fixer(originalRules)
+        var newRules = originalRules
+
+        fixers.forEach { fixer ->
+            newRules = fixer(newRules)
         }
 
-        return originalRules
+        return newRules
     }
 
     private fun makeRule(title: String, text: String): Rule {
