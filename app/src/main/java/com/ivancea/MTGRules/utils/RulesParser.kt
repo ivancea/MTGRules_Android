@@ -8,7 +8,8 @@ object RulesParser {
     private val rulesFixers = mapOf<Set<LocalDate>, (String) -> String>(
         Pair(setOf(
             LocalDate.of(2025, 11, 14),
-            LocalDate.of(2026, 2, 27)
+            LocalDate.of(2026, 2, 27),
+            LocalDate.of(2026, 4, 17)
         )) { text -> text.replace(
             "\r\n\r\nExample: Spirit Water Revival",
             "\r\nExample: Spirit Water Revival"

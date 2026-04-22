@@ -426,6 +426,12 @@ class RulesService @Inject constructor(@param:ApplicationContext private val con
                         URI("https://media.wizards.com/2026/downloads/MagicCompRules%2020260227.txt"),
                         LocalDate.of(2026, 2, 27),
                         StandardCharsets.UTF_8
+                    ),
+
+                    RulesSource(
+                        URI("https://media.wizards.com/2026/downloads/MagicCompRules%2020260417.txt"),
+                        LocalDate.of(2026, 4, 17),
+                        StandardCharsets.UTF_8
                     )
                 )
             } catch (e: URISyntaxException) {
