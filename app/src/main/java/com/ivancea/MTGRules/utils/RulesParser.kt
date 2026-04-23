@@ -19,6 +19,12 @@ object RulesParser {
         )) { text -> text.replace(
             "\r\rExample: Spirit Water Revival",
             "\r\nExample: Spirit Water Revival"
+        )},
+        Pair(setOf(
+            LocalDate.of(2026, 4, 17)
+        )) { text -> text.replace(
+            "\r\n\r\n\r\nPrepared\r\n",
+            "\r\n\r\nPrepared\r\n"
         )}
     )
 

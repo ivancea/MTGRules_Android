@@ -51,7 +51,7 @@ public class RulesServiceInstrumentationTest {
 	}
 
 	public static Stream<Arguments> getRulesSources() {
-		return rulesService.getRulesSources().stream()
+		return rulesService.getRulesSources().reversed().stream()
 			.map(rulesSource -> Arguments.of(Named.of(
 				"Rules " + rulesSource.getDate(),
 				rulesSource
@@ -151,6 +151,12 @@ public class RulesServiceInstrumentationTest {
 			"Glossary",
 			glossaryRule.getTitle(),
 			"Check glossary rule name in English"
+		);
+
+		assertEquals(
+			'Z',
+			glossaryRule.getSubRules().get(glossaryRule.getSubRules().size() - 1).getTitle().charAt(0),
+			"The latest glossary entry starts with Z"
 		);
 
 		assertFalse(
