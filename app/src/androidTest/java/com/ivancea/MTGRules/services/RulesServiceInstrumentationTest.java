@@ -28,6 +28,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +53,10 @@ public class RulesServiceInstrumentationTest {
 	}
 
 	public static Stream<Arguments> getRulesSources() {
-		return rulesService.getRulesSources().reversed().stream()
+		List<RulesSource> rulesSources = new ArrayList<>(rulesService.getRulesSources());
+		Collections.reverse(rulesSources);
+
+		return rulesSources.stream()
 			.map(rulesSource -> Arguments.of(Named.of(
 				"Rules " + rulesSource.getDate(),
 				rulesSource
