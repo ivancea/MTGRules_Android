@@ -8,9 +8,9 @@ import java.util.stream.Collectors
 internal class RulesUtilsTest {
     @Test
     fun getRuleAndSubsections() {
-        val rulesReader =
-            this.javaClass.classLoader?.getResource("rules.txt")?.openStream()?.reader()!!
-        val rules = RulesParser.loadRules(rulesReader, RulesService.rulesSources[0])!!
+        val rulesText =
+            this.javaClass.classLoader?.getResource("rules.txt")?.readText()!!
+        val rules = RulesParser.loadRules(rulesText, RulesService.rulesSources[0])!!
 
         // Remove all rules recursively that end with a letter
         rules.forEach {
