@@ -9,7 +9,8 @@ object RulesParser {
         Pair(setOf(
             LocalDate.of(2025, 11, 14),
             LocalDate.of(2026, 2, 27),
-            LocalDate.of(2026, 4, 17)
+            LocalDate.of(2026, 4, 17),
+            LocalDate.of(2026, 6, 19)
         )) { text -> text.replace(
             "\r\n\r\nExample: Spirit Water Revival",
             "\r\nExample: Spirit Water Revival"
