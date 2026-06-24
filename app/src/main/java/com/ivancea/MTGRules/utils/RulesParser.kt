@@ -8,24 +8,19 @@ object RulesParser {
     private val rulesFixers = mapOf<Set<LocalDate>, (String) -> String>(
         Pair(setOf(
             LocalDate.of(2025, 11, 14),
+            LocalDate.of(2026, 1, 16),
             LocalDate.of(2026, 2, 27),
             LocalDate.of(2026, 4, 17),
             LocalDate.of(2026, 6, 19)
         )) { text -> text.replace(
-            "\r\n\r\nExample: Spirit Water Revival",
-            "\r\nExample: Spirit Water Revival"
-        )},
-        Pair(setOf(
-            LocalDate.of(2026, 1, 16)
-        )) { text -> text.replace(
-            "\r\rExample: Spirit Water Revival",
-            "\r\nExample: Spirit Water Revival"
+            "\n\nExample: Spirit Water Revival",
+            "\nExample: Spirit Water Revival"
         )},
         Pair(setOf(
             LocalDate.of(2026, 4, 17)
         )) { text -> text.replace(
-            "\r\n\r\n\r\nPrepared\r\n",
-            "\r\n\r\nPrepared\r\n"
+            "\n\n\nPrepared\n",
+            "\n\nPrepared\n"
         )}
     )
 
@@ -120,13 +115,17 @@ object RulesParser {
     private fun fixRules(originalRules: String, rulesSource: RulesSource): String {
         val fixers = rulesFixers.filterKeys { it.contains(rulesSource.date) }.values
 
-        var newRules = originalRules
+        var newRules = normalizeLineEndings(originalRules)
 
         fixers.forEach { fixer ->
             newRules = fixer(newRules)
         }
 
         return newRules
+    }
+
+    private fun normalizeLineEndings(text: String): String {
+        return text.lineSequence().joinToString("\n")
     }
 
     private fun makeRule(title: String, text: String): Rule {
