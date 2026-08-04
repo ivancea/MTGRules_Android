@@ -11,9 +11,10 @@ object RulesParser {
             LocalDate.of(2026, 1, 16),
             LocalDate.of(2026, 2, 27),
             LocalDate.of(2026, 4, 17),
-            LocalDate.of(2026, 6, 19)
+            LocalDate.of(2026, 6, 19),
+            LocalDate.of(2026, 8, 7)
         )) { text -> text.replace(
-            "\n\nExample: Spirit Water Revival",
+            "\n[ \\t\\u00A0]*\nExample: Spirit Water Revival".toRegex(),
             "\nExample: Spirit Water Revival"
         )},
         Pair(setOf(
@@ -28,7 +29,7 @@ object RulesParser {
     fun loadRules(text: String, rulesSource: RulesSource): List<Rule>? {
         val lines = fixRules(text, rulesSource)
             .lines()
-            .map { line -> sanitize(line) }
+            .map { line -> sanitizeLine(line) }
 
         val rules = ArrayList<Rule>()
 
@@ -143,13 +144,15 @@ object RulesParser {
         )
     }
 
-    private fun sanitize(text: String): String {
+    private fun sanitizeLine(text: String): String {
+        if (text.isBlank()) return ""
+
         return text
             .replace('“', '"')
             .replace('”', '"')
             .replace('’', '\'')
             .replace('—', '-')
             .replace('–', '-')
-            .replace("^ $".toRegex(), "")
+            .replace('\u2028', '\n')
     }
 }

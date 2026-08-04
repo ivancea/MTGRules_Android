@@ -16,9 +16,9 @@ android {
     defaultConfig {
         applicationId "com.ivancea.MTGRules"
         minSdkVersion 26
-        compileSdk 35
-        targetSdkVersion 35
-        versionCode 95
+        compileSdk = 36
+        targetSdkVersion 36
+        versionCode 96
         versionName "2.12.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
