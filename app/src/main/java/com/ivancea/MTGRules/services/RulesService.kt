@@ -441,7 +441,10 @@ class RulesService @Inject constructor(@param:ApplicationContext private val con
                     ),
 
                     RulesSource(
-                        URI("https://media.wizards.com/2026/downloads/MagicCompRules%2020260807.txt"),
+                        // The 08/07 source whitespaces were fixed in 08/08. Keeping for historical purposes
+                        // https://media.wizards.com/2026/downloads/MagicCompRules%2020260807.txt
+                        // 08/08 was renamed to 08/07 here
+                        URI("https://media.wizards.com/2026/downloads/MagicCompRules%2020260808.txt"),
                         LocalDate.of(2026, 8, 7),
                         StandardCharsets.UTF_8
                     )
