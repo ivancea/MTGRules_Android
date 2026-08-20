@@ -13,7 +13,8 @@ object RulesParser {
             LocalDate.of(2026, 4, 17),
             LocalDate.of(2026, 6, 19),
             LocalDate.of(2026, 8, 7),
-            LocalDate.of(2026, 8, 8)
+            LocalDate.of(2026, 8, 8),
+            LocalDate.of(2026, 8, 19)
         )) { text -> text.replace(
             "\n[ \\t\\u00A0]*\nExample: Spirit Water Revival".toRegex(),
             "\nExample: Spirit Water Revival"
