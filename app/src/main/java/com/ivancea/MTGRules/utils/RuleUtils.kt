@@ -5,6 +5,20 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 
 object RuleUtils {
+    /**
+     * Finds exactly one node, preferring an exact ID and accepting omitted terminal numeric dots.
+     * @throws IllegalArgumentException if [id] is blank.
+     * @throws NoSuchElementException if no node matches [id].
+     */
+    @JvmStatic
+    fun findRule(rules: List<Rule>, id: String): Rule {
+        require(id.isNotBlank()) { "Rule ID must not be blank." }
+        val all = rules.asSequence().flatMap { flatten(it).iterator().asSequence() }
+        return all.firstOrNull { it.title == id }
+            ?: all.firstOrNull { it.title.firstOrNull()?.isDigit() == true && it.title.trimEnd('.') == id.trimEnd('.') }
+            ?: throw NoSuchElementException("No rule has ID '$id' in this ruleset.")
+    }
+
     @JvmStatic
     fun flatten(rule: Rule): Stream<Rule> {
         return Stream.concat(

@@ -22,3 +22,8 @@ release
 *.pepk
 google-services.json
 .idea/deploymentTargetSelector.xml
+
+
+# APM dependencies
+apm_modules/
+.agents/

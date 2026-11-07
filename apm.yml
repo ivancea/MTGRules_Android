@@ -1,0 +1,7 @@
+name: mtg-rules-android
+version: 1.0.0
+targets:
+  - agent-skills
+dependencies:
+  apm:
+    - android/skills/device-ai/appfunctions

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppFunctionAppMetadata xmlns:appfn="http://schemas.android.com/apk/androidx.appfunctions"
+    appfn:instructions="Provides official Magic: The Gathering Comprehensive Rules for browsing and searching. Omit rulesetId to use the latest available edition; select another edition only when the user explicitly requests it. Use listRules to browse IDs and titles, getRule to retrieve individual rule content, and searchRules to find matching rules." />

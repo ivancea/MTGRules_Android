@@ -1,0 +1,102 @@
+lockfile_version: '1'
+apm_version: 0.35.0
+dependencies:
+- repo_url: android/skills
+  name: appfunctions
+  host: github.com
+  resolved_commit: bf68e2d66a992a1e6aeb7e9263293cc23fcbf475
+  version: unknown
+  virtual_path: device-ai/appfunctions
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/appfunctions
+  - .agents/skills/appfunctions/SKILL.md
+  - .agents/skills/appfunctions/references/adb-interaction-testing.md
+  - .agents/skills/appfunctions/references/context.md
+  - .agents/skills/appfunctions/references/feature-discovery-analysis.md
+  - .agents/skills/appfunctions/references/implementation-configuration.md
+  - .agents/skills/appfunctions/references/kdoc-refinement-optimization.md
+  - .agents/skills/appfunctions/references/migrate-to-service-entry-point.md
+  deployed_file_hashes:
+    .agents/skills/appfunctions/SKILL.md: sha256:73bf2a917955a8bb691fbd9ad417c3b5e742c0263dd592947dcb1d9c084d1fee
+    .agents/skills/appfunctions/references/adb-interaction-testing.md: sha256:6fe6114a38d9edd48c1c5dca20b80157d2074f20edb67d0faaf75877e0d43ee9
+    .agents/skills/appfunctions/references/context.md: sha256:758c07a9439b3ebc5ab0b3c7093008f1524d1c8a895eb2b3cfb9be4aadc68e0b
+    .agents/skills/appfunctions/references/feature-discovery-analysis.md: sha256:83950e0d821e934c810055f7559edbf07a04c1d9dd0933a01e1520b7707d7e54
+    .agents/skills/appfunctions/references/implementation-configuration.md: sha256:8edb1f43d01344d4fe0ad61d80302e1848f8193fb5171d81b271349574b378f5
+    .agents/skills/appfunctions/references/kdoc-refinement-optimization.md: sha256:926bc1a83e982d8ff71d4c616a63694fde09b497990d8d40b87f9730f63fa896
+    .agents/skills/appfunctions/references/migrate-to-service-entry-point.md: sha256:d27353035594d6b54523c8a6ccb3356a83fb955a1a01fb0d1e55e1c8f07bc6bb
+  content_hash: sha256:c57e00b802f16b2a555af94895abe1e9f2c4305b1ea26d33aebd4f6d99a6fe2e
+deployments:
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:73bf2a917955a8bb691fbd9ad417c3b5e742c0263dd592947dcb1d9c084d1fee
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/adb-interaction-testing.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:6fe6114a38d9edd48c1c5dca20b80157d2074f20edb67d0faaf75877e0d43ee9
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/context.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:758c07a9439b3ebc5ab0b3c7093008f1524d1c8a895eb2b3cfb9be4aadc68e0b
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/feature-discovery-analysis.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:83950e0d821e934c810055f7559edbf07a04c1d9dd0933a01e1520b7707d7e54
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/implementation-configuration.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:8edb1f43d01344d4fe0ad61d80302e1848f8193fb5171d81b271349574b378f5
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/kdoc-refinement-optimization.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:926bc1a83e982d8ff71d4c616a63694fde09b497990d8d40b87f9730f63fa896
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/appfunctions/references/migrate-to-service-entry-point.md
+  runtime: null
+  scope: project
+  owners:
+  - android/skills/device-ai/appfunctions
+  active_owner: android/skills/device-ai/appfunctions
+  content_hash: sha256:d27353035594d6b54523c8a6ccb3356a83fb955a1a01fb0d1e55e1c8f07bc6bb
