@@ -32,6 +32,12 @@ Android app for browsing, searching, and comparing historical Magic: The Gatheri
 
 The new-rules notification workflow uses the GitHub repository variable `LAST_RULES_URL`; remind the maintainer to update it after integrating a new source.
 
+## Versions and release tags
+
+- `app/build.gradle` defines `versionCode` (the increasing Play build number) and `versionName` (the user-visible `major.minor.patch` version). Increment `versionCode` for each new uploaded build; change `versionName` when requested for a versioned release. A minor bump resets the patch to zero.
+- Release tags follow `v<versionName>`, for example `v2.13.0`. Existing tags are annotated tags with empty messages, not lightweight tags: `git tag -a v2.13.0 <release-commit> -m ""`.
+- Create tags only with explicit user consent; a version bump or release preparation alone does not authorize tagging. Verify the committed version and target commit before tagging. Tag the committed release, not later documentation or unrelated work. Do not replace an existing tag or push tags unless explicitly requested.
+
 ## Build and test
 
 Run from the repository root (substitute `.\gradlew.bat` on Windows):
