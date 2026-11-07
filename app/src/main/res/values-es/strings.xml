@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_functions_description">Consulta y busca en las Reglas Completas de Magic: The Gathering, incluidas ediciones anteriores.</string>
     <string name="app_name">MTG Rules</string>
     <string name="dialog_select_rules">Seleccionar reglas</string>
     <string name="dialog_cancel">Cancelar</string>

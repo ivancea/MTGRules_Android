@@ -17,8 +17,8 @@ android {
         minSdkVersion 26
         compileSdk = 37
         targetSdkVersion 37
-        versionCode 99
-        versionName "2.12.1"
+        versionCode 100
+        versionName "2.13.0"
         resValue "string", "versionName", versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] = "de.mannodermaus.junit5.AndroidJUnit5Builder"
@@ -27,6 +27,9 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

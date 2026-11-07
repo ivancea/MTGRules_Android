@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MTG Rules</string>
+    <string name="app_functions_description">Browse and search Magic: The Gathering Comprehensive Rules, including historical editions.</string>
     <string name="dialog_select_rules">Select rules</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="change_theme_restart">The application will restart</string>
